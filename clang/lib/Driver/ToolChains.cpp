@@ -3499,6 +3499,22 @@ void Linux::AddClangCXXStdlibIncludeArgs(const ArgList &DriverArgs,
   }
 }
 
+// FabiC //
+void Linux::AddCXXStdlibLibArgs(const ArgList &Args,
+                                 ArgStringList &CmdArgs) const {
+  switch (GetCXXStdlibType(Args)) {
+  case ToolChain::CST_Libcxx:
+    CmdArgs.push_back("-lc++");
+    CmdArgs.push_back("-lc++abi");
+    CmdArgs.push_back("-lpthread");
+    break;
+  case ToolChain::CST_Libstdcxx:
+    CmdArgs.push_back("-lstdc++");
+    break;
+  }
+}
+// ^^ FabiC ^^ //
+
 bool Linux::isPIEDefault() const {
   return getSanitizerArgs().hasZeroBaseShadow();
 }
