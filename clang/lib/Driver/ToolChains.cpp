@@ -398,7 +398,7 @@ void DarwinClang::AddLinkRuntimeLibArgs(const ArgList &Args,
     if (isIPhoneOSVersionLT(5, 0) && !isTargetIOSSimulator() &&
         (getTriple().getArch() != llvm::Triple::arm64 &&
          getTriple().getArch() != llvm::Triple::aarch64))
-      CmdArgs.push_back("-lgcc_s.1");
+      CmdArgs.push_back("-lunwind");
 
     // We currently always need a static runtime library for iOS.
     AddLinkRuntimeLib(Args, CmdArgs, "libclang_rt.ios.a");
@@ -407,9 +407,9 @@ void DarwinClang::AddLinkRuntimeLibArgs(const ArgList &Args,
     // The dynamic runtime library was merged with libSystem for 10.6 and
     // beyond; only 10.4 and 10.5 need an additional runtime library.
     if (isMacosxVersionLT(10, 5))
-      CmdArgs.push_back("-lgcc_s.10.4");
+      CmdArgs.push_back("-lunwind");
     else if (isMacosxVersionLT(10, 6))
-      CmdArgs.push_back("-lgcc_s.10.5");
+      CmdArgs.push_back("-lunwind");
 
     // For OS X, we thought we would only need a static runtime library when
     // targeting 10.4, to provide versions of the static functions which were
