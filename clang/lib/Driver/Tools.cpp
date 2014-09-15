@@ -7226,7 +7226,7 @@ static StringRef getLinuxDynamicLinker(const ArgList &Args,
     return "/lib64/ld-linux.so.2";
   else if (ToolChain.getArch() == llvm::Triple::x86_64 &&
            ToolChain.getTriple().getEnvironment() == llvm::Triple::GNUX32)
-    return "/lib32/ld-hack.so";
+    return "/lib32/ld-hack-x32.so";
   else
     return "/lib/ld-hack-x86_64.so";
 }
