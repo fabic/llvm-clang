@@ -17,7 +17,7 @@ autom4te.cache/
 config.log
 config.status
 config/
-configure
+#configure
 libtool
 
 doc/common.tex
