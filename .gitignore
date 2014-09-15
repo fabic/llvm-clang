@@ -11,3 +11,5 @@
 
 # LLVM out-of-source build dirs. :
 /build*/
+
+/tmp/
