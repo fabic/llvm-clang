@@ -1,22 +1,17 @@
-# FabiC's LLVM Clang & such
+# LLVM Clang bulk repo.
 
-_This actually **is** LLVM/Clang bundled up as one Git repo. as for some obscur reason even to mysel I retrieved the various sources from their repositories by means of Git subtree._
+_This actually **is** LLVM/Clang bundled up as one Git repo. as for some obscur reason even to myself I retrieved the various sources from their repositories by means of Git subtree._
 
 * Compressed `.git` repository is about 44 MB ;
-
 * Checked-out on disk usage is about 342 MB ;
-
 * Current LLVM/Clang version is **3.5.0**, in here included are :
-
   - llvm
   - clang
   - compiler-rt
   - libcxx
   - libcxxabi
   - clang-tools-extra
-
 * **Also included are :**
-
   - [musl libc](http://www.musl-libc.org) @ [v1.1.4](http://git.musl-libc.org/cgit/musl/tree/?id=v1.1.4)
   - [libunwind](http://www.nongnu.org/libunwind/) @ [v1.1](http://git.savannah.gnu.org/gitweb/?p=libunwind.git;a=shortlog;h=refs/tags/v1.1)
 
