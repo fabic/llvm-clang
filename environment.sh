@@ -39,16 +39,31 @@ elif [ ! -z "`which gcc 2> /dev/null`" ]; then
 	CXX=${CXX:-g++}
 fi
 
+# Not to be export-ed env. var. :
+EnvNonExported=( LD_LIBRARY_PATH LIBRARY_PATH CPATH CPLUS_INCLUDE_PATH )
 
-Env=( CC CXX PATH LD_LIBRARY_PATH LD_RUN_PATH LIBRARY_PATH CPATH CPLUS_INCLUDE_PATH )
+# These ones we are export-ing :
+Env=( CC CXX PATH LD_RUN_PATH )
 
 export ${Env[*]}
 
+
 echo "| $CC is: `which $CC 2> /dev/null` [`$CC --version | head -n1`]"
 echo "| $CXX is: `which $CXX 2> /dev/null` [`$CXX --version | head -n1`]"
+echo "|"
+
 
 if true; then
+echo "+- Some of the defined environment :"
 for e in ${Env[*]}; do
+	echo "| $e = ${!e}"
+done | column -t -s=
+fi
+
+if true; then
+echo "|"
+echo "+- Environment variables of interest that where NOT defined :"
+for e in ${EnvNonExported[*]}; do
 	echo "| $e = ${!e}"
 done | column -t -s=
 fi
