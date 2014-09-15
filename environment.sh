@@ -16,30 +16,36 @@ echo "| At $HERE"
 echo "| LLVM build dir.: $llvm_build_dir"
 echo "+-"
 
+# Prefer our local/ stuff :
 if [ -x "$local_dir/bin/clang" ]; then
 	PATH="$local_dir/bin:$PATH"
+# over an eventual build/ :
 elif [ -x "$llvm_build_dir/bin/clang" ]; then
 	PATH="$llvm_build_dir/bin:$PATH"
-elif [ -z "`which clang 2> /dev/null`" ]; then
-	echo "| ERROR: Can't find clang binary."
-	echo "+-"
-	echo
-	exit 127
 fi
 
-CC=clang
-CXX=clang++
+# Fallback to the host provided Clang or Gcc :
+if [ ! -z "`which clang 2> /dev/null`" ]; then
+	CC=${CC:-clang}
+	CXX=${CXX:-clang++}
+elif [ ! -z "`which gcc 2> /dev/null`" ]; then
+	CC=${CC:-gcc}
+	CXX=${CXX:-g++}
+fi
 
-Env=( CC CXX PATH )
+
+Env=( CC CXX PATH LD_LIBRARY_PATH )
 
 export ${Env[*]}
 
-echo "| clang is: `which clang` [`clang --version | head -n1`]"
+echo "| $CC is: `which $CC 2> /dev/null` [`$CC --version | head -n1`]"
+echo "| $CXX is: `which $CXX 2> /dev/null` [`$CXX --version | head -n1`]"
 
+if true; then
 for e in ${Env[*]}; do
 	echo "| $e = ${!e}"
 done | column -t -s=
-
+fi
 
 echo "+---"
 
