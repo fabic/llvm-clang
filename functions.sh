@@ -27,3 +27,14 @@ pathappend () {
         export $PATHVARIABLE="${!PATHVARIABLE:+${!PATHVARIABLE}:}$1"
 }
 
+## ^ End of LFS-imported stuff.
+###
+
+# Simple func. for displaying compilation/linkage env. vars :
+checkenv() {
+	for e in CC CXX PATH LD_LIBRARY_PATH LD_RUN_PATH LIBRARY_PATH CPATH CPLUS_INCLUDE_PATH ;
+	do
+		[[ ${!e-} ]] && echo "unset $e = ${!e}" || true #echo "undefined $e"
+	done
+}
+
