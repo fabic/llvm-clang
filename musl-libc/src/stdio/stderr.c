@@ -12,5 +12,5 @@ static FILE f = {
 	.close = __stdio_close,
 	.lock = -1,
 };
-FILE *const stderr = &f;
+FILE * stderr = &f; // FabiC
 FILE *volatile __stderr_used = &f;

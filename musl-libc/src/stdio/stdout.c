@@ -12,5 +12,5 @@ static FILE f = {
 	.close = __stdio_close,
 	.lock = -1,
 };
-FILE *const stdout = &f;
+FILE * stdout = &f; // FabiC
 FILE *volatile __stdout_used = &f;
