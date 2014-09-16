@@ -32,6 +32,13 @@ unsigned long strtoul (const char *__restrict, char **__restrict, int);
 long long strtoll (const char *__restrict, char **__restrict, int);
 unsigned long long strtoull (const char *__restrict, char **__restrict, int);
 
+// FabiC //
+#define strtoll_l(nptr, endptr, base, locale) \
+	strtoll(nptr, endptr, base)
+#define strtoull_l(nptr, endptr, base, locale) \
+	strtoull(nptr, endptr, base)
+// ^^ FabiC ^^ //
+
 int rand (void);
 void srand (unsigned);
 
