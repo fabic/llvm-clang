@@ -19,7 +19,6 @@ local_dir="$HERE/local"
 
 echo "+---"
 echo "| At $HERE"
-echo "| LLVM build dir.: $llvm_build_dir"
 echo "+-"
 
 # Prepend our bootstrap/bin/ to search path if we can't find a clang
@@ -34,6 +33,7 @@ elif [ -x "$local_dir/bin/clang" ];
 then
 	pathprepend "$local_dir/bin"
 	pathprepend "$local_dir/lib" LD_RUN_PATH
+	pathprepend "$local_dir/lib" LD_LIBRARY_PATH
 
 	# according to ``man gcc` :
 	pathprepend "$local_dir/lib" LIBRARY_PATH
@@ -64,10 +64,10 @@ then
 fi
 
 # Not to be export-ed env. var. :
-EnvNonExported=( LIBRARY_PATH CPATH CPLUS_INCLUDE_PATH )
+EnvNonExported=( LD_LIBRARY_PATH LIBRARY_PATH CPATH CPLUS_INCLUDE_PATH )
 
 # These ones we are export-ing :
-Env=( CC CXX PATH LD_LIBRARY_PATH LD_RUN_PATH )
+Env=( CC CXX PATH LD_RUN_PATH )
 
 export ${Env[*]}
 
@@ -90,7 +90,6 @@ if true; then
 fi
 
 if true; then
-	echo
 	echo "+- Environment variables of interest that where NOT defined (exported) here :"
 	for e in ${EnvNonExported[*]}; do
 		echo "| export $e = ${!e}"
@@ -98,5 +97,9 @@ if true; then
 	echo "|"
 fi
 
+if true; then
+	echo "+- Defined shell functions :"
+	echo "| " $( declare -F | awk '{ print $3 }' )
+fi
 echo "+---"
 
