@@ -29,4 +29,20 @@
 #define _Noreturn
 #endif
 
+// ---
+// Fabic.2014-09-16, see glibc's features.h
+//
+#if true
+	// That one is from glibc's source :
+	//#define __GNUC_PREREQ(maj, min) 0
+
+	// And below was found in /usr/include/features.h :
+	#define __GLIBC__       2
+	#define __GLIBC_MINOR__ 17
+
+	#define __GLIBC_PREREQ(maj, min) \
+	        ((__GLIBC__ << 16) + __GLIBC_MINOR__ >= ((maj) << 16) + (min))
+#endif
+// ^^ FabiC ^^ //
+
 #endif
