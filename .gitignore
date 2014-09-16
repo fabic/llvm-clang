@@ -6,7 +6,9 @@
 .*.sw?
 *~
 
-# Our "/usr/local/"-like dir. where stuff get installed :
+# Our "/usr/local/"-like dir. where stuff get installed,
+# and bootstrap/ :
+/bootstrap/
 /local/
 
 # LLVM out-of-source build dirs. :
