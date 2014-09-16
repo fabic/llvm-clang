@@ -28,6 +28,19 @@ pathappend () {
         declare -g $PATHVARIABLE="${!PATHVARIABLE:+${!PATHVARIABLE}:}$1"
 }
 
+# @author FabiC
+# @since 2014-09-16
+pathpop() {
+	local IFS=':'
+	local PATHVARIABLE=${2:-PATH}
+	local -a DIRS=( ${!PATHVARIABLE} )
+	local REM=${DIRS[0]}
+	unset DIRS[0]
+	declare -g $PATHVARIABLE="${DIRS[*]}"
+	echo "Removed \`$REM' from $PATHVARIABLE"
+	echo "$PATHVARIABLE=${!PATHVARIABLE}"
+}
+
 ## ^ End of LFS-imported stuff.
 ###
 
