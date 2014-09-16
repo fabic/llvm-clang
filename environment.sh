@@ -90,14 +90,14 @@ if true; then
 fi
 
 if true; then
-	echo "+- Environment variables of interest that where NOT defined (exported) here :"
+	echo "+- Environment variables of interest which are *defined* but that where NOT export-ed here :"
 	for e in ${EnvNonExported[*]}; do
 		echo "| export $e = ${!e}"
 	done | column -t -s=
 	echo "|"
 fi
 
-if true; then
+if false; then
 	echo "+- Defined shell functions :"
 	echo "| " $( declare -F | awk '{ print $3 }' )
 fi
