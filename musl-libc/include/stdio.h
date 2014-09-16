@@ -52,9 +52,13 @@ typedef union _G_fpos64_t {
 	double __align;
 } fpos_t;
 
-extern FILE *const stdin;
-extern FILE *const stdout;
-extern FILE *const stderr;
+// FabiC //
+// extern FILE *const stdin;
+// extern FILE *const stdout;
+// extern FILE *const stderr;
+extern FILE *stdin;
+extern FILE *stdout;
+extern FILE *stderr;
 
 #define stdin  (stdin)
 #define stdout (stdout)
