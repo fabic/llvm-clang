@@ -9,14 +9,14 @@
 
 .dirstamp
 Makefile
-Makefile.in
+#Makefile.in
 
 INSTALL
-aclocal.m4
+#aclocal.m4
 autom4te.cache/
 config.log
 config.status
-config/
+#config/
 #configure
 libtool
 
@@ -25,10 +25,10 @@ doc/common.tex
 src/[GL]cursor_i.h
 src/mk_[GL]cursor_i.s
 
-include/config.h
-include/config.h.in
-include/libunwind-common.h
-include/stamp-h1
+#include/config.h
+#include/config.h.in
+#include/libunwind-common.h
+#include/stamp-h1
 
 tests/[GL]test-bt
 tests/[GL]test-concurrent
