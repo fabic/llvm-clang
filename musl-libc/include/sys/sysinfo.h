@@ -7,6 +7,7 @@ extern "C" {
 
 #define SI_LOAD_SHIFT 16
 
+#if 0 // FabiC.2014-09-17 : Using definition from the Linux headers (breaks LLVM/Clang build).
 struct sysinfo {
 	unsigned long uptime;
 	unsigned long loads[3];
@@ -22,6 +23,7 @@ struct sysinfo {
 	unsigned mem_unit;
 	char __reserved[256];
 };
+#endif // FabiC.
 
 int sysinfo (struct sysinfo *);
 int get_nprocs_conf (void);
