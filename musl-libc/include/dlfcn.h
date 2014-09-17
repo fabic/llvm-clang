@@ -24,6 +24,9 @@ char  *dlerror(void);
 void  *dlopen(const char *, int);
 void  *dlsym(void *__restrict, const char *__restrict);
 
+void *dlvsym(void *__restrict, const char *__restrict, const char *__restrict v);
+// ^^ FabiC.2014-09-17 ^^ : Also added definition in src/ldso/dlsym.c
+
 #if defined(_GNU_SOURCE) || defined(_BSD_SOURCE)
 typedef struct {
 	const char *dli_fname;
