@@ -95,7 +95,9 @@ int lchmod(const char *, mode_t);
 #define S_IEXEC S_IXUSR
 #endif
 
-#if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
+// FabiC //
+#if 0
+//#if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
 #define stat64 stat
 #define fstat64 fstat
 #define lstat64 lstat
@@ -104,7 +106,16 @@ int lchmod(const char *, mode_t);
 #define blkcnt64_t blkcnt_t
 #define ino64_t ino_t
 #define off64_t off_t
-#endif
+#else // FabiC //
+int stat64(const char *__restrict, struct stat *__restrict);
+int fstat64(int, struct stat *);
+int lstat64(const char *__restrict, struct stat *__restrict);
+int fstatat64(int, const char *__restrict, struct stat *__restrict, int);
+#define blksize64_t blksize_t
+#define blkcnt64_t blkcnt_t
+#define ino64_t ino_t
+#define off64_t off_t
+#endif // ^^ FabiC ^^ //
 
 #ifdef __cplusplus
 }

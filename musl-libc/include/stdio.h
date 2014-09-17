@@ -19,6 +19,9 @@ extern "C" {
 #define __NEED_va_list
 #endif
 
+// FabiC/2014-09-17 : temp.
+#define __NEED_off_t
+
 #include <bits/alltypes.h>
 
 #ifdef __cplusplus
@@ -188,7 +191,20 @@ char *fgets_unlocked(char *, int, FILE *);
 int fputs_unlocked(const char *, FILE *);
 #endif
 
-#if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
+// --- FabiC/2014-09-17 : FALSE-d this and replacing these defines with
+//                        explicit func. decl. (see #else ...).
+//
+// This is for fixing compilation error with enumeration llvm::libFunc::Func
+// ( llvm/include/llvm/Target/TargetLibraryInfo.h )
+//
+// Clang errors like :
+//   ...  error: redefinition of enumerator 'fopen'
+//          fopen64,
+//          ^
+//     .../local/include/stdio.h:193:17: note: expanded from macro 'fopen64'
+//
+#if 0
+//#if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
 #define tmpfile64 tmpfile
 #define fopen64 fopen
 #define freopen64 freopen
@@ -198,6 +214,43 @@ int fputs_unlocked(const char *, FILE *);
 #define fsetpos64 fsetpos
 #define fpos64_t fpos_t
 #define off64_t off_t
+#else
+	// FabiC //
+
+	// // Briefly adapted from @see src/internal/libc.h
+	// NOTE: Couldn't get this to work for functions -__-
+	//
+	// #undef LFS64
+	// #define LFS64(x) \
+	//     __typeof(x) x##64 __attribute__((alias(#x)))
+	// 	   //extern __typeof(x) x##64 __attribute__((weakref(#x))
+	//
+	// LFS64(tmpfile);
+	// LFS64(fopen);
+	// LFS64(freopen);
+	// LFS64(fseeko);
+	// LFS64(ftello);
+	// LFS64(fgetpos);
+	// LFS64(fsetpos);
+	// LFS64(fpos_t);
+	// LFS64(off_t);
+	//
+	// #undef LFS64
+
+	#define fpos64_t fpos_t
+	#define off64_t off_t
+
+	// Reverting to natural decl. for these xxx64 func. :
+	FILE *tmpfile64(void);
+	FILE *fopen64(const char *__restrict, const char *__restrict);
+	FILE *freopen64(const char *__restrict, const char *__restrict, FILE *__restrict);
+	int fseeko64(FILE *, off64_t, int);
+	off64_t ftello64(FILE *);
+	int fgetpos64(FILE *__restrict, fpos64_t *__restrict);
+	int fsetpos64(FILE *, const fpos64_t *);
+
+
+	// ^^ FabiC ^^ //
 #endif
 
 #ifdef __cplusplus
