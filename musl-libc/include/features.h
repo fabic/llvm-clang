@@ -32,7 +32,7 @@
 // ---
 // Fabic.2014-09-16, see glibc's features.h
 //
-#if true
+#if 1
 	// That one is from glibc's source :
 	//#define __GNUC_PREREQ(maj, min) 0
 
