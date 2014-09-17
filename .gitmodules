@@ -1,3 +1,6 @@
 [submodule "gnu-binutils"]
 	path = misc/binutils
 	url = git://sourceware.org/git/binutils-gdb.git
+[submodule "gnu-gcc"]
+	path = misc/gcc
+	url = git@github.com:gcc-mirror/gcc.git
