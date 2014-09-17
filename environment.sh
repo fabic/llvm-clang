@@ -26,21 +26,31 @@ echo "+-"
 if [ -x "$bootstrap_dir/bin/clang" -a ! -x "$local_dir/bin/clang" ];
 then
 	pathprepend "$bootstrap_dir/bin"
+
 	pathprepend "$bootstrap_dir/lib" LD_LIBRARY_PATH
+
+	pathprepend "$local_dir/lib" LD_RUN_PATH
+
+	pathprepend "$local_dir/include" CPATH
+	pathprepend "$local_dir/lib" LIBRARY_PATH
+
+	export PATH LD_LIBRARY_PATH LD_RUN_PATH CPATH
 
 # Prefer our local/ stuff :
 elif [ -x "$local_dir/bin/clang" ];
 then
 	pathprepend "$local_dir/bin"
-	pathprepend "$local_dir/lib" LD_RUN_PATH
 	pathprepend "$local_dir/lib" LD_LIBRARY_PATH
+	pathprepend "$local_dir/lib" LD_RUN_PATH
 
 	# according to ``man gcc` :
-	pathprepend "$local_dir/lib" LIBRARY_PATH
 	pathprepend "$local_dir/include" CPATH
+	pathprepend "$local_dir/lib" LIBRARY_PATH
 
 	# this one isn't needed as its auto/hard-coded into Clang :
 	#pathprepend "$local_dir/include/c++/v1" CPLUS_INCLUDE_PATH
+
+	export PATH LD_RUN_PATH CPATH
 
 # over an eventual fallback to build/bin :
 elif [ -x "$llvm_build_dir/bin/clang" ];
@@ -62,6 +72,14 @@ then
 	CC=${CC:-gcc}
 	CXX=${CXX:-g++}
 fi
+
+export CC CXX
+
+echo "+-- Environment:"
+
+env|grep -E '^((|C.*|(LD_)?(LIBRARY_|RUN_))PATH|CC|CXX)=' | column -t -s=
+
+return
 
 # Not to be export-ed env. var. :
 EnvNonExported=( LD_LIBRARY_PATH LIBRARY_PATH CPATH CPLUS_INCLUDE_PATH )
