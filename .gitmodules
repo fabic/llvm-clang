@@ -4,3 +4,7 @@
 [submodule "gnu-gcc"]
 	path = misc/gcc
 	url = git@github.com:gcc-mirror/gcc.git
+[submodule "gnu-glibc"]
+	path = misc/glibc
+	url = git://sourceware.org/git/glibc
+	branch = origin/release/2.20/master
