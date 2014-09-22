@@ -23,6 +23,8 @@ struct sysinfo {
 	unsigned mem_unit;
 	char __reserved[256];
 };
+#else
+#  include <linux/sysinfo.h>
 #endif // FabiC.
 
 int sysinfo (struct sysinfo *);
