@@ -21,6 +21,7 @@ echo "+---"
 echo "| At $HERE"
 echo "+-"
 
+
 # Prepend our bootstrap/bin/ to search path if we can't find a clang
 # binary under local/bin :
 if [ -x "$bootstrap_dir/bin/clang" -a ! -x "$local_dir/bin/clang" ];
@@ -35,9 +36,11 @@ then
 	pathprepend "$local_dir/lib" LIBRARY_PATH
 
 	export PATH LD_LIBRARY_PATH LD_RUN_PATH CPATH
+fi
+
 
 # Prefer our local/ stuff :
-elif [ -x "$local_dir/bin/clang" ];
+if [ true -o -d "$local_dir/bin/" ];
 then
 	pathprepend "$local_dir/bin"
 	pathprepend "$local_dir/lib" LD_LIBRARY_PATH
@@ -77,9 +80,16 @@ export CC CXX
 
 echo "+-- Environment:"
 
-env|grep -E '^((|C.*|(LD_)?(LIBRARY_|RUN_))PATH|CC|CXX)=' | column -t -s=
+checkenv
 
 return
+
+
+
+
+
+
+
 
 # Not to be export-ed env. var. :
 EnvNonExported=( LD_LIBRARY_PATH LIBRARY_PATH CPATH CPLUS_INCLUDE_PATH )
