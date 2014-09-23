@@ -44,6 +44,50 @@ pathpop() {
 ## ^ End of LFS-imported stuff.
 ###
 
+function fhs_path_setup_for() {
+	if [ $# -eq 0 ]; then
+		echo
+		echo "Setup PATH, LD_LIBRARY_PATH / LD_RUN_PATH, LIBRARY_PATH, CPATH for FHS-like directories (which have e.g. bin/, include/, lib/)."
+		echo
+		echo "Usage: $0 <usr-local-like-dir1/> [<dir2/> ...]"
+		echo
+		return
+	fi
+
+	local fhs_dir
+
+	while [ $# -gt 0 ];
+	do
+		fhs_dir="$1"
+		shift
+
+		[ -d "$fhs_dir" ] || echo "WARNING: $0: directory '$fhs_dir' doesn't exist."
+
+		# bin/
+		#[ -d "$fhs_dir/bin" ] &&
+			pathprepend "$fhs_dir/bin"
+
+		# lib/
+		#if [ -d "$fhs_dir/lib" ]; then
+			pathprepend "$fhs_dir/lib" LD_RUN_PATH
+			pathprepend "$fhs_dir/lib" LIBRARY_PATH
+		#fi
+
+		# lib64/
+		if [ -d "$fhs_dir/lib64" ]; then
+			pathprepend "$fhs_dir/lib64" LD_RUN_PATH
+			pathprepend "$fhs_dir/lib64" LIBRARY_PATH
+		fi
+
+		# include/
+		#[ -d "$fhs_dir/include" ] &&
+			pathprepend "$fhs_dir/include" CPATH
+
+		export PATH LD_RUN_PATH LIBRARY_PATH CPATH
+		#echo $PATH $LD_RUN_PATH $LIBRARY_PATH $CPATH
+	done
+}
+
 # Simple func. for displaying compilation/linkage env. vars :
 checkenv() {
 
