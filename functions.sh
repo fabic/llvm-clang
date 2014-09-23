@@ -63,6 +63,9 @@ function fhs_path_setup_for() {
 
 		[ -d "$fhs_dir" ] || echo "WARNING: $0: directory '$fhs_dir' doesn't exist."
 
+        # Make absolute if it isn't by prefixing CWD :
+        [ ! -z "${fhs_dir##/*}" ] && fhs_dir="$PWD/$fhs_dir"
+
 		# bin/
 		#[ -d "$fhs_dir/bin" ] &&
 			pathprepend "$fhs_dir/bin"

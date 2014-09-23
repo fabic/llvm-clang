@@ -17,59 +17,58 @@ llvm_build_dir="$HERE/build"
 bootstrap_dir="$HERE/bootstrap"
 local_dir="$HERE/local"
 
+echo
 echo "+---"
 echo "| At $HERE"
 echo "+-"
 
+##
+## Process arguments :
+##
+while [ $# -gt 0 ];
+do
+	arg="$1"
+	shift
 
-# Prepend our bootstrap/bin/ to search path if we can't find a clang
-# binary under local/bin :
-if [ -x "$bootstrap_dir/bin/clang" -a ! -x "$local_dir/bin/clang" ];
-then
-	pathprepend "$bootstrap_dir/bin"
+	dir="$arg"
+	dir=${dir%/}
 
-	pathprepend "$bootstrap_dir/lib" LD_LIBRARY_PATH
+	#[ -d "$dir" ] && echo "Processing dir. '$dir'" || continue
 
-	pathprepend "$local_dir/lib" LD_RUN_PATH
+	# Treat build*/ directories as LLVM/Clang out-of-source build dir. :
+	if [ -z "${dir##build*}" ];
+	then
+		echo "| Setting up '$dir' as an out-of-source LLVM/Clang build directory."
 
-	pathprepend "$local_dir/include" CPATH
-	pathprepend "$local_dir/lib" LIBRARY_PATH
+		fhs_path_setup_for "$dir"
 
-	export PATH LD_LIBRARY_PATH LD_RUN_PATH CPATH
-fi
+		# Additional include dirs :
+		pathprepend "$HERE/clang/include"      CPATH
+		pathprepend "$HERE/libcxx/include"     CPATH
+		pathprepend "$HERE/libcxxabi/include"  CPATH
+	else
+		echo "| Setting up '$dir' as an FHS-like directory."
+		fhs_path_setup_for "$dir"
+	fi
+
+	export PATH LD_LIBRARY_PATH LD_RUN_PATH LIBRARY_PATH CPATH CPLUS_INCLUDE_PATH
+done
 
 
-# Prefer our local/ stuff :
-if [ true -o -d "$local_dir/bin/" ];
-then
-	pathprepend "$local_dir/bin"
-	pathprepend "$local_dir/lib" LD_LIBRARY_PATH
-	pathprepend "$local_dir/lib" LD_RUN_PATH
+##
+## Define $CC & $CXX explicitly if these aren't already set.
+##
 
-	# according to ``man gcc` :
-	pathprepend "$local_dir/include" CPATH
-	pathprepend "$local_dir/lib" LIBRARY_PATH
+# Further below we do not overwritte CC/CXX if defined :
+[ ! -z "$CC" ]  && echo "| NOTE: \$CC=\"$CC\" (already defined, not overwritting it)"
+[ ! -z "$CXX" ] && echo "| NOTE: \$CXX=\"$CXX\" (already defined, not overwritting it)"
 
-	# this one isn't needed as its auto/hard-coded into Clang :
-	#pathprepend "$local_dir/include/c++/v1" CPLUS_INCLUDE_PATH
-
-	export PATH LD_RUN_PATH CPATH
-
-# over an eventual fallback to build/bin :
-elif [ -x "$llvm_build_dir/bin/clang" ];
-then
-	pathprepend "$llvm_build_dir/bin"
-fi
-
-# further below we do not overwritte CC/CXX if defined :
-[ ! -z "$CC" ]  && echo "| NOTE: \$CC=\"$CC\" (we're not overwritting)"
-[ ! -z "$CXX" ] && echo "| NOTE: \$CXX=\"$CXX\" (we're not overwritting)"
-
-# Fallback to the host provided Clang or Gcc :
+# Favor Clang :
 if [ ! -z "`which clang 2> /dev/null`" ];
 then
 	CC=${CC:-clang}
 	CXX=${CXX:-clang++}
+# or fallback to GCC :
 elif [ ! -z "`which gcc 2> /dev/null`" ];
 then
 	CC=${CC:-gcc}
@@ -78,11 +77,25 @@ fi
 
 export CC CXX
 
+
+# Preprend our utility bin/ dir. to $PATH :
+[ -d "$HERE/bin" ] && pathprepend "$HERE/bin"
+
+
+#######################
+## OUTPUT SOME INFO. ##
+#######################
+
+echo "| $CC is: `which $CC 2> /dev/null` [`$CC --version | head -n1`]"
+echo "| $CXX is: `which $CXX 2> /dev/null` [`$CXX --version | head -n1`]"
+echo "|"
 echo "+-- Environment:"
-
 checkenv
+echo "+-"
+echo
 
-return
+# EXIT
+[ ${BASH_SOURCE[0]} == $0 ] && exit || return
 
 
 
@@ -98,15 +111,6 @@ EnvNonExported=( LD_LIBRARY_PATH LIBRARY_PATH CPATH CPLUS_INCLUDE_PATH )
 Env=( CC CXX PATH LD_RUN_PATH )
 
 export ${Env[*]}
-
-#######################
-## OUTPUT SOME INFO. ##
-#######################
-
-echo "| $CC is: `which $CC 2> /dev/null` [`$CC --version | head -n1`]"
-echo "| $CXX is: `which $CXX 2> /dev/null` [`$CXX --version | head -n1`]"
-echo "|"
-
 
 if true; then
 	echo "+- Some of the defined (exported) environment :"
