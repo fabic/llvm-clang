@@ -38,3 +38,6 @@
 [submodule "musl-libc"]
 	path = musl
 	url = git://git.musl-libc.org/musl
+[submodule "libunwind"]
+	path = libunwind
+	url = git://git.sv.gnu.org/libunwind.git
