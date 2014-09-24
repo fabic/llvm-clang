@@ -35,3 +35,6 @@
 [submodule "test-suite"]
 	path = test-suite
 	url = git@github.com:llvm-mirror/test-suite.git
+[submodule "musl-libc"]
+	path = musl
+	url = git://git.musl-libc.org/musl
