@@ -1,0 +1,13 @@
+diff --git a/libcxxabi/lib/buildit b/libcxxabi/lib/buildit
+index 5a4a710..18f568c 100755
+--- a/libcxxabi/lib/buildit
++++ b/libcxxabi/lib/buildit
+@@ -70,7 +70,7 @@ case $TRIPLE in
+     SOEXT=so
+     LDSHARED_FLAGS="-o libc++abi.so.1.0 \
+         -shared -nodefaultlibs -Wl,-soname,libc++abi.so.1 \
+-        -lpthread -lrt -lc -lstdc++"
++        -lpthread -lrt -lc -lc++ -lunwind"
+     ;;
+ esac
+ 

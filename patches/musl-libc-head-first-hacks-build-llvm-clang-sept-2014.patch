@@ -1,0 +1,327 @@
+diff --git a/musl-libc/include/ctype.h b/musl-libc/include/ctype.h
+index 8f0d168..be2d07d 100644
+--- a/musl-libc/include/ctype.h
++++ b/musl-libc/include/ctype.h
+@@ -58,6 +58,42 @@ int   toascii(int);
+ #define _tolower(a) ((a)|0x20)
+ #define _toupper(a) ((a)&0x5f)
+ 
++// FabiC //
++// Imported from glibc (source) ctype/ctype.h
++#ifndef _ISbit
++/* These are all the characteristics of characters.
++   If there get to be more than 16 distinct characteristics,
++   many things must be changed that use `unsigned short int's.
++
++   The characteristics are stored always in network byte order (big
++   endian).  We define the bit value interpretations here dependent on the
++   machine's byte order.  */
++
++# include <endian.h>
++# if __BYTE_ORDER == __BIG_ENDIAN
++#  define _ISbit(bit)	(1 << (bit))
++# else /* __BYTE_ORDER == __LITTLE_ENDIAN */
++#  define _ISbit(bit)	((bit) < 8 ? ((1 << (bit)) << 8) : ((1 << (bit)) >> 8))
++# endif
++
++enum
++{
++  _ISupper = _ISbit (0),	/* UPPERCASE.  */
++  _ISlower = _ISbit (1),	/* lowercase.  */
++  _ISalpha = _ISbit (2),	/* Alphabetic.  */
++  _ISdigit = _ISbit (3),	/* Numeric.  */
++  _ISxdigit = _ISbit (4),	/* Hexadecimal numeric.  */
++  _ISspace = _ISbit (5),	/* Whitespace.  */
++  _ISprint = _ISbit (6),	/* Printing.  */
++  _ISgraph = _ISbit (7),	/* Graphical.  */
++  _ISblank = _ISbit (8),	/* Blank (usually SPC and TAB).  */
++  _IScntrl = _ISbit (9),	/* Control character.  */
++  _ISpunct = _ISbit (10),	/* Punctuation.  */
++  _ISalnum = _ISbit (11)	/* Alphanumeric.  */
++};
++#endif /* ! _ISbit  */
++// ^^ FabiC ^^ //
++
+ #endif
+ 
+ #ifdef __cplusplus
+diff --git a/musl-libc/include/dlfcn.h b/musl-libc/include/dlfcn.h
+index 78fb073..e0d9e00 100644
+--- a/musl-libc/include/dlfcn.h
++++ b/musl-libc/include/dlfcn.h
+@@ -24,6 +24,9 @@ char  *dlerror(void);
+ void  *dlopen(const char *, int);
+ void  *dlsym(void *__restrict, const char *__restrict);
+ 
++void *dlvsym(void *__restrict, const char *__restrict, const char *__restrict v);
++// ^^ FabiC.2014-09-17 ^^ : Also added definition in src/ldso/dlsym.c
++
+ #if defined(_GNU_SOURCE) || defined(_BSD_SOURCE)
+ typedef struct {
+ 	const char *dli_fname;
+diff --git a/musl-libc/include/endian.h b/musl-libc/include/endian.h
+index 1bd4445..88c3347 100644
+--- a/musl-libc/include/endian.h
++++ b/musl-libc/include/endian.h
+@@ -29,12 +29,12 @@ static __inline uint16_t __bswap16(uint16_t __x)
+ 
+ static __inline uint32_t __bswap32(uint32_t __x)
+ {
+-	return __x>>24 | __x>>8&0xff00 | __x<<8&0xff0000 | __x<<24;
++	return __x>>24 | (__x>>8&0xff00) | (__x<<8&0xff0000) | __x<<24;
+ }
+ 
+ static __inline uint64_t __bswap64(uint64_t __x)
+ {
+-	return __bswap32(__x)+0ULL<<32 | __bswap32(__x>>32);
++	return (__bswap32(__x)+0ULL)<<32 | __bswap32(__x>>32);
+ }
+ 
+ #if __BYTE_ORDER == __LITTLE_ENDIAN
+diff --git a/musl-libc/include/features.h b/musl-libc/include/features.h
+index 294c61d..87ed2c3 100644
+--- a/musl-libc/include/features.h
++++ b/musl-libc/include/features.h
+@@ -29,4 +29,20 @@
+ #define _Noreturn
+ #endif
+ 
++// ---
++// Fabic.2014-09-16, see glibc's features.h
++//
++#if 1
++	// That one is from glibc's source :
++	//#define __GNUC_PREREQ(maj, min) 0
++
++	// And below was found in /usr/include/features.h :
++	#define __GLIBC__       2
++	#define __GLIBC_MINOR__ 17
++
++	#define __GLIBC_PREREQ(maj, min) \
++	        ((__GLIBC__ << 16) + __GLIBC_MINOR__ >= ((maj) << 16) + (min))
++#endif
++// ^^ FabiC ^^ //
++
+ #endif
+diff --git a/musl-libc/include/stdio.h b/musl-libc/include/stdio.h
+index 884d2e6..f795ae2 100644
+--- a/musl-libc/include/stdio.h
++++ b/musl-libc/include/stdio.h
+@@ -19,6 +19,9 @@ extern "C" {
+ #define __NEED_va_list
+ #endif
+ 
++// FabiC/2014-09-17 : temp.
++#define __NEED_off_t
++
+ #include <bits/alltypes.h>
+ 
+ #ifdef __cplusplus
+@@ -52,9 +55,13 @@ typedef union _G_fpos64_t {
+ 	double __align;
+ } fpos_t;
+ 
+-extern FILE *const stdin;
+-extern FILE *const stdout;
+-extern FILE *const stderr;
++// FabiC //
++// extern FILE *const stdin;
++// extern FILE *const stdout;
++// extern FILE *const stderr;
++extern FILE *stdin;
++extern FILE *stdout;
++extern FILE *stderr;
+ 
+ #define stdin  (stdin)
+ #define stdout (stdout)
+@@ -184,7 +191,20 @@ char *fgets_unlocked(char *, int, FILE *);
+ int fputs_unlocked(const char *, FILE *);
+ #endif
+ 
+-#if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
++// --- FabiC/2014-09-17 : FALSE-d this and replacing these defines with
++//                        explicit func. decl. (see #else ...).
++//
++// This is for fixing compilation error with enumeration llvm::libFunc::Func
++// ( llvm/include/llvm/Target/TargetLibraryInfo.h )
++//
++// Clang errors like :
++//   ...  error: redefinition of enumerator 'fopen'
++//          fopen64,
++//          ^
++//     .../local/include/stdio.h:193:17: note: expanded from macro 'fopen64'
++//
++#if 0
++//#if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
+ #define tmpfile64 tmpfile
+ #define fopen64 fopen
+ #define freopen64 freopen
+@@ -194,6 +214,43 @@ int fputs_unlocked(const char *, FILE *);
+ #define fsetpos64 fsetpos
+ #define fpos64_t fpos_t
+ #define off64_t off_t
++#else
++	// FabiC //
++
++	// // Briefly adapted from @see src/internal/libc.h
++	// NOTE: Couldn't get this to work for functions -__-
++	//
++	// #undef LFS64
++	// #define LFS64(x) \
++	//     __typeof(x) x##64 __attribute__((alias(#x)))
++	// 	   //extern __typeof(x) x##64 __attribute__((weakref(#x))
++	//
++	// LFS64(tmpfile);
++	// LFS64(fopen);
++	// LFS64(freopen);
++	// LFS64(fseeko);
++	// LFS64(ftello);
++	// LFS64(fgetpos);
++	// LFS64(fsetpos);
++	// LFS64(fpos_t);
++	// LFS64(off_t);
++	//
++	// #undef LFS64
++
++	#define fpos64_t fpos_t
++	#define off64_t off_t
++
++	// Reverting to natural decl. for these xxx64 func. :
++	FILE *tmpfile64(void);
++	FILE *fopen64(const char *__restrict, const char *__restrict);
++	FILE *freopen64(const char *__restrict, const char *__restrict, FILE *__restrict);
++	int fseeko64(FILE *, off64_t, int);
++	off64_t ftello64(FILE *);
++	int fgetpos64(FILE *__restrict, fpos64_t *__restrict);
++	int fsetpos64(FILE *, const fpos64_t *);
++
++
++	// ^^ FabiC ^^ //
+ #endif
+ 
+ #ifdef __cplusplus
+diff --git a/musl-libc/include/stdlib.h b/musl-libc/include/stdlib.h
+index f034c6e..f9eba7d 100644
+--- a/musl-libc/include/stdlib.h
++++ b/musl-libc/include/stdlib.h
+@@ -32,6 +32,13 @@ unsigned long strtoul (const char *__restrict, char **__restrict, int);
+ long long strtoll (const char *__restrict, char **__restrict, int);
+ unsigned long long strtoull (const char *__restrict, char **__restrict, int);
+ 
++// FabiC //
++#define strtoll_l(nptr, endptr, base, locale) \
++	strtoll(nptr, endptr, base)
++#define strtoull_l(nptr, endptr, base, locale) \
++	strtoull(nptr, endptr, base)
++// ^^ FabiC ^^ //
++
+ int rand (void);
+ void srand (unsigned);
+ 
+diff --git a/musl-libc/include/sys/stat.h b/musl-libc/include/sys/stat.h
+index c6abab5..411337d 100644
+--- a/musl-libc/include/sys/stat.h
++++ b/musl-libc/include/sys/stat.h
+@@ -95,7 +95,9 @@ int lchmod(const char *, mode_t);
+ #define S_IEXEC S_IXUSR
+ #endif
+ 
+-#if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
++// FabiC //
++#if 0
++//#if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
+ #define stat64 stat
+ #define fstat64 fstat
+ #define lstat64 lstat
+@@ -104,7 +106,16 @@ int lchmod(const char *, mode_t);
+ #define blkcnt64_t blkcnt_t
+ #define ino64_t ino_t
+ #define off64_t off_t
+-#endif
++#else // FabiC //
++int stat64(const char *__restrict, struct stat *__restrict);
++int fstat64(int, struct stat *);
++int lstat64(const char *__restrict, struct stat *__restrict);
++int fstatat64(int, const char *__restrict, struct stat *__restrict, int);
++#define blksize64_t blksize_t
++#define blkcnt64_t blkcnt_t
++#define ino64_t ino_t
++#define off64_t off_t
++#endif // ^^ FabiC ^^ //
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/musl-libc/include/sys/sysinfo.h b/musl-libc/include/sys/sysinfo.h
+index 6a3931e..03d280e 100644
+--- a/musl-libc/include/sys/sysinfo.h
++++ b/musl-libc/include/sys/sysinfo.h
+@@ -7,6 +7,7 @@ extern "C" {
+ 
+ #define SI_LOAD_SHIFT 16
+ 
++#if 0 // FabiC.2014-09-17 : Using definition from the Linux headers (breaks LLVM/Clang build).
+ struct sysinfo {
+ 	unsigned long uptime;
+ 	unsigned long loads[3];
+@@ -22,6 +23,9 @@ struct sysinfo {
+ 	unsigned mem_unit;
+ 	char __reserved[256];
+ };
++#else
++#  include <linux/sysinfo.h>
++#endif // FabiC.
+ 
+ int sysinfo (struct sysinfo *);
+ int get_nprocs_conf (void);
+diff --git a/musl-libc/src/ldso/dlsym.c b/musl-libc/src/ldso/dlsym.c
+index c0f50e9..7078fdf 100644
+--- a/musl-libc/src/ldso/dlsym.c
++++ b/musl-libc/src/ldso/dlsym.c
+@@ -6,3 +6,14 @@ void *dlsym(void *restrict p, const char *restrict s)
+ {
+ 	return __dlsym(p, s, 0);
+ }
++
++// FabiC/2014-09-17 //
++void *dlvsym(void *restrict p,
++	         const char *restrict s,
++	         const char *restrict v)
++{
++	//return __dlsym(p, s, v);
++	return __dlsym(p, s, 0);
++	//                   ^ can't tell if this is the version arg.as i can't get
++	//                     to the definition of that __dlsym symbol -__-
++}
+diff --git a/musl-libc/src/stdio/stderr.c b/musl-libc/src/stdio/stderr.c
+index 229c865..34067f1 100644
+--- a/musl-libc/src/stdio/stderr.c
++++ b/musl-libc/src/stdio/stderr.c
+@@ -12,5 +12,5 @@ static FILE f = {
+ 	.close = __stdio_close,
+ 	.lock = -1,
+ };
+-FILE *const stderr = &f;
++FILE * stderr = &f; // FabiC
+ FILE *volatile __stderr_used = &f;
+diff --git a/musl-libc/src/stdio/stdin.c b/musl-libc/src/stdio/stdin.c
+index 171ff22..8d1c26a 100644
+--- a/musl-libc/src/stdio/stdin.c
++++ b/musl-libc/src/stdio/stdin.c
+@@ -11,5 +11,5 @@ static FILE f = {
+ 	.close = __stdio_close,
+ 	.lock = -1,
+ };
+-FILE *const stdin = &f;
++FILE * stdin = &f; // FabiC
+ FILE *volatile __stdin_used = &f;
+diff --git a/musl-libc/src/stdio/stdout.c b/musl-libc/src/stdio/stdout.c
+index 6b18894..d64016f 100644
+--- a/musl-libc/src/stdio/stdout.c
++++ b/musl-libc/src/stdio/stdout.c
+@@ -12,5 +12,5 @@ static FILE f = {
+ 	.close = __stdio_close,
+ 	.lock = -1,
+ };
+-FILE *const stdout = &f;
++FILE * stdout = &f; // FabiC
+ FILE *volatile __stdout_used = &f;
