@@ -8,3 +8,30 @@
 	path = misc/glibc
 	url = git://sourceware.org/git/glibc
 	branch = origin/release/2.20/master
+[submodule "llvm"]
+	path = llvm
+	url = git@github.com:llvm-mirror/llvm.git
+[submodule "clang"]
+	path = clang
+	url = git@github.com:llvm-mirror/clang.git
+[submodule "clang-tools-extra"]
+	path = clang-tools-extra
+	url = git@github.com:llvm-mirror/clang-tools-extra.git
+[submodule "libcxx"]
+	path = libcxx
+	url = git@github.com:llvm-mirror/libcxx.git
+[submodule "libcxxabi"]
+	path = libcxxabi
+	url = git@github.com:llvm-mirror/libcxxabi.git
+[submodule "lldb"]
+	path = lldb
+	url = git@github.com:llvm-mirror/lldb.git
+[submodule "lld"]
+	path = lld
+	url = git@github.com:llvm-mirror/lld.git
+[submodule "compiler-rt"]
+	path = compiler-rt
+	url = git@github.com:llvm-mirror/compiler-rt.git
+[submodule "test-suite"]
+	path = test-suite
+	url = git@github.com:llvm-mirror/test-suite.git
