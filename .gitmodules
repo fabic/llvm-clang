@@ -41,3 +41,7 @@
 [submodule "libunwind"]
 	path = libunwind
 	url = git://git.sv.gnu.org/libunwind.git
+# @link https://github.com/Andersbakken/rtags
+[submodule "andersbakken-rtags"]
+	path = misc/rtags
+	url = git@github.com:Andersbakken/rtags.git
