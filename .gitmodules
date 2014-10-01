@@ -45,3 +45,6 @@
 [submodule "andersbakken-rtags"]
 	path = misc/rtags
 	url = git@github.com:Andersbakken/rtags.git
+[submodule "loarabia-clang-tutorial"]
+	path = misc/clang-tutorial
+	url = git@github.com:loarabia/Clang-tutorial.git
