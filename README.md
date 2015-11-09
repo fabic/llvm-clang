@@ -11,15 +11,15 @@ _**2014-09-24/25** WIP sorting things out..._
 
 Homepage | Github repository
 ---------|------------------
-[llvm](http://llvm.org/)        | [GH: llvm](git@github.com:llvm-mirror/llvm.git)
-[clang](http://clang.llvm.org/) | [GH: clang](git@github.com:llvm-mirror/clang.git)
-[clang-tools-extra]()           | [GH: clang-tools-extra](git@github.com:llvm-mirror/clang-tools-extra.git)
-[compiler-rt](http://compiler-rt.llvm.org/) | [GH: compiler-rt](git@github.com:llvm-mirror/compiler-rt.git)
-[libcxx](http://libcxx.llvm.org/)       | [GH: libcxx](git@github.com:llvm-mirror/libcxx.git)
-[libcxxabi](http://libcxxabi.llvm.org/) | [GH: libcxxabi](git@github.com:llvm-mirror/libcxxabi.git)
-[LLDB](http://lldb.llvm.org/)   | [GH: lldb](git@github.com:llvm-mirror/lldb.git)
-[LLD](http://lld.llvm.org/)     | [GH: lld](git@github.com:llvm-mirror/lld.git)
-[test-suite]() | [GH: test-suite](git@github.com:llvm-mirror/test-suite.git)
+[llvm](http://llvm.org/)                  | [GH: llvm](https://github.com/llvm-mirror/llvm)
+[clang](http://clang.llvm.org/)           | [GH: clang](https://github.com/llvm-mirror/clang)
+[clang-tools-extra]()                     | [GH: clang-tools-extra](https://github.com/llvm-mirror/clang-tools-extra)
+[compiler-rt](http://compiler-rt.llvm.org/) | [GH: compiler-rt](https://github.com/llvm-mirror/compiler-rt)
+[libcxx](http://libcxx.llvm.org/)         | [GH: libcxx](https://github.com/llvm-mirror/libcxx)
+[libcxxabi](http://libcxxabi.llvm.org/)   | [GH: libcxxabi](https://github.com/llvm-mirror/libcxxabi)
+[LLDB](http://lldb.llvm.org/)             | [GH: lldb](https://github.com/llvm-mirror/lldb)
+[LLD](http://lld.llvm.org/)               | [GH: lld](https://github.com/llvm-mirror/lld)
+[test-suite](http://llvm.org/docs/TestingGuide.html#testsuiteoverview) | [GH: test-suite](https://github.com/llvm-mirror/test-suite)
 
 * **Also included are :**
   - [musl libc](http://www.musl-libc.org) @ [v1.1.4](http://git.musl-libc.org/cgit/musl/tree/?id=v1.1.4)
@@ -110,6 +110,7 @@ the output it produces.
 
 ## ChangeLog
 
+* 2015-11-09 : Blindly bumped dependencies from release 3.5 to 3.7 _(probably this doesn't build)._
 * 2014-09-24 : Replaced those Git-subtree-checked-out stuff with Git submodules.
 * 2014-09-16 : Tested a full project clone + building of Clang **ok**, but failed building against **musl-libc** despite my patches.
 * 2014-09-15 : Pushing "early-stage" version to Github.
