@@ -271,6 +271,14 @@
 #define __NR_getcpu (__X32_SYSCALL_BIT + 309)
 #define __NR_kcmp (__X32_SYSCALL_BIT + 312)
 #define __NR_finit_module (__X32_SYSCALL_BIT + 313)
+#define __NR_sched_setattr (__X32_SYSCALL_BIT + 314)
+#define __NR_sched_getattr (__X32_SYSCALL_BIT + 315)
+#define __NR_renameat2 (__X32_SYSCALL_BIT + 316)
+#define __NR_seccomp (__X32_SYSCALL_BIT + 317)
+#define __NR_getrandom (__X32_SYSCALL_BIT + 318)
+#define __NR_memfd_create (__X32_SYSCALL_BIT + 319)
+#define __NR_kexec_file_load (__X32_SYSCALL_BIT + 320)
+#define __NR_bpf (__X32_SYSCALL_BIT + 321)
 #define __NR_rt_sigaction (__X32_SYSCALL_BIT + 512)
 #define __NR_rt_sigreturn (__X32_SYSCALL_BIT + 513)
 #define __NR_ioctl (__X32_SYSCALL_BIT + 514)
@@ -304,5 +312,6 @@
 #define __NR_getsockopt (__X32_SYSCALL_BIT + 542)
 #define __NR_io_setup (__X32_SYSCALL_BIT + 543)
 #define __NR_io_submit (__X32_SYSCALL_BIT + 544)
+#define __NR_execveat (__X32_SYSCALL_BIT + 545)
 
 #endif /* _ASM_X86_UNISTD_X32_H */

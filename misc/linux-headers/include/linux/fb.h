@@ -8,14 +8,6 @@
 
 #define FB_MAX			32	/* sufficient for now */
 
-struct fbcon_decor_iowrapper
-{
-	unsigned short vc;		/* Virtual console */
-	unsigned char origin;		/* Point of origin of the request */
-	void *data;
-};
-
-
 /* ioctls
    0x46 is 'F'								*/
 #define FBIOGET_VSCREENINFO	0x4600
@@ -40,15 +32,6 @@ struct fbcon_decor_iowrapper
 #define FBIOPUT_MODEINFO        0x4617
 #define FBIOGET_DISPINFO        0x4618
 #define FBIO_WAITFORVSYNC	_IOW('F', 0x20, __u32)
-#define FBIOCONDECOR_SETCFG	_IOWR('F', 0x19, struct fbcon_decor_iowrapper)
-#define FBIOCONDECOR_GETCFG	_IOR('F', 0x1A, struct fbcon_decor_iowrapper)
-#define FBIOCONDECOR_SETSTATE	_IOWR('F', 0x1B, struct fbcon_decor_iowrapper)
-#define FBIOCONDECOR_GETSTATE	_IOR('F', 0x1C, struct fbcon_decor_iowrapper)
-#define FBIOCONDECOR_SETPIC 	_IOWR('F', 0x1D, struct fbcon_decor_iowrapper)
-
-#define FBCON_DECOR_THEME_LEN		128	/* Maximum lenght of a theme name */
-#define FBCON_DECOR_IO_ORIG_KERNEL	0	/* Kernel ioctl origin */
-#define FBCON_DECOR_IO_ORIG_USER	1	/* User ioctl origin */
 
 #define FB_TYPE_PACKED_PIXELS		0	/* Packed Pixels	*/
 #define FB_TYPE_PLANES			1	/* Non interleaved planes */
@@ -301,7 +284,6 @@ struct fb_cmap {
 	__u16 *transp;			/* transparency, can be NULL */
 };
 
-
 struct fb_con2fbmap {
 	__u32 console;
 	__u32 framebuffer;
@@ -382,7 +364,6 @@ struct fb_image {
 	const char *data;	/* Pointer to image data */
 	struct fb_cmap cmap;	/* color map info */
 };
-
 
 /*
  * hardware cursor control
