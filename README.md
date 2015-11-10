@@ -81,9 +81,10 @@ Homepage | Github repository
     mkdir -pv local/include &&
       cp -ruv misc/linux-headers/include/* local/include
 
+
 ### Build
 
-#### (_optional_) Build a temporary bootstrap version
+#### (_optional_) Build a temporary “bootstrap” version
 
     [fabi@sabayon] ~/dev/llvm2 $ mkdir -pv build && cd build/
 
@@ -106,14 +107,89 @@ the output it produces.
 
     ninja install
 
+__NOTE:__ Binaries for this first “bootstrap” variant shall have been installed under `bootstrap/`.
 
+##### Update environment with the new bootstrap/ stuff
+
+  . environment.sh bootstrap
+
+  $ which clang && which clang++
+  $ clang --version && clang++ --version
+  $ clang++ -std=c++11 test.cpp
+  $ ./a.out
+  $ ldd ./a.out
+
+
+#### Build & install under `local/`
+
+    mkdir -pv build2/ &&
+    cd build2/
+
+    time \
+      cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=$(cd ../local/ && pwd) \
+        ../llvm/ -G Ninja
+
+    time \
+      ninja -l3.9 -k128 ; echo RETVAL=$?
+
+    ninja install
+
+##### Test
+
+  (19:32:20) ± [cadet@pc126] 0 /mnt/g/llvm-clang (master ↑1 S:1 ?:1 ✗)  clang++ -std=c++11 test.cpp
+
+  (19:32:27) ± [cadet@pc126] 0 /mnt/g/llvm-clang (master ↑1 S:1 ?:1 ✗)  ./a.out 
+  1: Hello dude!
+  2: Hello dude!
+  3: Hello dude!
+
+  (19:32:31) ± [cadet@pc126] 0 /mnt/g/llvm-clang (master ↑1 S:1 ?:1 ✗)  ldd a.out 
+          linux-vdso.so.1 (0x00007fff11e26000)
+          libc++.so.1 => /mnt/g/llvm-clang/local/lib/libc++.so.1 (0x00007fe189b40000)
+          libc++abi.so.1 => /mnt/g/llvm-clang/local/lib/libc++abi.so.1 (0x00007fe1898ee000)
+          libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fe1896d1000)
+          libm.so.6 => /lib64/libm.so.6 (0x00007fe1893cd000)
+          libgcc_s.so.1 => /usr/lib/gcc/x86_64-pc-linux-gnu/4.9.3/libgcc_s.so.1 (0x00007fe1891b6000)
+          libc.so.6 => /lib64/libc.so.6 (0x00007fe188e04000)
+          librt.so.1 => /lib64/librt.so.1 (0x00007fe188bfc000)
+          /lib64/ld-linux-x86-64.so.2 (0x00007fe189dfb000)
+
+_Oups! it linked against `libgcc_s.so.1` instead of `libunwind` (fixme)._
 
 ## ChangeLog
 
+* 2015-11-10 : Trying to replay the whole build-bootstrap-build procedure, seems ok.
 * 2015-11-09 : Blindly bumped dependencies from release 3.5 to 3.7 _(probably this doesn't build)._
 * 2014-09-24 : Replaced those Git-subtree-checked-out stuff with Git submodules.
 * 2014-09-16 : Tested a full project clone + building of Clang **ok**, but failed building against **musl-libc** despite my patches.
 * 2014-09-15 : Pushing "early-stage" version to Github.
 * 2014-09-13 : Started this "project" under Git control so as to track my wanderings.
+
+
+
+## Appendix
+
+### Linux headers
+
+* As per [LFS &ndash; 5.6. Linux-4.2 API Headers](http://www.linuxfromscratch.org/lfs/view/stable/chapter05/linux-headers.html)
+* Fetch latest tarball from <https://www.kernel.org/pub/linux/kernel/v4.x/>
+* Uncompress `tar -xf ~/Downloads/linux-4.2.6.tar.xz -C tmp/`
+* `cd tmp/linux-4.2.6/`
+* `make mrproper`
+* `make INSTALL_HDR_PATH=../../misc/linux-headers headers_install` :
+
+    (11:27:28) ± [cadet@pc126] 0 /mnt/g/llvm-clang/tmp/linux-4.2.6 (master ✓)  make INSTALL_HDR_PATH=../../misc/linux-headers headers_install
+      CHK     include/generated/uapi/linux/version.h
+      UPD     include/generated/uapi/linux/version.h
+      ...
+      ...
+      INSTALL include/uapi (0 file)
+      INSTALL include/asm (65 files)
+
+* `find ../../misc/linux-headers/ \( -name .install -o -name ..install.cmd \) -delete`
+
+* `git add -u ../../misc/linux-headers/  &&  git add ../../misc/linux-headers/`
 
 _EOF_
