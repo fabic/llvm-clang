@@ -58,3 +58,12 @@
 [submodule "boostcgi"]
 	path = misc/boostcgi
 	url = git@github.com:darrengarvey/cgi.git
+[submodule "odb_orm_compiler"]
+	path = misc/odb_orm/odb
+	url = git://scm.codesynthesis.com/odb/odb.git
+[submodule "odb_orm_libodb"]
+	path = misc/odb_orm/libodb
+	url = git://scm.codesynthesis.com/odb/libodb.git
+[submodule "odb_orm_libodb_mysql"]
+	path = misc/odb_orm/libodb-mysql
+	url = git://scm.codesynthesis.com/odb/libodb-mysql.git
