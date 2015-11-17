@@ -53,3 +53,6 @@
 	path = misc/cmake
 	url = git://cmake.org/cmake.git
 	branch = release
+[submodule "boostcgi"]
+	path = misc/boostcgi
+	url = git@github.com:darrengarvey/cgi.git
