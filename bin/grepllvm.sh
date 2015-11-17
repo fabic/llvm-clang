@@ -1,6 +1,11 @@
 #!/bin/sh
+#
 # FC.2014-09-24 fabic.net
 
+# Move up a level out of bin/
+cd $(dirname "$0"/..)
+
+# Usage note if no arguments :
 if [ $# -lt 1 ]; then
 	echo
 	echo "Find source code files and grep these"
