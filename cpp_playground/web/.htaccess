@@ -1,0 +1,4 @@
+# web/.htaccess
+
+Options +Indexes
+

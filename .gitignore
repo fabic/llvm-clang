@@ -9,7 +9,7 @@
 *.o
 
 /.idea/
-*.sublime-project
+#*.sublime-project
 *.sublime-workspace
 
 # Our "/usr/local/"-like dir. where stuff get installed,

@@ -1,0 +1,32 @@
+{
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+			],
+			"folder_exclude_patterns":
+			[
+				".idea",
+				"bootstrap",
+				"build",
+				"clang",
+				"clang-tools-extra",
+				"compiler-rt",
+				"libcxx",
+				"libcxxabi",
+				"libunwind",
+				"lld",
+				"lldb",
+				"llvm",
+				"local",
+				"misc",
+				"musl",
+				"test-suite",
+				"tmp"
+			],
+			"follow_symlinks": false,
+			"path": "."
+		}
+	]
+}

@@ -12,7 +12,7 @@ _**2015-11-11** WIP sorting things out..._
 Homepage | Github repository
 ---------|------------------
 [llvm](http://llvm.org/)                  | [GH: llvm](https://github.com/llvm-mirror/llvm)
-[clang](http://clang.llvm.org/)           | [GH: clang](https://github.com/llvm-mirror/clang)
+[clang](http://clang.llvm.org/)           | [GH: clang](https://github.com/llvm-mirror/clang) [GH: fabic/clang (fork)](https://github.com/fabic/clang)
 [clang-tools-extra]()                     | [GH: clang-tools-extra](https://github.com/llvm-mirror/clang-tools-extra)
 [compiler-rt](http://compiler-rt.llvm.org/) | [GH: compiler-rt](https://github.com/llvm-mirror/compiler-rt)
 [libcxx](http://libcxx.llvm.org/)         | [GH: libcxx](https://github.com/llvm-mirror/libcxx)
@@ -99,10 +99,10 @@ Homepage | Github repository
     # libcxx & libcxxabi :
     ln -siv ../../libcxx{,abi}  llvm/projects/
 
-    # LLDB :
+    # LLDB (optional) :
     ln -siv ../../lldb llvm/tools/
 
-    # LLD :
+    # LLD (optional) :
     ln -siv ../../lld  llvm/tools/
 
 
@@ -136,6 +136,9 @@ Homepage | Github repository
 
     [fabi@sabayon] ~/dev/llvm2/build $
 
+    time ( cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(cd ../local/ && pwd) ../llvm/ -G Ninja  &&  ninja -l1 ) ; echo RETVAL=$?
+
+    # Or with the whole documentation :
     time \
       cmake -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=$(cd ../bootstrap/ && pwd) \
