@@ -13,8 +13,10 @@
 	url = git@github.com:llvm-mirror/llvm.git
 [submodule "clang"]
 	path = clang
-	#url = git@github.com:fabic/clang.git
-	url = git@github.com:llvm-mirror/clang.git
+	# My fork :
+	url = git@github.com:fabic/clang.git
+	# Upstream :
+	#url = git@github.com:llvm-mirror/clang.git
 [submodule "clang-tools-extra"]
 	path = clang-tools-extra
 	url = git@github.com:llvm-mirror/clang-tools-extra.git
