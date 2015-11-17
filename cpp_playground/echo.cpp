@@ -215,4 +215,4 @@ void format_map(OStream &os, Request &req, Map &m, const std::string &title) {
     os << "<div class=\"clear\"></div></ul>";
 }
 
-# vim: et ts=4 sts=4 sw=4 filetype=cpp
+// vim: et ts=4 sts=4 sw=4 filetype=cpp

@@ -187,74 +187,75 @@ __NOTE:__ Binaries for this first “bootstrap” variant shall have been instal
 
 ##### Test
 
-  (19:32:20) ± [cadet@pc126] 0 /mnt/g/llvm-clang (master ↑1 S:1 ?:1 ✗)  clang++ -std=c++11 test.cpp
+    $ clang++ -std=c++11 test.cpp
 
-  (19:32:27) ± [cadet@pc126] 0 /mnt/g/llvm-clang (master ↑1 S:1 ?:1 ✗)  ./a.out 
-  1: Hello dude!
-  2: Hello dude!
-  3: Hello dude!
+    $ ./a.out 
+    1: Hello dude!
+    2: Hello dude!
+    3: Hello dude!
 
-  (19:32:31) ± [cadet@pc126] 0 /mnt/g/llvm-clang (master ↑1 S:1 ?:1 ✗)  ldd a.out 
-          linux-vdso.so.1 (0x00007fff11e26000)
-          libc++.so.1 => /mnt/g/llvm-clang/local/lib/libc++.so.1 (0x00007fe189b40000)
-          libc++abi.so.1 => /mnt/g/llvm-clang/local/lib/libc++abi.so.1 (0x00007fe1898ee000)
-          libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fe1896d1000)
-          libm.so.6 => /lib64/libm.so.6 (0x00007fe1893cd000)
-          libgcc_s.so.1 => /usr/lib/gcc/x86_64-pc-linux-gnu/4.9.3/libgcc_s.so.1 (0x00007fe1891b6000)
-          libc.so.6 => /lib64/libc.so.6 (0x00007fe188e04000)
-          librt.so.1 => /lib64/librt.so.1 (0x00007fe188bfc000)
-          /lib64/ld-linux-x86-64.so.2 (0x00007fe189dfb000)
+    $ ldd a.out 
+      linux-vdso.so.1 (0x00007fff11e26000)
+      libc++.so.1     => /mnt/g/llvm-clang/local/lib/libc++.so.1 (0x00007fe189b40000)
+      libc++abi.so.1  => /mnt/g/llvm-clang/local/lib/libc++abi.so.1 (0x00007fe1898ee000)
+      libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fe1896d1000)
+      libm.so.6       => /lib64/libm.so.6 (0x00007fe1893cd000)
+      libgcc_s.so.1   => /usr/lib/gcc/x86_64-pc-linux-gnu/4.9.3/libgcc_s.so.1 (0x00007fe1891b6000)
+      libc.so.6       => /lib64/libc.so.6 (0x00007fe188e04000)
+      librt.so.1      => /lib64/librt.so.1 (0x00007fe188bfc000)
+      /lib64/ld-linux-x86-64.so.2 (0x00007fe189dfb000)
 
-_Oups! it linked against `libgcc_s.so.1` instead of `libunwind` (fixme)._
+* __Ok,__ it linked against `libc++` & `libc++abi`.
+* _Oups! it linked against `libgcc_s.so.1` instead of `libunwind` (fixme)._
 
 ##### `clang++ -E -x c++ - -v < /dev/null`
 
 * <http://stackoverflow.com/a/11946295>
 
-    $ clang++ -E -x c++ - -v < /dev/null
+        $ clang++ -E -x c++ - -v < /dev/null
 
-    clang version 3.7.0 
-    Target: x86_64-unknown-linux-gnu
-    Thread model: posix
+        clang version 3.7.0 
+        Target: x86_64-unknown-linux-gnu
+        Thread model: posix
 
-    Found candidate GCC installation: /usr/lib/gcc/x86_64-pc-linux-gnu/4.7.3
-    Found candidate GCC installation: /usr/lib/gcc/x86_64-pc-linux-gnu/4.8.3
-    Found candidate GCC installation: /usr/lib/gcc/x86_64-pc-linux-gnu/4.8.4
-    Found candidate GCC installation: /usr/lib/gcc/x86_64-pc-linux-gnu/4.9.2
-    Found candidate GCC installation: /usr/lib/gcc/x86_64-pc-linux-gnu/4.9.3
-    Found candidate GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.7.3
-    Found candidate GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.8.3
-    Found candidate GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.8.4
-    Found candidate GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.9.2
-    Found candidate GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.9.3
-    Selected GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.9.3
+        Found candidate GCC installation: /usr/lib/gcc/x86_64-pc-linux-gnu/4.7.3
+        Found candidate GCC installation: /usr/lib/gcc/x86_64-pc-linux-gnu/4.8.3
+        Found candidate GCC installation: /usr/lib/gcc/x86_64-pc-linux-gnu/4.8.4
+        Found candidate GCC installation: /usr/lib/gcc/x86_64-pc-linux-gnu/4.9.2
+        Found candidate GCC installation: /usr/lib/gcc/x86_64-pc-linux-gnu/4.9.3
+        Found candidate GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.7.3
+        Found candidate GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.8.3
+        Found candidate GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.8.4
+        Found candidate GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.9.2
+        Found candidate GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.9.3
+        Selected GCC installation: /usr/lib64/gcc/x86_64-pc-linux-gnu/4.9.3
 
-    Candidate multilib: .;@m64
-    Candidate multilib: 32;@m32
-    Selected multilib: .;@m64
+        Candidate multilib: .;@m64
+        Candidate multilib: 32;@m32
+        Selected multilib: .;@m64
 
-     "/home/fabi/dev/llvm-clang/local/bin/clang-3.7" -cc1 -triple x86_64-unknown-linux-gnu -E -disable-free -disable-llvm-verifier -main-file-name - -mrelocation-model static -mthread-model posix -mdisable-fp-elim -fmath-errno -masm-verbose -mconstructor-aliases -munwind-tables -fuse-init-array -target-cpu x86-64 -v -dwarf-column-info -resource-dir /home/fabi/dev/llvm-clang/local/bin/../lib/clang/3.7.0 -I/home/fabi/dev/llvm-clang/local/include -internal-isystem /home/fabi/dev/llvm-clang/local/bin/../include/c++/v1 -internal-isystem /usr/local/include -internal-isystem /home/fabi/dev/llvm-clang/local/bin/../lib/clang/3.7.0/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -fdeprecated-macro -fdebug-compilation-dir /home/fabi/dev/llvm-clang -ferror-limit 19 -fmessage-length 191 -mstackrealign -fobjc-runtime=gcc -fcxx-exceptions -fexceptions -fdiagnostics-show-option -fcolor-diagnostics -o - -x c++ -
+         "/home/fabi/dev/llvm-clang/local/bin/clang-3.7" -cc1 -triple x86_64-unknown-linux-gnu -E -disable-free -disable-llvm-verifier -main-file-name - -mrelocation-model static -mthread-model posix -mdisable-fp-elim -fmath-errno -masm-verbose -mconstructor-aliases -munwind-tables -fuse-init-array -target-cpu x86-64 -v -dwarf-column-info -resource-dir /home/fabi/dev/llvm-clang/local/bin/../lib/clang/3.7.0 -I/home/fabi/dev/llvm-clang/local/include -internal-isystem /home/fabi/dev/llvm-clang/local/bin/../include/c++/v1 -internal-isystem /usr/local/include -internal-isystem /home/fabi/dev/llvm-clang/local/bin/../lib/clang/3.7.0/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -fdeprecated-macro -fdebug-compilation-dir /home/fabi/dev/llvm-clang -ferror-limit 19 -fmessage-length 191 -mstackrealign -fobjc-runtime=gcc -fcxx-exceptions -fexceptions -fdiagnostics-show-option -fcolor-diagnostics -o - -x c++ -
 
-    clang -cc1 version 3.7.0 based upon LLVM 3.7.0 default target x86_64-unknown-linux-gnu
+        clang -cc1 version 3.7.0 based upon LLVM 3.7.0 default target x86_64-unknown-linux-gnu
 
-    ignoring nonexistent directory "/usr/local/include"
+        ignoring nonexistent directory "/usr/local/include"
 
-    #include "..." search starts here:
-    #include <...> search starts here:
-     /home/fabi/dev/llvm-clang/local/include
-     /home/fabi/dev/llvm-clang/local/bin/../include/c++/v1
-     /home/fabi/dev/llvm-clang/local/bin/../lib/clang/3.7.0/include
-     /include
-     /usr/include
-    End of search list.
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /home/fabi/dev/llvm-clang/local/include
+         /home/fabi/dev/llvm-clang/local/bin/../include/c++/v1
+         /home/fabi/dev/llvm-clang/local/bin/../lib/clang/3.7.0/include
+         /include
+         /usr/include
+        End of search list.
 
-    # 1 "<stdin>"
-    # 1 "<built-in>" 1
-    # 1 "<built-in>" 3
-    # 324 "<built-in>" 3
-    # 1 "<command line>" 1
-    # 1 "<built-in>" 2
-    # 1 "<stdin>" 2
+        # 1 "<stdin>"
+        # 1 "<built-in>" 1
+        # 1 "<built-in>" 3
+        # 324 "<built-in>" 3
+        # 1 "<command line>" 1
+        # 1 "<built-in>" 2
+        # 1 "<stdin>" 2
 
 
 ## ChangeLog
