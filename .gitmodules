@@ -67,3 +67,6 @@
 [submodule "odb_orm_libodb_mysql"]
 	path = misc/odb_orm/libodb-mysql
 	url = git://scm.codesynthesis.com/odb/libodb-mysql.git
+[submodule "symfony-std"]
+	path = php/symfony-std
+	url = git@github.com:symfony/symfony-standard.git
