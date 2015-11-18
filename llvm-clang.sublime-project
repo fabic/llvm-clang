@@ -2,9 +2,6 @@
 	"folders":
 	[
 		{
-			"file_exclude_patterns":
-			[
-			],
 			"folder_exclude_patterns":
 			[
 				".idea",
@@ -23,10 +20,15 @@
 				"misc",
 				"musl",
 				"test-suite",
-				"tmp"
+				"tmp",
+				"php/symfony-std/app/cache",
+				"php/symfony-std/app/logs"
 			],
 			"follow_symlinks": false,
 			"path": "."
+		},
+		{
+			"path": "misc/boostcgi"
 		}
 	]
 }
