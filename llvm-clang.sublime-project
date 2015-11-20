@@ -28,7 +28,16 @@
 			"path": "."
 		},
 		{
+			"path": "local/include"
+		},
+		{
 			"path": "misc/boostcgi"
+		},
+		{
+			"path": "libcxxabi"
+		},
+		{
+			"path": "libcxx"
 		}
 	]
 }
