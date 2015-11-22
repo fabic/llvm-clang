@@ -4,7 +4,7 @@
  *
  * Build with:
  *
- * 	   clang++ -std=c++11 test2.cpp -o test2
+ * 	   clang++ -std=c++11 test2.cpp SomeClassA.cpp -o test2
  */
 #include <iostream>
 #include <typeinfo>
