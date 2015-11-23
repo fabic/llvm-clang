@@ -9,3 +9,10 @@ SomeClassA::SomeClassA(bool boo, int i, long l, float f, double d,
 	b = std::rand() + boo;
 	d = a+b+c;
 }
+
+void SomeClassA::doSomething1() {
+	std::srand(c);
+	std::srand(d);
+	a += std::rand();
+	b += std::rand();
+}

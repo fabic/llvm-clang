@@ -10,10 +10,12 @@
 
 #include "container.hpp"
 #include "SomeClassA.hpp"
+#include "SomeClassB.hpp"
 
 
 using std::cout;
 using std::endl;
+
 
 int main(int argc, char *argv[])
 {
@@ -23,15 +25,22 @@ int main(int argc, char *argv[])
 
     auto a = new SomeClassA(true);
 
-    cnt.registerService("huh", a);
+    cnt.registerService("huh", a, typeid(a).name());
 
     void *p = cnt.get_service("huh");
 
     if (p) {
     	//SomeClassA * b = (SomeClassA *) p;
     	SomeClassA * b = static_cast<SomeClassA *>( p );
-    	return b->getThing();
+    	int z = b->getThing();
+        std::cout << "Z: " << z << std::endl;
     }
+
+    //
+
+    cnt.loadFromYamlFile("test_container.yml");
+
+    cnt.debugDumpContainer(std::cout);
 
     return 0;
 }

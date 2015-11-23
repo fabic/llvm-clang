@@ -3,7 +3,12 @@
 
 #include <map>
 #include <memory>
+#include <forward_list>
+#include <string>
+#include <ostream>
 #include <typeinfo>
+
+#include "ServiceDefinition.hpp"
 
 namespace fabic {
     namespace di {
@@ -22,15 +27,13 @@ namespace fabic {
         public:
             Container();
 
-            template<typename T>
-            Container& registerService(std::string service_id, T& instance) {
-                string type_name = typeid(instance).name();
-                auto p = std::make_pair(type_name, &instance);
-                services.insert( std::make_pair(service_id, p) );
-                return *this;
-            }
+            Container& registerService(string service_id, void * instance, string type_name = nullptr);
 
             void * get_service(string id);
+
+            Container& loadFromYamlFile(string filename);
+
+            Container& debugDumpContainer(std::ostream& os);
         };
 
     }
