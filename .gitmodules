@@ -73,3 +73,7 @@
 [submodule "yaml-cpp"]
 	path = misc/yaml-cpp
 	url = git@github.com:jbeder/yaml-cpp.git
+[submodule "linux-kernel"]
+	path = misc/linux-kernel
+	url = git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+	branch = linux-4.2.y
