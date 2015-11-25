@@ -38,6 +38,12 @@
 		},
 		{
 			"path": "libcxx"
+		},
+		{
+			"path": "misc/linux-kernel"
+		},
+		{
+			"path": "misc/xf86-video-nouveau"
 		}
 	]
 }
