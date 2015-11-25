@@ -77,3 +77,6 @@
 	path = misc/linux-kernel
 	url = git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
 	branch = linux-4.2.y
+[submodule "xf86-video-nouveau"]
+	path = misc/xf86-video-nouveau
+	url = git://anongit.freedesktop.org/nouveau/xf86-video-nouveau
