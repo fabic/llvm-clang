@@ -44,6 +44,12 @@
 		},
 		{
 			"path": "misc/xf86-video-nouveau"
+	    },
+		{
+			"path": "misc/vturbine-linice"
+		},
+		{
+			"path": "misc/yaml-cpp"
 		}
 	]
 }

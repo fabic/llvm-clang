@@ -80,3 +80,6 @@
 [submodule "xf86-video-nouveau"]
 	path = misc/xf86-video-nouveau
 	url = git://anongit.freedesktop.org/nouveau/xf86-video-nouveau
+[submodule "linice"]
+	path = misc/vturbine-linice
+	url = git@github.com:vTurbine/linice.git
