@@ -49,6 +49,9 @@
 			"path": "misc/vturbine-linice"
 		},
 		{
+			"path": "misc/linice-kdb"
+		},
+		{
 			"path": "misc/yaml-cpp"
 		}
 	]

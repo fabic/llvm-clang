@@ -83,3 +83,6 @@
 [submodule "linice"]
 	path = misc/vturbine-linice
 	url = git@github.com:vTurbine/linice.git
+[submodule "linice-kdb"]
+	path = misc/linice-kdb
+	url = git://git.code.sf.net/p/linice/git
