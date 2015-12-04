@@ -55,7 +55,10 @@
 			"path": "misc/yaml-cpp"
 		},
 		{
-			"path": "kmodules"
+			"path": "misc/harry_kernelcpp"
+		},
+		{
+			"path": "misc/veltzer_kcpp"
 		}
 	]
 }

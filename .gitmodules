@@ -86,3 +86,9 @@
 [submodule "linice-kdb"]
 	path = misc/linice-kdb
 	url = git://git.code.sf.net/p/linice/git
+[submodule "misc/harry_kernelcpp"]
+	path = misc/harry_kernelcpp
+	url = git@github.com:fabic/harry_kernelcpp.git
+[submodule "misc/veltzer_kcpp"]
+	path = misc/veltzer_kcpp
+	url = git@github.com:veltzer/kcpp.git
