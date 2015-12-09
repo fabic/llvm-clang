@@ -75,8 +75,9 @@
 	url = git@github.com:jbeder/yaml-cpp.git
 [submodule "linux-kernel"]
 	path = misc/linux-kernel
-	url = git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
-	branch = linux-4.2.y
+	#url = git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+	#branch = linux-4.2.y
+	url = git@github.com:fabic/linux.git
 [submodule "xf86-video-nouveau"]
 	path = misc/xf86-video-nouveau
 	url = git://anongit.freedesktop.org/nouveau/xf86-video-nouveau
