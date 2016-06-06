@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.3)
 project(cpp_playground)
 
+include_directories(../misc/boost)
 include_directories(../misc/boostcgi)
 
 #link_directories(../misc/boost)
@@ -31,3 +32,6 @@ project('fcgi_echo')
 add_executable(echo echo.cpp)
 target_link_libraries(echo boost_filesystem boost_system)
 install(TARGETS echo DESTINATION fcgi-bin)
+
+project('mixed_datatype')
+add_executable(mixed_main mixed_main.cpp)
