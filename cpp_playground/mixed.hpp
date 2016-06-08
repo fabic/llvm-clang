@@ -17,6 +17,14 @@ namespace fabic {
 
         class mixed {
         private:
+            struct {
+                int is_null:1;
+                int is_boolean:1;
+                int is_integer:1;
+                int is_real:1;
+                int is_string:1;
+            } bits;
+
             union {
                 union {
                     bool   b; // boolean type.
@@ -35,6 +43,7 @@ namespace fabic {
                 std::cout << "HUH: sizeof(u)   : " << sizeof(u)   << std::endl;
                 std::cout << "HUH: sizeof(u.w) : " << sizeof(u.w) << std::endl;
                 std::cout << "HUH: sizeof(u.s) : " << sizeof(u.s) << std::endl;
+                std::cout << "HUH: sizeof(bits) : " << sizeof(bits) << std::endl;
             }
         };
 

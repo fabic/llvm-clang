@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.3)
 project(cpp_playground)
 
-include_directories(../misc/boost)
+#include_directories(../misc/boost)
 include_directories(../misc/boostcgi)
 
 #link_directories(../misc/boost)

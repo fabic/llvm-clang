@@ -20,7 +20,7 @@
 //
 // This is file `cpp_playground/echo.cpp`
 // imported here from https://github.com/darrengarvey/cgi/blob/master/libs/cgi/example/fcgi/echo/main.cpp
-/   /
+//
 // @link http://cgi.sourceforge.net/docs/fastcgi___cgi/examples/fastcgi_examples.html
 //
 // Build that thing with :
