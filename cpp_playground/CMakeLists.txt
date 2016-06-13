@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.3)
 project(cpp_playground)
 
+# fixme: temp.
+set(BOOST_ROOT "/home/cadet/boost-1.61.0-gcc")
+
+find_package(Boost 1.61.0 REQUIRED)
+
 #include_directories(../misc/boost)
+#include_directories("${BOOT_ROOT}/include")
 include_directories(../misc/boostcgi)
 
 #link_directories(../misc/boost)
