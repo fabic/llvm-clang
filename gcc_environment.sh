@@ -12,26 +12,44 @@ BOOST_ROOT="$HOME/boost-1.61.0-gcc"
 
 if [ -d "$BOOST_ROOT/include" ];
 then
-	echo "FYI: Found Boost @ $BOOST_ROOT"
+    echo "FYI: Found Boost @ $BOOST_ROOT"
 
-	export BOOST_ROOT
+    export BOOST_ROOT
 
-	BOOST_INCLUDE_DIRS="${BOOST_ROOT}/include"
-	BOOST_LIBRARY_DIRS="${BOOST_ROOT}/lib"
-	export BOOST_INCLUDE_DIRS BOOST_LIBRARY_DIRS
+    BOOST_INCLUDE_DIRS="${BOOST_ROOT}/include"
+    BOOST_LIBRARY_DIRS="${BOOST_ROOT}/lib"
+    export BOOST_INCLUDE_DIRS BOOST_LIBRARY_DIRS
 
-	pathprepend "$BOOST_INCLUDE_DIRS" CPLUS_INCLUDE_PATH
-	pathprepend "$BOOST_LIBRARY_DIRS" LD_RUN_PATH
+    pathprepend "$BOOST_INCLUDE_DIRS" CPLUS_INCLUDE_PATH
+    pathprepend "$BOOST_LIBRARY_DIRS" LD_RUN_PATH
 
 
-	#INCLUDE_PATH="$BOOST_ROOT/include:$INCLUDE_PATH"
-	#export INCLUDE_PATH
+    #INCLUDE_PATH="$BOOST_ROOT/include:$INCLUDE_PATH"
+    #export INCLUDE_PATH
 
-	#fhs_path_setup_for "$BOOST_ROOT"
+    #fhs_path_setup_for "$BOOST_ROOT"
 
-	export CPLUS_INCLUDE_PATH LD_RUN_PATH
+    export CPLUS_INCLUDE_PATH LD_RUN_PATH
 else
     echo "FYI: couldn't find Boost @ \$BOOST_ROOT=$BOOST_ROOT  (unsetting env. var.)."
     unset BOOST_ROOT
 fi
 
+Env=( CC CXX BOOST_ROOT BOOST_INCLUDE_DIRS BOOST_LIBRARY_DIRS CPLUS_INCLUDE_PATH LD_RUN_PATH )
+
+if true;
+then
+    echo
+    echo "+---"
+
+    for e in ${Env[*]}; do
+        echo "$e=${!e}"
+    done |
+        column -t -s= |
+            while read line; do
+                echo "| $line"
+            done
+    echo "+---"
+fi
+
+# vim: et sw=4 ts=4 ft=sh

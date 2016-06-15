@@ -95,7 +95,8 @@
 	url = git@github.com:veltzer/kcpp.git
 [submodule "cpp-netlib"]
 	path = misc/cpp-netlib
-	url = https://github.com/cpp-netlib/cpp-netlib
+	#url = https://github.com/cpp-netlib/cpp-netlib
+	url = git@github.com:fabic/cpp-netlib.git
 	branch = master
 [submodule "boost"]
 	path = misc/boost
