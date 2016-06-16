@@ -106,15 +106,3 @@ echo
 echo
 
 exit
-
-
-cd misc/cpp-netlib/
-
-git describe
-
-mkcd build
-
-# Note that having the env. var. BOOST_ROOT won't do it, we have to pass the arg. -DBOOST_ROOT=... (unfortunately).
-# Note: see also their build.sh shell script.
-cmake -DCMAKE_BUILD_TYPE=Debug -DBOOST_ROOT=$BOOST_ROOT ..
-
