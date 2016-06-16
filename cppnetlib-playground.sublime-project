@@ -1,0 +1,14 @@
+{
+	"folders":
+	[
+		{
+			"path": "misc/boost"
+		},
+		{
+			"path": "misc/cpp-netlib"
+		},
+		{
+			"path": "cpp_playground"
+		}
+	]
+}

@@ -2,63 +2,14 @@
 	"folders":
 	[
 		{
-			"folder_exclude_patterns":
-			[
-				".idea",
-				"bootstrap",
-				"build",
-				"clang",
-				"clang-tools-extra",
-				"compiler-rt",
-				"libcxx",
-				"libcxxabi",
-				"libunwind",
-				"lld",
-				"lldb",
-				"llvm",
-				"local",
-				"misc",
-				"musl",
-				"test-suite",
-				"tmp",
-				"php/symfony-std/app/cache",
-				"php/symfony-std/app/logs"
-			],
-			"follow_symlinks": false,
-			"path": "."
+			"follow_symlinks": true,
+			"path": "./clang"
 		},
 		{
-			"path": "local/include"
-		},
-		{
-			"path": "misc/boostcgi"
-		},
-		{
-			"path": "libcxxabi"
-		},
-		{
-			"path": "libcxx"
-		},
-		{
-			"path": "misc/linux-kernel"
-		},
-		{
-			"path": "misc/xf86-video-nouveau"
-		},
-		{
-			"path": "misc/vturbine-linice"
-		},
-		{
-			"path": "misc/linice-kdb"
-		},
-		{
-			"path": "misc/yaml-cpp"
-		},
-		{
-			"path": "misc/harry_kernelcpp"
-		},
-		{
-			"path": "misc/veltzer_kcpp"
+			"follow_symlinks": true,
+			"path": "./llvm/include"
 		}
-	]
+	],
+	"trim_trailing_white_space_on_save": false,
+
 }
