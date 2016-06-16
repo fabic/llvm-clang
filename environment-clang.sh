@@ -20,7 +20,7 @@ export CC CXX
 #
 # Boost C++ library
 #
-boost_modular_dir="misc/boost"
+boost_modular_dir="$here/misc/boost"
 
 if [ -d "$boost_modular_dir" ];
 then
