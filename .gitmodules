@@ -102,3 +102,6 @@
 	path = misc/boost
 	url = git@github.com:boostorg/boost.git
 	branch = master
+[submodule "libcsdbg"]
+	path = misc/libcsdbg
+	url = git@github.com:fabic/libcsdbg.git
