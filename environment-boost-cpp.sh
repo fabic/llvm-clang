@@ -100,28 +100,6 @@ else
     export BOOST_ROOT BOOST_INCLUDE_DIRS CPLUS_INCLUDE_PATH
 fi
 
-
-##
-## Output details about some of the environment variables.
-##
-
-Env=( CC CXX BOOST_ROOT BOOST_INCLUDE_DIRS BOOST_LIBRARY_DIRS CPATH CPLUS_INCLUDE_PATH LD_RUN_PATH LD_LIBRARY_PATH INCLUDE_PATH )
-
-if true;
-then
-    echo
-    echo "+---"
-
-    for e in ${Env[*]}; do
-        if [ ! -z "${!e}" ]; then
-            echo "$e=${!e}"
-        fi
-    done |
-        column -t -s= |
-            while read line; do
-                echo "| $line"
-            done
-    echo "+---"
-fi
+sh $here/show-environment.sh
 
 # vim: et sw=4 ts=4 ft=sh

@@ -22,7 +22,9 @@ fi
 
 echo "| ./configure ..."
 
-./configure --prefix=$here/local --enable-debug --enable-cxx-exceptions --enable-coredump --enable-debug-frame --enable-block-signals --enable-conservative-checks
+./configure --prefix=$here/local \
+	--enable-debug --enable-cxx-exceptions --enable-coredump \
+	--enable-debug-frame --enable-block-signals --enable-conservative-checks
 
 retv=$?
 if [ $retv -gt 0 ]; then

@@ -6,9 +6,10 @@
  * but it insists on converting char[] to some std::wstring _with the unexpected
  * intent of converting it back to std::string, it appears).
  *
- * Buid with :
- *     $CXX -g -rdynamic -std=c++14 -frtti -L ~/boost-1.61.0-$CC/lib -I.. -L. -Wl,-rpath=. -lboost_program_options -lcsdbg -ldl -lbfd -lpthread -o test1 fabic/test/test1.cpp
+ * EDIT/2016-06-17: -_- the "bug" disappeared magically after I rebuilt Boost.
  *
+ * Buid with :
+ *   - $CXX -g -O0 -rdynamic -std=c++14 -frtti -L. -Wl,-rpath=. -lboost_program_options -lunwind -ldl -lbfd -lpthread -o boost_options_debug_encoding boost_options_debug_encoding.cpp
  * FabiC 2016-06-16 https://github.com/fabic/libcsdbg/
  */
 
@@ -91,14 +92,35 @@ namespace fabic {
         }
 
 
+        // Forward decl.
+        void terminate_handler();
+
+        /* Entails that our program termination handler is registered early on
+         * (at least earlier than it would have been from main()). */
+    	static const auto g_original_termination_handler
+    		= std::set_terminate( fabic::plays::terminate_handler );
+
+        /**
+         * Program termination handler.
+         *
+         * @link http://en.cppreference.com/w/cpp/error/set_terminate
+         * @link http://stackoverflow.com/a/2445569
+         */
         void terminate_handler() {
             std::cerr << "Hey! that's terminate!"
-            << '(' << __FILE__
-            << ':' << __LINE__ << ')' << std::endl;
+	            << '(' << __FILE__
+	            << ':' << __LINE__ << ')' << std::endl;
+
+	        if (g_original_termination_handler != nullptr) {
+	        	fabic::plays::g_original_termination_handler();
+	        }
         }
 
 
         extern "C" {
+        	/**
+        	 * @link http://stackoverflow.com/a/11674810
+        	 */
             void __cxa_throw(void *ex, std::type_info *info, void (*dest)(void *)) {
                 // exception_name = demangle(reinterpret_cast<const std::type_info*>(info)->name());
                 // last_size = backtrace(last_frames, sizeof last_frames/sizeof(void*));
@@ -172,10 +194,7 @@ int main_bis(int argc, const char *argv[])
  */
 int main(int argc, const char *argv[])
 {
-    std::set_terminate(fabic::plays::terminate_handler);
-
-//    static void (*const rethrow)(void*,void*,void(*)(void*)) __attribute__ ((noreturn))
-//            = (void (*)(void*,void*,void(*)(void*)))dlsym(RTLD_NEXT, "__cxa_throw");
+    // std::set_terminate(fabic::plays::terminate_handler);
 
     // Init. libcsdbg's tracer thing :
     // using namespace csdbg;
