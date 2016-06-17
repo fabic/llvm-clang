@@ -6,14 +6,14 @@ here=$( cd `dirname "$0"` && pwd )
 
 echo "+-- $0"
 
-boost_modular_dir="$here/boost"
+boost_modular_dir="$here/misc/boost"
 if ! cd "$boost_modular_dir" && test -e .git && git describe ; then
 	echo "+- $0: Couldn't get into \$boost_modular_dir=\"$boost_modular_dir\", failed."
 	exit 127
 fi
 
-if [ ! -x bootstrap.sh ] || [ ! -x b2 ]; then
-	echo "+- Couldn't find either one of bootstrap.sh or b2, failed."
+if [ ! -x bootstrap.sh ]; then
+	echo "+- Couldn't find the bootstrap.sh script, failed."
 	exit 126
 fi
 
@@ -34,7 +34,8 @@ echo "|"
 echo "| Git work-tree status :"
 git status | sed -e 's/^/|  &/'
 
-boost_install_target_dir="${HOME}/${boost_cpp_version}-${CC}"
+#boost_install_target_dir="${HOME}/${boost_cpp_version}-${CC}"
+boost_install_target_dir="${here}/local/${boost_cpp_version}-${CC}"
 
 echo "|"
 echo "| \$CC = $CC"
@@ -51,16 +52,17 @@ echo "|"
 read -p "| Ok, we're good to go, proceed ? (hit any key, or Ctrl-C to abort)"
 echo "|"
 
-echo "|"
-echo "| Running ./b2 --clean"
-echo "|"
+if [ -x ./b2 ]; then
+    echo "|"
+    echo "| Found ./b2 : running ./b2 --clean"
+    echo "|"
 
-if ! ./b2 --clean ;
-then
-	retv=$?
-	echo "|"
-	echo "+- ./b2 --clean exited with status $retv, failed."
-	exit $retv
+    if ! ./b2 --clean ; then
+        retv=$?
+        echo "|"
+        echo "+- ./b2 --clean exited with status $retv, failed."
+        exit $retv
+    fi
 fi
 
 echo "|"
