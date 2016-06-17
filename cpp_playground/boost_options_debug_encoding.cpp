@@ -166,10 +166,8 @@ namespace fabic {
              * the CXX ABI lib. ; initialized from the ctor by a call to `dlsym()`. */
             cxa_throw_func_ptr_type orig_cxa_throw_func = nullptr;
 
-            /**
-             * Instantiate it eary on at program initialization.
-             */
-
+            std::string tmp_procedure_name_str;
+            static constexpr int tmp_procedure_name_str_length = 2048;
         public:
             /**
              * Ctor.
@@ -197,7 +195,7 @@ namespace fabic {
              * @param info
              * @return the name of it.
              */
-            std::string demangle_cxx_type_name(std::type_info& info);
+            std::string demangle_cxx_type_name(const char *mangled_name);
 
         private:
             /**
@@ -221,7 +219,7 @@ namespace fabic {
             void attempt_stack_unwinding();
         };
 
-        CxaThrowBlackMagic::CxaThrowBlackMagic() {
+        CxaThrowBlackMagic::CxaThrowBlackMagic() : tmp_procedure_name_str(tmp_procedure_name_str_length, ' ') {
             this->orig_cxa_throw_func = (cxa_throw_func_ptr_type) dlsym(RTLD_NEXT, "__cxa_throw");
 
             if (this->orig_cxa_throw_func == nullptr)
@@ -231,7 +229,7 @@ namespace fabic {
         void
         CxaThrowBlackMagic::handle_thrown_exception(void *ex, std::type_info *info, void (*dest)(void *))
         {
-            auto exception_name = info != nullptr ? this->demangle_cxx_type_name(*info)
+            auto exception_name = info != nullptr ? this->demangle_cxx_type_name(info->name())
                                                   : std::string("no_exception_type_info");
 
             std::cout << "Thrown ex. " << exception_name << std::endl;
@@ -242,23 +240,22 @@ namespace fabic {
         }
 
         std::string
-        CxaThrowBlackMagic::demangle_cxx_type_name(std::type_info& info)
+        CxaThrowBlackMagic::demangle_cxx_type_name(const char *mangled_name)
         {
             int status = 0xdeadbeef;
 
             // See cxxabi.h for the documentation.
             // PS: we're responsible for free()-ing the char* buffer.
             char *name = abi::__cxa_demangle(
-                    info.name(),
+                    mangled_name,
                     nullptr, // buffer
                     nullptr, // buffer length
                     &status  // demangling exit status
             );
 
-            if (name == nullptr)
-                return std::string("unknown_exception");
-
-            assert(status == 0);
+            // Return as-is in case of error.
+            if (name == nullptr || status != 0)
+                return std::string(mangled_name);
 
             auto name_s = std::string(name);
 
@@ -283,26 +280,63 @@ namespace fabic {
             if (status_code != 0)
                 return;
 
-            boost::format fmtr("frame ... ip = %#x, sp = %#x");
+            boost::format fmtr("  [bt]: (%0u) [%#x] %s");
 
             int stack_frame_nb = 0;
 
-            while ((status_code = unw_step(&cursor)) > 0) {
-                unw_word_t ip, sp;
+            while (0 < (status_code = unw_step(&cursor))) {
+                unw_word_t
+                        ip = 0xdeadbeef,
+                        sp = 0xdeadbeef,
+                        offset = 0xdeadbeef;
 
                 status_code = unw_get_reg(&cursor, UNW_REG_IP, &ip);
                 status_code |= unw_get_reg(&cursor, UNW_REG_SP, &sp);
 
                 if (status_code != 0) {
-                    std::cerr << "Oups! couldn't fetch registered, stopping stack unwinding here.";
-                    break;
+                    std::cerr << "Oups! couldn't fetch register";
                 }
 
-                std::cerr << fmtr % ip % sp << std::endl;
+                auto& routine = this->tmp_procedure_name_str;
+
+                status_code = unw_get_proc_name(
+                        &cursor,
+                        const_cast<char*>( routine.data() ),
+                        routine.capacity(),
+                        &offset
+                );
+
+                switch(status_code) {
+                    case UNW_ESUCCESS:
+                        routine = this->demangle_cxx_type_name(routine.c_str()).c_str();
+                        // ^ I hope with .c_str() to prevent eventual (probable?) move
+                        //   semantics here (don't want to loose our big buffer).
+                        break;
+                    // fixme: couldn't test error condition.
+                    case UNW_ENOMEM:
+                        routine += "...";
+                        routine.reserve( routine.capacity() << 1);
+                        // ^ double buffer size in advance.
+                        break;
+                    case UNW_EUNSPEC: // An unspecified error occurred.
+                    case UNW_ENOINFO: // Libunwind was unable to determine the name of the procedure.
+                        routine = "<unknown routine>";
+                        // no break, intentional.
+                    default:
+                        ;
+                        // man page says that
+                        //   “ in addition, unw_get_proc_name() may return any
+                        //     error returned by the access_mem() call-back
+                        //     (see unw_create_addr_space(3)) ”.
+                        // ^ and indeed it happens we get negative return status.
+                }
+
+                std::cerr << fmtr % stack_frame_nb % ip % routine << std::endl;
 
                 stack_frame_nb++;
-                //printf ("ip = %lx, sp = %lx\n", (long) ip, (long) sp);
             }
+
+            return;
         }
 
         /**
