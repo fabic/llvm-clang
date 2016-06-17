@@ -30,6 +30,7 @@
 #include <libunwind.h>
 
 #include <boost/program_options.hpp>
+#include <boost/format.hpp>
 #include <iostream>
 #include <cstdlib>
 #include <stdexcept>
@@ -198,6 +199,7 @@ namespace fabic {
              */
             std::string demangle_cxx_type_name(std::type_info& info);
 
+        private:
             /**
              * Hand over processing to the actual __cxa_throw() impl.
              *
@@ -212,6 +214,11 @@ namespace fabic {
             ) __attribute__ ((noreturn)) {
                 this->orig_cxa_throw_func(exception, exception_type_info, dest);
             }
+
+            /**
+             * @link http://www.nongnu.org/libunwind/man/libunwind(3).html
+             */
+            void attempt_stack_unwinding();
         };
 
         CxaThrowBlackMagic::CxaThrowBlackMagic() {
@@ -228,6 +235,8 @@ namespace fabic {
                                                   : std::string("no_exception_type_info");
 
             std::cout << "Thrown ex. " << exception_name << std::endl;
+
+            this->attempt_stack_unwinding();
 
             this->rethrow(ex, info, dest);
         }
@@ -257,6 +266,43 @@ namespace fabic {
 
             return name_s;
 
+        }
+
+        void
+        CxaThrowBlackMagic::attempt_stack_unwinding() {
+            unw_cursor_t cursor;
+            unw_context_t uc;
+
+            int status_code = 0xdeadbeef;
+
+            status_code = unw_getcontext(&uc);
+            if (status_code != 0)
+                return;
+
+            status_code = unw_init_local(&cursor, &uc);
+            if (status_code != 0)
+                return;
+
+            boost::format fmtr("frame ... ip = %#x, sp = %#x");
+
+            int stack_frame_nb = 0;
+
+            while ((status_code = unw_step(&cursor)) > 0) {
+                unw_word_t ip, sp;
+
+                status_code = unw_get_reg(&cursor, UNW_REG_IP, &ip);
+                status_code |= unw_get_reg(&cursor, UNW_REG_SP, &sp);
+
+                if (status_code != 0) {
+                    std::cerr << "Oups! couldn't fetch registered, stopping stack unwinding here.";
+                    break;
+                }
+
+                std::cerr << fmtr % ip % sp << std::endl;
+
+                stack_frame_nb++;
+                //printf ("ip = %lx, sp = %lx\n", (long) ip, (long) sp);
+            }
         }
 
         /**
