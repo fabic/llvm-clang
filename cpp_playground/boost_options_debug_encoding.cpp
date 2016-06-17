@@ -151,8 +151,8 @@ namespace fabic {
         class CxaThrowBlackMagic {
         public:
             /**
-             * * See header `cxxabi.h` for the correct definition.
-             *   <br>`/usr/lib/gcc/x86_64-pc-linux-gnu/4.9.3/include/g++-v4/cxxabi.h`
+             * See header `cxxabi.h` for the correct definition of `__cxa_throw()`.
+             * `/usr/lib/gcc/x86_64-pc-linux-gnu/4.9.3/include/g++-v4/cxxabi.h`
              */
             typedef void (*cxa_throw_func_ptr_type)(
                     void *exception,
@@ -161,28 +161,45 @@ namespace fabic {
             ) __attribute__ ((noreturn));
 
         private:
-            /** The original (previous) __cxa_throw() actual implementation from the CXX ABI lib. ;
-             * initialized from the ctor. */
+            /** The original (previous) __cxa_throw() actual implementation from
+             * the CXX ABI lib. ; initialized from the ctor by a call to `dlsym()`. */
             cxa_throw_func_ptr_type orig_cxa_throw_func = nullptr;
+
+            /**
+             * Instantiate it eary on at program initialization.
+             */
 
         public:
             /**
-             * Ctor, see hack::g_cxa_throw_toolkit global from whenc
+             * Ctor.
+             * * See the `hack::g_cxa_throw_toolkit` global ;
+             * * Note that Ctor will abort() in case it couldn't find out the
+             *   address of the _previous (actual)_ `__cxa_throw()` function.
              */
             explicit CxaThrowBlackMagic();
 
             /**
              * Handle an invocation of __cxa_throw(), actually.
+             * Processing is then handed over the actual `__cxa_throw()` impl. (hence the `noreturn`).
              *
              * @param ex
              * @param info
              * @param dest
              */
-            void handle_exception(void *ex, std::type_info *info, void (*dest)(void *));
+            void handle_thrown_exception(void *ex, std::type_info *info, void (*dest)(void *)) __attribute__ ((noreturn));
+
+            /**
+             * Demangles the C++ type name through `abi::__cxa_demangle()`.
+             *
+             * * todo: pass the ex. eventually for providing some more info. along the generated name, like the mem. address ?
+             *
+             * @param info
+             * @return the name of it.
+             */
             std::string demangle_cxx_type_name(std::type_info& info);
 
             /**
-             * Hand over to the actual __cxa_throw() impl.
+             * Hand over processing to the actual __cxa_throw() impl.
              *
              * @param exception
              * @param exception_type_info
@@ -205,26 +222,19 @@ namespace fabic {
         }
 
         void
-        CxaThrowBlackMagic::handle_exception(void *ex, std::type_info *info, void (*dest)(void *)) {
-            //if (info == nullptr)
-
+        CxaThrowBlackMagic::handle_thrown_exception(void *ex, std::type_info *info, void (*dest)(void *))
+        {
             auto exception_name = info != nullptr ? this->demangle_cxx_type_name(*info)
                                                   : std::string("no_exception_type_info");
 
             std::cout << "Thrown ex. " << exception_name << std::endl;
 
+            this->rethrow(ex, info, dest);
         }
 
-        /**
-         * Demangles the C++ type name through `abi::__cxa_demangle()`.
-         *
-         * * todo: pass the ex. eventually for providing some more info. along the generated name, like the mem. address ?
-         *
-         * @param info
-         * @return the name of it.
-         */
         std::string
-        CxaThrowBlackMagic::demangle_cxx_type_name(std::type_info& info) {
+        CxaThrowBlackMagic::demangle_cxx_type_name(std::type_info& info)
+        {
             int status = 0xdeadbeef;
 
             // See cxxabi.h for the documentation.
@@ -255,18 +265,16 @@ namespace fabic {
         CxaThrowBlackMagic g_cxa_throw_toolkit = CxaThrowBlackMagic();
 
         extern "C" {
-        /** HACK: overrides the cxxabi implementation of `__cxa_throw()`
-         * which is the low-level function that is used when you perform
-         * a `throw new ...`.
-         *
-         * @link http://stackoverflow.com/a/11674810
-         */
-        void __cxa_throw(void *ex, std::type_info *info, void (*dest)(void *)) {
-
-            g_cxa_throw_toolkit.handle_exception(ex, info, dest);
-
-            g_cxa_throw_toolkit.rethrow(ex, info, dest);
-        }
+            /** HACK: overrides the cxxabi implementation of `__cxa_throw()`
+             * which is the low-level function that is used when you perform
+             * a `throw new ...`.
+             *
+             * @link http://stackoverflow.com/a/11674810
+             */
+            void __cxa_throw(void *ex, std::type_info *info, void (*dest)(void *))
+            {
+                g_cxa_throw_toolkit.handle_thrown_exception(ex, info, dest);
+            }
         } // extern "C"
 
     } // hack ns.
