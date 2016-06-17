@@ -1,5 +1,5 @@
 /**
- * libcsdbg: fabic/test/test1.cpp
+ * boost_options_debug_encoding.cpp
  *
  * /me tryin' to debug a situation with Boost's program_options library failing
  * to “convert” program arguments (and anyway I don't want any conversion BTW,
@@ -7,6 +7,7 @@
  * intent of converting it back to std::string, it appears).
  *
  * EDIT/2016-06-17: -_- the "bug" disappeared magically after I rebuilt Boost.
+ * EDIT/2016-06-17: -_- and re-appeared, grrr!
  *
  * Buid with :
  *   - $CXX -g -O0 -rdynamic -std=c++14 -frtti -L. -Wl,-rpath=. -lboost_program_options -lunwind -ldl -lbfd -lpthread -o boost_options_debug_encoding boost_options_debug_encoding.cpp
@@ -63,7 +64,10 @@ namespace fabic {
             // based on the LANG environment variable. Else an exception is
             // thrown from some deep abyss "character conversion failed".
             //   http://www.boost.org/doc/libs/1_61_0/doc/html/program_options/howto.html#idp308994400
-            std::locale::global(std::locale(""));
+            //   http://en.cppreference.com/w/cpp/locale/locale/global
+            //std::locale::global(std::locale(""));
+            std::locale::global(std::locale("en_US.UTF-8"));
+            //std::locale::global(std::locale::classic());
 
             po::options_description desc("Allowed options");
             desc.add_options()
@@ -93,32 +97,46 @@ namespace fabic {
 
 
         // Forward decl.
-        void terminate_handler();
+        void abnormal_program_termination_handler();
+        void normal_program_termination_atexit_handler();
 
-        /* Entails that our program termination handler is registered early on
+        /** Entails that our program termination handler is registered early on
          * (at least earlier than it would have been from main()). */
     	static const auto g_original_termination_handler
-    		= std::set_terminate( fabic::plays::terminate_handler );
+                = std::set_terminate( abnormal_program_termination_handler );
+
+        /** Likewise early on std::exit() handler registration. */
+        static const bool g_atexit_handler_registered_ok =
+                0 == std::atexit( normal_program_termination_atexit_handler );
 
         /**
-         * Program termination handler.
+         * Abnormal program termination ( std::terminate() ) handler.
          *
          * @link http://en.cppreference.com/w/cpp/error/set_terminate
          * @link http://stackoverflow.com/a/2445569
          */
-        void terminate_handler() {
-            std::cerr << "Hey! that's terminate!"
-	            << '(' << __FILE__
-	            << ':' << __LINE__ << ')' << std::endl;
+        void abnormal_program_termination_handler() {
+            std::cerr << "Hey! that's terminate!" << std::endl;
 
 	        if (g_original_termination_handler != nullptr) {
 	        	fabic::plays::g_original_termination_handler();
 	        }
         }
 
+        /** Normal program termination ( std::exit() ) handler.
+         *
+         * @link http://en.cppreference.com/w/cpp/utility/program/atexit
+         */
+        void normal_program_termination_atexit_handler() {
+            std::cerr << "Hey! that's our std::exit() handler!" << std::endl;
+        }
+
 
         extern "C" {
-        	/**
+        	/** HACK: overrides the cxxabi implementation of `__cxa_throw()`
+        	 * which is the low-level function that is used when you perform
+        	 * a `throw new ...`.
+        	 *
         	 * @link http://stackoverflow.com/a/11674810
         	 */
             void __cxa_throw(void *ex, std::type_info *info, void (*dest)(void *)) {
@@ -132,9 +150,10 @@ namespace fabic {
                 auto rethrow = (cxa_throw_func_ptr_type) dlsym(RTLD_NEXT, "__cxa_throw");
 
                 if (rethrow == NULL) {
-                    abort();
+                    std::abort();
                 }
 
+                // Demangle the exception type name.
                 auto exception_name = [&info]() {
                     if (info == nullptr)
                         return std::string("no_exception_type_info");
@@ -194,8 +213,6 @@ int main_bis(int argc, const char *argv[])
  */
 int main(int argc, const char *argv[])
 {
-    // std::set_terminate(fabic::plays::terminate_handler);
-
     // Init. libcsdbg's tracer thing :
     // using namespace csdbg;
     //
@@ -204,7 +221,6 @@ int main(int argc, const char *argv[])
     //     std::cerr << "FAILED! couldn't initialize libcsdbg's tracer thing." << std::endl;
     //     return 126;
     // }
-
 
     try {
         return main_bis(argc, argv);

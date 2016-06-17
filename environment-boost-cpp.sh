@@ -33,7 +33,11 @@ BOOST_ROOT=( $( find "$here/local" -maxdepth 1 -type d -name "boost-*-${CC}" ) )
 echo -n "| Trying \$BOOST_ROOT = $BOOST_ROOT : "
 
 # 2) fallback to ~/boost-1.61.0-clang/
-[ -d "$BOOST_ROOT/include" ] && [ -d "$BOOST_ROOT/lib" ] && echo "found." || BOOST_ROOT="$HOME/boost-*-${CC}"
+if [ -d "$BOOST_ROOT/include" ] && [ -d "$BOOST_ROOT/lib" ]; then
+    echo "found."
+else
+    BOOST_ROOT="$HOME/boost-*-${CC}"
+fi
 
 # 3) will entail fallback to the checked-out sources under misc/boost/
 [ -d "$BOOST_ROOT/include" ] && [ -d "$BOOST_ROOT/lib" ] || BOOST_ROOT="" 

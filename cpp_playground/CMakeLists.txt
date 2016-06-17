@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.3)
 project(cpp_playground)
 
 # fixme: temp.
-set(BOOST_ROOT "/home/cadet/boost-1.61.0-gcc")
+set(BOOST_ROOT ../local/boost-1.61.0-clang)
 
 find_package(Boost 1.61.0 REQUIRED)
 
