@@ -17,6 +17,18 @@
 #include <dlfcn.h>
 #include <cxxabi.h>
 
+/* http://www.nongnu.org/libunwind/man/libunwind(3).html
+ *   “ Normally, libunwind supports both local and remote unwinding
+ *     (the latter will be explained in the next section). However, if you tell
+ *     libunwind that your program only needs local unwinding, then a special
+ *     implementation can be selected which may run much faster than the generic
+ *     implementation which supports both kinds of unwinding. */
+#ifndef UNW_LOCAL_ONLY
+#   define UNW_LOCAL_ONLY
+#endif
+
+#include <libunwind.h>
+
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <cstdlib>
@@ -37,10 +49,10 @@ namespace fabic {
         /**
          * MAIN which accepts
          */
-        int main(program_arguments& args) {
+        int main(program_arguments &args) {
 
             std::cout << "Hello world, you reached this point, can't believe it!"
-                         " (libcsdbg test 1)" << std::endl;
+                    " (libcsdbg test 1)" << std::endl;
 
             return 0;
         }
@@ -55,8 +67,7 @@ namespace fabic {
          * @return      [description]
          */
         program_arguments
-        process_program_arguments(int argc, const char *const argv[])
-        {
+        process_program_arguments(int argc, const char *const argv[]) {
             namespace po = boost::program_options;
 
             // This is needed so for setting up the
@@ -95,6 +106,9 @@ namespace fabic {
             return args;
         }
 
+    } // plays ns.
+
+    namespace hack {
 
         // Forward decl.
         void abnormal_program_termination_handler();
@@ -102,12 +116,12 @@ namespace fabic {
 
         /** Entails that our program termination handler is registered early on
          * (at least earlier than it would have been from main()). */
-    	static const auto g_original_termination_handler
-                = std::set_terminate( abnormal_program_termination_handler );
+        static const auto g_original_termination_handler
+                = std::set_terminate(abnormal_program_termination_handler);
 
         /** Likewise early on std::exit() handler registration. */
         static const bool g_atexit_handler_registered_ok =
-                0 == std::atexit( normal_program_termination_atexit_handler );
+                0 == std::atexit(normal_program_termination_atexit_handler);
 
         /**
          * Abnormal program termination ( std::terminate() ) handler.
@@ -118,9 +132,9 @@ namespace fabic {
         void abnormal_program_termination_handler() {
             std::cerr << "Hey! that's terminate!" << std::endl;
 
-	        if (g_original_termination_handler != nullptr) {
-	        	fabic::plays::g_original_termination_handler();
-	        }
+            if (g_original_termination_handler != nullptr) {
+                g_original_termination_handler();
+            }
         }
 
         /** Normal program termination ( std::exit() ) handler.
@@ -131,61 +145,132 @@ namespace fabic {
             std::cerr << "Hey! that's our std::exit() handler!" << std::endl;
         }
 
+        /**
+         * Yeah...
+         */
+        class CxaThrowBlackMagic {
+        public:
+            /**
+             * * See header `cxxabi.h` for the correct definition.
+             *   <br>`/usr/lib/gcc/x86_64-pc-linux-gnu/4.9.3/include/g++-v4/cxxabi.h`
+             */
+            typedef void (*cxa_throw_func_ptr_type)(
+                    void *exception,
+                    std::type_info *exception_type_info,
+                    void (*_dest)(void *)
+            ) __attribute__ ((noreturn));
+
+        private:
+            /** The original (previous) __cxa_throw() actual implementation from the CXX ABI lib. ;
+             * initialized from the ctor. */
+            cxa_throw_func_ptr_type orig_cxa_throw_func = nullptr;
+
+        public:
+            /**
+             * Ctor, see hack::g_cxa_throw_toolkit global from whenc
+             */
+            explicit CxaThrowBlackMagic();
+
+            /**
+             * Handle an invocation of __cxa_throw(), actually.
+             *
+             * @param ex
+             * @param info
+             * @param dest
+             */
+            void handle_exception(void *ex, std::type_info *info, void (*dest)(void *));
+            std::string demangle_cxx_type_name(std::type_info& info);
+
+            /**
+             * Hand over to the actual __cxa_throw() impl.
+             *
+             * @param exception
+             * @param exception_type_info
+             * @param _dest
+             */
+            void rethrow(
+                    void *exception,
+                    std::type_info *exception_type_info,
+                    void (*dest)(void *)
+            ) __attribute__ ((noreturn)) {
+                this->orig_cxa_throw_func(exception, exception_type_info, dest);
+            }
+        };
+
+        CxaThrowBlackMagic::CxaThrowBlackMagic() {
+            this->orig_cxa_throw_func = (cxa_throw_func_ptr_type) dlsym(RTLD_NEXT, "__cxa_throw");
+
+            if (this->orig_cxa_throw_func == nullptr)
+                std::abort();
+        }
+
+        void
+        CxaThrowBlackMagic::handle_exception(void *ex, std::type_info *info, void (*dest)(void *)) {
+            //if (info == nullptr)
+
+            auto exception_name = info != nullptr ? this->demangle_cxx_type_name(*info)
+                                                  : std::string("no_exception_type_info");
+
+            std::cout << "Thrown ex. " << exception_name << std::endl;
+
+        }
+
+        /**
+         * Demangles the C++ type name through `abi::__cxa_demangle()`.
+         *
+         * * todo: pass the ex. eventually for providing some more info. along the generated name, like the mem. address ?
+         *
+         * @param info
+         * @return the name of it.
+         */
+        std::string
+        CxaThrowBlackMagic::demangle_cxx_type_name(std::type_info& info) {
+            int status = 0xdeadbeef;
+
+            // See cxxabi.h for the documentation.
+            // PS: we're responsible for free()-ing the char* buffer.
+            char *name = abi::__cxa_demangle(
+                    info.name(),
+                    nullptr, // buffer
+                    nullptr, // buffer length
+                    &status  // demangling exit status
+            );
+
+            if (name == nullptr)
+                return std::string("unknown_exception");
+
+            assert(status == 0);
+
+            auto name_s = std::string(name);
+
+            free(name);
+
+            return name_s;
+
+        }
+
+        /**
+         * Instantiate it eary on at program initialization.
+         */
+        CxaThrowBlackMagic g_cxa_throw_toolkit = CxaThrowBlackMagic();
 
         extern "C" {
-        	/** HACK: overrides the cxxabi implementation of `__cxa_throw()`
-        	 * which is the low-level function that is used when you perform
-        	 * a `throw new ...`.
-        	 *
-        	 * @link http://stackoverflow.com/a/11674810
-        	 */
-            void __cxa_throw(void *ex, std::type_info *info, void (*dest)(void *)) {
-                // exception_name = demangle(reinterpret_cast<const std::type_info*>(info)->name());
-                // last_size = backtrace(last_frames, sizeof last_frames/sizeof(void*));
+        /** HACK: overrides the cxxabi implementation of `__cxa_throw()`
+         * which is the low-level function that is used when you perform
+         * a `throw new ...`.
+         *
+         * @link http://stackoverflow.com/a/11674810
+         */
+        void __cxa_throw(void *ex, std::type_info *info, void (*dest)(void *)) {
 
-                typedef void (*const cxa_throw_func_ptr_type)(void *_ex, std::type_info *_info, void (*_dest)(void *))
-                        __attribute__ ((noreturn));
+            g_cxa_throw_toolkit.handle_exception(ex, info, dest);
 
-                // man dlsym
-                auto rethrow = (cxa_throw_func_ptr_type) dlsym(RTLD_NEXT, "__cxa_throw");
-
-                if (rethrow == NULL) {
-                    std::abort();
-                }
-
-                // Demangle the exception type name.
-                auto exception_name = [&info]() {
-                    if (info == nullptr)
-                        return std::string("no_exception_type_info");
-
-                    int status = 0xdeadbeef;
-                    char *name = abi::__cxa_demangle(
-                            info->name(),
-                            nullptr, // buffer
-                            nullptr, // buffer length
-                            &status  // demangling exit status
-                    );
-
-                    if (name == nullptr)
-                        return std::string("unknown_exception");
-
-                    assert( status == 0 );
-
-                    auto retv = std::string(name);
-
-                    free( name );
-
-                    return retv;
-                }();
-
-                std::cout << "Thrown ex. " << exception_name << std::endl;
-
-                rethrow(ex, info, dest);
-            }
+            g_cxa_throw_toolkit.rethrow(ex, info, dest);
         }
-    } // plays ns.
-} // fabic ns.
+        } // extern "C"
 
+    } // hack ns.
+} // fabic ns
 
 /**
  * Invoqued by main() within a try-catch
