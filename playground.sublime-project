@@ -12,6 +12,9 @@
 		},
 		{
 			"path": "misc/libcsdbg"
+		},
+		{
+			"path": "libunwind"
 		}
 	]
 }

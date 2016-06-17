@@ -17,6 +17,14 @@ CC=clang
 CXX=clang++
 export CC CXX
 
+if [ -d "$here/local/include" ]; then
+    pathprepend "$here/local/include" CPATH
+fi
+
+if [ -d "$here/local/lib" ]; then
+    pathprepend "$here/local/lib" LD_RUN_PATH
+fi
+
 #
 # Boost C++ library
 #
@@ -48,8 +56,8 @@ then
             BOOST_LIBRARY_DIRS="${BOOST_ROOT}/lib"
             export BOOST_INCLUDE_DIRS BOOST_LIBRARY_DIRS
 
-            pathprepend "$BOOST_INCLUDE_DIRS" CPLUS_INCLUDE_PATH
-            pathprepend "$BOOST_LIBRARY_DIRS" LD_RUN_PATH
+            pathappend "$BOOST_INCLUDE_DIRS" CPLUS_INCLUDE_PATH
+            pathappend "$BOOST_LIBRARY_DIRS" LD_RUN_PATH
             export CPLUS_INCLUDE_PATH LD_RUN_PATH
 
             #INCLUDE_PATH="$BOOST_ROOT/include:$INCLUDE_PATH"
