@@ -49,7 +49,7 @@ namespace fabic {
                       is_object_instance(std::is_convertible<T, object>::value)
             { }
 
-            string name() { return this->type_name; }
+            string name() const { return this->type_name; }
 
             /**
              * Demangles the C++ type name through `abi::__cxa_demangle()`.
@@ -57,10 +57,42 @@ namespace fabic {
             static string demangle_cxx_type_name(const char *mangled_name);
         };
 
+
+        class base_dependency_declaration {
+        private:
+            string service_id;
+        public:
+            base_dependency_declaration() {}
+            virtual ~base_dependency_declaration() {}
+
+            string get_service_id() { return this->service_id; }
+
+            virtual const type_info& get_service_type() const {
+                throw new std::exception();
+            }
+
+        };
+
+        template<class T>
+        class dependency_declaration : public base_dependency_declaration {
+        private:
+            type_info type;
+        public:
+            dependency_declaration(string service_id)
+                    : type(typeid(T), false) {}
+
+            virtual const type_info& get_service_type() const {
+                return this->type;
+            }
+        };
+
         /**
          *
          */
         class base_service_definition {
+        public:
+            typedef map<string, base_dependency_declaration *> dependencies_map;
+
         protected:
             string id;
         public:
@@ -77,12 +109,20 @@ namespace fabic {
             string get_sevice_definition_type_name() {
                 return type_info::demangle_cxx_type_name(typeid(*this).name());
             }
+
+            virtual const dependencies_map& get_dependencies_map() const {
+                throw new std::exception();
+            }
         };
 
+        /**
+         *
+         */
         template<class T>
         class service_definition : public base_service_definition {
         private:
             type_info type;
+            dependencies_map dependencies;
         public:
             service_definition(string service_id)
                     : base_service_definition(service_id),
@@ -91,6 +131,21 @@ namespace fabic {
             virtual ~service_definition() {}
 
             virtual type_info& get_type_info() noexcept { return this->type; }
+
+            template<typename D>
+            service_definition<T>&
+            requires(string service_id) {
+                this->dependencies.insert(
+                        std::make_pair(
+                                service_id,
+                                new dependency_declaration<D>(service_id)
+                        ));
+                return *this;
+            }
+
+            virtual const dependencies_map& get_dependencies_map() const {
+                return this->dependencies;
+            }
         };
 
         /**
@@ -183,7 +238,7 @@ namespace fabic {
 
             template<typename T>
             service_definition<T>&
-            require(string service_id) {
+            new_service_definition(string service_id) {
                 auto def = new service_definition<T>(service_id);
                 this->service_definitions.insert(std::make_pair(service_id, def));
                 return *def;
