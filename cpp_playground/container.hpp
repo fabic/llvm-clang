@@ -28,9 +28,14 @@ namespace fabic {
         class type_info {
         private:
             string mangled_name;
-            string name;
+            string type_name;
             bool is_object_instance;
         public:
+            type_info(const std::type_info& type, bool _unused)
+                    : mangled_name(type.name()),
+                      type_name(demangle_cxx_type_name(mangled_name.c_str()))
+            { }
+
             /**
              * Templated ctor.
              *
@@ -40,9 +45,11 @@ namespace fabic {
             template<typename T>
             type_info(T& v)
                     : mangled_name(typeid(v).name()),
-                      name(demangle_cxx_type_name(mangled_name.c_str())),
+                      type_name(demangle_cxx_type_name(mangled_name.c_str())),
                       is_object_instance(std::is_convertible<T, object>::value)
             { }
+
+            string name() { return this->type_name; }
 
             /**
              * Demangles the C++ type name through `abi::__cxa_demangle()`.
@@ -57,12 +64,48 @@ namespace fabic {
         protected:
             string id;
         public:
-            base_service_definition(string name) : id(name) {}
+            explicit base_service_definition(string name) : id(name) {}
+
             virtual ~base_service_definition() {}
 
             string get_service_id() { return this->id; }
 
+            virtual type_info& get_type_info() throw(std::exception) {
+                throw new std::exception();
+            }
+
             string get_sevice_definition_type_name() {
+                return type_info::demangle_cxx_type_name(typeid(*this).name());
+            }
+        };
+
+        template<class T>
+        class service_definition : public base_service_definition {
+        private:
+            type_info type;
+        public:
+            service_definition(string service_id)
+                    : base_service_definition(service_id),
+                      type(typeid(T), false) {}
+
+            virtual ~service_definition() {}
+
+            virtual type_info& get_type_info() noexcept { return this->type; }
+        };
+
+        /**
+         *
+         */
+        class base_service {
+        protected:
+            string id;
+        public:
+            base_service(string name) : id(name) {}
+            virtual ~base_service() {}
+
+            string get_service_id() { return this->id; }
+
+            string get_sevice_type_name() {
                 return type_info::demangle_cxx_type_name(typeid(*this).name());
             }
 
@@ -74,17 +117,17 @@ namespace fabic {
          * todo: eventually refactor as typeable_service_definition ?
          */
         template<class T>
-        class service_definition : public base_service_definition {
+        class service : public base_service {
         private:
             type_info type;
             T& instance;
         public:
-            service_definition(string service_id, T& instance)
-                    : base_service_definition(service_id),
+            service(string service_id, T& instance)
+                    : base_service(service_id),
                       instance(instance),
                       type(instance) { }
 
-            virtual ~service_definition() {}
+            virtual ~service() {}
 
             T& get_instance() {
                 return this->instance;
@@ -104,7 +147,8 @@ namespace fabic {
             class service_not_found_exception : std::exception {};
 
         private:
-            map<string, base_service_definition * > services;
+            map<string, base_service * > services;
+            map<string, base_service_definition * > service_definitions;
 
         public:
             Container();
@@ -113,7 +157,7 @@ namespace fabic {
 
             template<typename T>
             Container& registerService(string service_id, T& instance) {
-                auto def = new service_definition<T>(service_id, instance);
+                auto def = new service<T>(service_id, instance);
                 this->services.insert(std::make_pair(service_id, def));
                 return *this;
             }
@@ -127,7 +171,7 @@ namespace fabic {
 
                 auto base_definition = it->second;
 
-                auto typed_definition = dynamic_cast< service_definition<T>* >(base_definition);
+                auto typed_definition = dynamic_cast< service<T>* >(base_definition);
 
                 if (typed_definition != nullptr) {
                     return typed_definition->get_instance();
@@ -135,6 +179,14 @@ namespace fabic {
                 else {
                     throw new std::exception();
                 }
+            }
+
+            template<typename T>
+            service_definition<T>&
+            require(string service_id) {
+                auto def = new service_definition<T>(service_id);
+                this->service_definitions.insert(std::make_pair(service_id, def));
+                return *def;
             }
 
             Container& loadFromYamlFile(string filename);

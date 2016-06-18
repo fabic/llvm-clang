@@ -37,14 +37,27 @@ namespace fabic {
 		}
 
 
-        Container& Container::debugDumpContainer(std::ostream &os) {
+        Container& Container::debugDumpContainer(std::ostream &os)
+        {
             os << "HEY !" << std::endl;
+
             for(auto& pair : this->services) {
-                base_service_definition * def = pair.second;
+                base_service * def = pair.second;
                 os << def->get_service_id() << " : "
-                   << def->get_sevice_definition_type_name()
+                   << def->get_sevice_type_name()
                    << std::endl;
             }
+
+            for(auto& pair : this->service_definitions) {
+                base_service_definition * base = pair.second;
+                os << base->get_service_id() << " : "
+                   << base->get_sevice_definition_type_name();
+
+                os << ", type: " << base->get_type_info().name();
+
+                os << std::endl;
+            }
+
             return *this;
         }
 

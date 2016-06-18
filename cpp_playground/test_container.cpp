@@ -30,6 +30,11 @@ int main(int argc, char *argv[])
 
     auto& a = cnt.get_service<SomeClassA>("huh");
 
+    auto def = cnt.require<SomeClassA>("huh");
+
+    cnt.require<SomeClassB>("hey.b.1");
+    cnt.require<SomeClassB>("hey.b.2");
+
     //SomeClassA& aaa = cnt.get_service("huh");
 
 //    if (p) {
