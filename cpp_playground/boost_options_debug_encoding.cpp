@@ -27,7 +27,9 @@
 #   define UNW_LOCAL_ONLY
 #endif
 
-#include <libunwind.h>
+extern "C" {
+    #include <libunwind.h>
+}
 
 #include <boost/program_options.hpp>
 #include <boost/format.hpp>
@@ -180,10 +182,6 @@ namespace fabic {
             /**
              * Handle an invocation of __cxa_throw(), actually.
              * Processing is then handed over the actual `__cxa_throw()` impl. (hence the `noreturn`).
-             *
-             * @param ex
-             * @param info
-             * @param dest
              */
             void handle_thrown_exception(void *ex, std::type_info *info, void (*dest)(void *)) __attribute__ ((noreturn));
 
@@ -191,19 +189,12 @@ namespace fabic {
              * Demangles the C++ type name through `abi::__cxa_demangle()`.
              *
              * * todo: pass the ex. eventually for providing some more info. along the generated name, like the mem. address ?
-             *
-             * @param info
-             * @return the name of it.
              */
             std::string demangle_cxx_type_name(const char *mangled_name);
 
         private:
             /**
              * Hand over processing to the actual __cxa_throw() impl.
-             *
-             * @param exception
-             * @param exception_type_info
-             * @param _dest
              */
             void rethrow(
                     void *exception,
@@ -232,9 +223,11 @@ namespace fabic {
             auto exception_name = info != nullptr ? this->demangle_cxx_type_name(info->name())
                                                   : std::string("no_exception_type_info");
 
-            std::cout << "Thrown ex. " << exception_name << std::endl;
+            std::cerr << "Exception : " << exception_name << std::endl;
 
             this->attempt_stack_unwinding();
+
+            std::cerr << std::endl;
 
             this->rethrow(ex, info, dest);
         }

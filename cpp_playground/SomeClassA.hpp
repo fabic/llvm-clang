@@ -2,7 +2,7 @@
 
 class SomeClassA {
 	int a, b, c, d;
-private:
+protected:
 	SomeClassA() {}
 public:
 	//SomeClassA() : a(1), b(2), c(3) {}

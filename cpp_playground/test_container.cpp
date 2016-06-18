@@ -9,7 +9,7 @@
 #include <iostream>
 
 #include "container.hpp"
-#include "SomeClassA.hpp"
+//#include "SomeClassA.hpp"
 #include "SomeClassB.hpp"
 
 
@@ -23,22 +23,25 @@ int main(int argc, char *argv[])
 
     Container cnt;
 
-    auto a = new SomeClassA(true);
+    auto b = new SomeClassB(2, 4);
 
-    cnt.registerService("huh", a, typeid(a).name());
+    //cnt.registerService("huh", b, typeid(b).name());
+    cnt.registerService<SomeClassA>("huh", *b);
 
-    void *p = cnt.get_service("huh");
+    auto& a = cnt.get_service<SomeClassA>("huh");
 
-    if (p) {
-    	//SomeClassA * b = (SomeClassA *) p;
-    	SomeClassA * b = static_cast<SomeClassA *>( p );
-    	int z = b->getThing();
-        std::cout << "Z: " << z << std::endl;
-    }
+    //SomeClassA& aaa = cnt.get_service("huh");
+
+//    if (p) {
+//    	//SomeClassA * b = (SomeClassA *) p;
+//    	SomeClassA * b = static_cast<SomeClassA *>( p );
+//    	int z = b->getThing();
+//        std::cout << "Z: " << z << std::endl;
+//    }
 
     //
 
-    cnt.loadFromYamlFile("test_container.yml");
+    //cnt.loadFromYamlFile("test_container.yml");
 
     cnt.debugDumpContainer(std::cout);
 

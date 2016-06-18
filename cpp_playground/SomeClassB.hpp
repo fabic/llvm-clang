@@ -1,8 +1,8 @@
 #include <cstdlib>
-
+# include "SomeClassA.hpp"
 #include "ServiceDefinition.hpp"
 
-class SomeClassB {
+class SomeClassB : public SomeClassA {
 	int x, y, z;
 private:
 	SomeClassB() {}
