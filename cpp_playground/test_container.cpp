@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
     //cnt.registerService("huh", b, typeid(b).name());
     cnt.registerService<SomeClassA>("huh", *b);
 
-    auto& a = cnt.get_service<SomeClassA>("huh");
-    cout << "Here's type of service `huh` : " << di::type_info(a).name() << endl;
+//    auto a = cnt.get_service<SomeClassA>("huh");
+//    cout << "Here's type of service `huh` : " << di::type_info(a).name() << endl;
 
     auto def = cnt.new_service_definition<SomeClassA>("huh");
 
@@ -42,6 +42,8 @@ int main(int argc, char *argv[])
     });
 
     auto huh = def.get_instance();
+
+    cout << "Here's type of service `huh` : " << di::type_info(*huh).name() << endl;
 
     huh->doSomething1();
     cout << "doSomething: ok" << endl;

@@ -163,7 +163,7 @@ namespace fabic {
             }
 
             bool has_instance() const {
-                return !!this->instance;
+                return this->instance != nullptr;
             }
 
             PointerT get_instance() {
@@ -179,8 +179,13 @@ namespace fabic {
         class base_service {
         protected:
             string id;
+            base_service_definition *definition;
         public:
-            base_service(string name) : id(name) {}
+            base_service(string name)
+                    : id(name),
+                      definition(nullptr)
+            { }
+
             virtual ~base_service() {}
 
             string get_service_id() { return this->id; }
@@ -243,19 +248,19 @@ namespace fabic {
                 return *this;
             }
 
-            template<typename T>
-            T& get_service(string id) {
-                auto it = this->services.find(id);
+            template<typename T, class PointerT = std::shared_ptr<T>>
+            PointerT get_service(string id) {
+                auto it = this->service_definitions.find(id);
 
-                if (it == this->services.end())
+                if (it == this->service_definitions.end())
                     throw new service_not_found_exception();
 
-                auto base_definition = it->second;
+                auto def = it->second;
 
-                auto typed_definition = dynamic_cast< service<T>* >(base_definition);
+                auto typed_def = dynamic_cast< service_definition<T, PointerT>* >(def);
 
-                if (typed_definition != nullptr) {
-                    return typed_definition->get_instance();
+                if (typed_def != nullptr) {
+                    return typed_def->get_instance();
                 }
                 else {
                     throw new std::exception();
