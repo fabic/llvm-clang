@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     auto b = new SomeClassB(2, 4);
 
     //cnt.registerService("huh", b, typeid(b).name());
-    cnt.registerService<SomeClassA>("huh", *b);
+//    cnt.registerService<SomeClassA>("huh", *b);
 
 //    auto a = cnt.get_service<SomeClassA>("huh");
 //    cout << "Here's type of service `huh` : " << di::type_info(a).name() << endl;
@@ -41,7 +41,9 @@ int main(int argc, char *argv[])
         return std::make_shared<SomeClassB>(1,2);
     });
 
-    auto huh = def.get_instance();
+    auto ttt = def.get_instance();
+
+    auto huh = cnt.get_service<SomeClassA>("huh");
 
     cout << "Here's type of service `huh` : " << di::type_info(*huh).name() << endl;
 

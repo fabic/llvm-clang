@@ -115,6 +115,10 @@ namespace fabic {
             virtual const dependencies_map& get_dependencies_map() const {
                 throw new std::exception();
             }
+
+            virtual void construct() throw(std::exception) {
+                throw new std::exception();
+            }
         };
 
         /**
@@ -123,7 +127,7 @@ namespace fabic {
         template<class T, class PointerT = std::shared_ptr<T>>
         class service_definition : public base_service_definition {
         public:
-            typedef std::function<PointerT (dependencies_map& deps)> factory_function_t;
+            typedef std::function<PointerT (base_service_definition::dependencies_map& deps)> factory_function_t;
         private:
             type_info type;
             dependencies_map dependencies;
@@ -162,65 +166,18 @@ namespace fabic {
                 return *this;
             }
 
+            virtual void construct() throw(std::exception) {
+                if (! this->has_instance())
+                    this->instance = this->factory( this->dependencies );
+            }
+
             bool has_instance() const {
                 return this->instance != nullptr;
             }
 
             PointerT get_instance() {
-                if (! this->has_instance())
-                    this->instance = this->factory( this->dependencies );
+                this->construct();
                 return this->instance;
-            }
-        };
-
-        /**
-         *
-         */
-        class base_service {
-        protected:
-            string id;
-            base_service_definition *definition;
-        public:
-            base_service(string name)
-                    : id(name),
-                      definition(nullptr)
-            { }
-
-            virtual ~base_service() {}
-
-            string get_service_id() { return this->id; }
-
-            string get_sevice_type_name() {
-                return type_info::demangle_cxx_type_name(typeid(*this).name());
-            }
-
-            virtual void* get_void_instance_ptr() = 0;
-        };
-
-        /**
-         * a "type-able" service definition, one for which typeid() is possible upon.
-         * todo: eventually refactor as typeable_service_definition ?
-         */
-        template<class T>
-        class service : public base_service {
-        private:
-            type_info type;
-            T& instance;
-        public:
-            service(string service_id, T& instance)
-                    : base_service(service_id),
-                      type(instance),
-                      instance(instance)
-            { }
-
-            virtual ~service() {}
-
-            T& get_instance() {
-                return this->instance;
-            }
-
-            virtual void* get_void_instance_ptr() {
-                return static_cast<void*>( &this->get_instance() );
             }
         };
 
@@ -233,23 +190,15 @@ namespace fabic {
             class service_not_found_exception : std::exception {};
 
         private:
-            map<string, base_service * > services;
             map<string, base_service_definition * > service_definitions;
 
         public:
             Container();
 
-            //Container& registerService(string service_id, void * instance, string type_name = nullptr);
-
-            template<typename T>
-            Container& registerService(string service_id, T& instance) {
-                auto def = new service<T>(service_id, instance);
-                this->services.insert(std::make_pair(service_id, def));
-                return *this;
-            }
-
             template<typename T, class PointerT = std::shared_ptr<T>>
             PointerT get_service(string id) {
+                this->resolve_service_dependencies(id);
+
                 auto it = this->service_definitions.find(id);
 
                 if (it == this->service_definitions.end())
@@ -266,6 +215,8 @@ namespace fabic {
                     throw new std::exception();
                 }
             }
+
+            void resolve_service_dependencies(string service_id);
 
             template<typename T>
             service_definition<T>&

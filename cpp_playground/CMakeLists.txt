@@ -32,8 +32,8 @@ add_executable(test2 test2.cpp SomeClassA.cpp)
 
 
 project('test_container')
-add_executable(test_container test_container.cpp container.cpp SomeClassA.cpp SomeClassB.cpp)
-target_link_libraries(test_container yaml-cpp boost_filesystem boost_system)
+add_executable(test_container test_container.cpp container.cpp SomeClassA.cpp SomeClassB.cpp hack_cxa_throw_exception.cpp)
+target_link_libraries(test_container yaml-cpp boost_filesystem boost_system unwind dl)
 
 
 project('fcgi_echo')

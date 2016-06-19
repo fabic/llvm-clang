@@ -41,13 +41,6 @@ namespace fabic {
         {
             os << "HEY !" << std::endl;
 
-            for(auto& pair : this->services) {
-                base_service * def = pair.second;
-                os << def->get_service_id() << " : "
-                   << def->get_sevice_type_name()
-                   << std::endl;
-            }
-
             for(const auto& pair : this->service_definitions) {
                 base_service_definition * base = pair.second;
                 os << base->get_service_id() << " : "
@@ -66,6 +59,22 @@ namespace fabic {
             }
 
             return *this;
+        }
+
+        void Container::resolve_service_dependencies(string service_id) {
+            auto it = this->service_definitions.find(service_id);
+
+            if (it == this->service_definitions.end())
+                throw new service_not_found_exception();
+
+            auto def = it->second;
+
+            auto dependencies = def->get_dependencies_map();
+
+            for(auto pair : dependencies) {
+                auto depdecl = pair.second;
+                std::cout << depdecl->get_service_type().name();
+            }
         }
 
         // static
