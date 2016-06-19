@@ -1,6 +1,6 @@
 #include <cstdlib>
 # include "SomeClassA.hpp"
-#include "ServiceDefinition.hpp"
+//#include "ServiceDefinition.hpp"
 
 class SomeClassB : public SomeClassA {
 	int x, y, z;
@@ -15,5 +15,5 @@ public:
 
 	int getThing();
 
-    static SomeClassB * instantiateService(fabic::di::ServiceDefinition& def);
+    //static SomeClassB * instantiateService(fabic::di::ServiceDefinition& def);
 };

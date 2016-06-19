@@ -13,7 +13,9 @@ include_directories(../misc/boostcgi)
 #link_directories(../misc/boost)
 #set(PROJECT_LINK_LIBS boost_filesystem boost_system)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -Wall")
 
 
 set(SOURCE_FILES main.cpp Process.cpp Process.h Syscall.h)

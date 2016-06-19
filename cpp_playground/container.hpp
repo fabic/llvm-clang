@@ -13,7 +13,7 @@
 #include <cxxabi.h>
 
 #include "object.hpp"
-#include "ServiceDefinition.hpp"
+//#include "ServiceDefinition.hpp"
 
 namespace fabic {
     namespace di {
@@ -33,7 +33,8 @@ namespace fabic {
         public:
             type_info(const std::type_info& type, bool _unused)
                     : mangled_name(type.name()),
-                      type_name(demangle_cxx_type_name(mangled_name.c_str()))
+                      type_name(demangle_cxx_type_name(mangled_name.c_str())),
+                      is_object_instance(false) // fixme
             { }
 
             /**
@@ -179,8 +180,9 @@ namespace fabic {
         public:
             service(string service_id, T& instance)
                     : base_service(service_id),
-                      instance(instance),
-                      type(instance) { }
+                      type(instance),
+                      instance(instance)
+            { }
 
             virtual ~service() {}
 

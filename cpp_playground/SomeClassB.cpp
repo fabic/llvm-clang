@@ -14,6 +14,6 @@ int SomeClassB::getThing() {
     return z;
 }
 
-SomeClassB *SomeClassB::instantiateService(fabic::di::ServiceDefinition &def) {
-    return nullptr;
-}
+//SomeClassB *SomeClassB::instantiateService(fabic::di::ServiceDefinition &def) {
+//    return nullptr;
+//}
