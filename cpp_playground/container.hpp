@@ -8,7 +8,8 @@
 #include <ostream>
 #include <typeinfo>
 #include <type_traits>
-
+#include <functional>
+#include <memory>
 
 #include <cxxabi.h>
 
@@ -119,15 +120,22 @@ namespace fabic {
         /**
          *
          */
-        template<class T>
+        template<class T, class PointerT = std::shared_ptr<T>>
         class service_definition : public base_service_definition {
+        public:
+            typedef std::function<PointerT (dependencies_map& deps)> factory_function_t;
         private:
             type_info type;
             dependencies_map dependencies;
+            factory_function_t factory;
+            PointerT instance;
         public:
             service_definition(string service_id)
                     : base_service_definition(service_id),
-                      type(typeid(T), false) {}
+                      type(typeid(T), false),
+                      factory(),
+                      instance()
+            { }
 
             virtual ~service_definition() {}
 
@@ -146,6 +154,22 @@ namespace fabic {
 
             virtual const dependencies_map& get_dependencies_map() const {
                 return this->dependencies;
+            }
+
+            service_definition<T>&
+            set_factory_function(factory_function_t functor) {
+                this->factory = functor;
+                return *this;
+            }
+
+            bool has_instance() const {
+                return !!this->instance;
+            }
+
+            PointerT get_instance() {
+                if (! this->has_instance())
+                    this->instance = this->factory( this->dependencies );
+                return this->instance;
             }
         };
 

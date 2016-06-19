@@ -35,6 +35,17 @@ int main(int argc, char *argv[])
 
     def.requires<SomeClassB>("hah");
     def.requires<SomeClassB>("heeeey");
+    def.set_factory_function([](di::base_service_definition::dependencies_map& deps) -> std::shared_ptr<SomeClassA> {
+        std::cerr << "YEAH! that's service `huh` factory functor bein' invoqued"
+                     " which is quite remarkable, actually" << endl;
+        return std::make_shared<SomeClassB>(1,2);
+    });
+
+    auto huh = def.get_instance();
+
+    huh->doSomething1();
+    cout << "doSomething: ok" << endl;
+    cout << "getThing: " << huh->getThing() << endl;
 
     cnt.new_service_definition<SomeClassB>("hey.b.1");
     cnt.new_service_definition<SomeClassB>("hey.b.2");
