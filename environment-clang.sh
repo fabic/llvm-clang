@@ -19,10 +19,24 @@ export CC CXX
 
 if [ -d "$here/local/include" ]; then
     pathprepend "$here/local/include" CPATH
+    pathprepend "$here/local/include" CPLUS_INCLUDE_PATH
+    pathprepend "$here/local/include" INCLUDE_PATH
+    export CPATH CPLUS_INCLUDE_PATH
 fi
 
 if [ -d "$here/local/lib" ]; then
     pathprepend "$here/local/lib" LD_RUN_PATH
+    pathprepend "$here/local/lib" LIBRARY_PATH
+    export LD_RUN_PATH LIBRARY_PATH
+fi
+
+if [ -d "$here/local/include/c++/v1" ] && [ -f "$here/local/include/c++/v1/cxxabi.h" ]; then
+    echo "|"
+    echo "| » Hey! good, found local/include/c++/v1 (LLVM/Clang libc++/abi STL implementation)"
+    echo "|"
+    CXXFLAGS="-std=c++1y -stdlib=libc++ $CXXFLAGS"
+    pathprepend "$here/local/include/c++/v1" CPLUS_INCLUDE_PATH
+    export CXXFLAGS CPLUS_INCLUDE_PATH
 fi
 
 sh $here/show-environment.sh

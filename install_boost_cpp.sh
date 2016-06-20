@@ -93,7 +93,14 @@ echo "| Ok, proceeding with the ./b2 “thing” (compilation & installation)...
 echo "|"
 
 time \
-	./b2 -j$jobs_count --stagedir=. --layout=tagged variant=debug,release link=shared threading=multi address-model=64 cxxflags='-std=c++11' install
+	./b2 -j$jobs_count --stagedir=. --layout=tagged \
+		variant=debug,release \
+		link=shared \
+		threading=multi \
+		address-model=64 \
+		cxxflags='-std=c++1y -stdlib=libc++' \
+		linkflags='-stdlib=libc++' \
+			install
 
 retv=$?
 if [ $retv -gt 0 ]; then
