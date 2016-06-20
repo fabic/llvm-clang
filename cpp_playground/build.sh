@@ -4,7 +4,7 @@
 
 here=$(dirname "$0")
 
-cd "$here" || exit 127
+pushd "$here" || exit 127
 
 echo
 echo "+-- $0"
@@ -50,8 +50,8 @@ echo "|"
 echo "| List of executable files under '$here/build/' :"
 echo "|"
 
-# move up out of build/
-cd .. &&
+# move out of build/ (return to previous dir.)
+popd &&
     find "$here/build/" \( -type d -name CMakeFiles -prune \) -o -type f -perm -a+x -ls
 
 echo "|"
