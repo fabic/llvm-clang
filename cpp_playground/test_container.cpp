@@ -17,6 +17,9 @@ using std::cout;
 using std::endl;
 
 
+/**
+ * MAIN
+ */
 int main(int argc, char *argv[])
 {
     namespace di = fabic::di;
@@ -33,13 +36,16 @@ int main(int argc, char *argv[])
 
     auto def = cnt.new_service_definition<SomeClassA>("huh");
 
-    def.requires<SomeClassB>("hah");
-    def.requires<SomeClassB>("heeeey");
-    def.set_factory_function([](di::base_service_definition::dependencies_map& deps) -> std::shared_ptr<SomeClassA> {
-        std::cerr << "YEAH! that's service `huh` factory functor bein' invoqued"
-                     " which is quite remarkable, actually" << endl;
-        return std::make_shared<SomeClassB>(1,2);
-    });
+    def.requires<SomeClassB>("huh_first_dep");
+    def.requires<SomeClassB>("huh_second_dep");
+
+    def.set_factory_function(
+        [](di::base_service_definition::dependencies_map& deps) -> std::shared_ptr<SomeClassA> {
+            std::cerr << "YEAH! that's service `huh` factory functor bein' invoqued"
+                         " which is quite remarkable, actually" << endl;
+            return std::make_shared<SomeClassB>(1,2);
+        }
+    );
 
     auto ttt = def.get_instance();
 

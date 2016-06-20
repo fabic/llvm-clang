@@ -62,6 +62,8 @@ namespace fabic {
         }
 
         void Container::resolve_service_dependencies(string service_id) {
+            logtrace("Container::resolve_service_dependencies('" << service_id << "')");
+
             auto it = this->service_definitions.find(service_id);
 
             if (it == this->service_definitions.end())
@@ -75,6 +77,8 @@ namespace fabic {
                 auto depdecl = pair.second;
                 std::cout << depdecl->get_service_type().name();
             }
+
+            logtrace("Container::resolve_service_dependencies('" << service_id << "') : END.");
         }
 
         // static

@@ -11,6 +11,13 @@ echo "+-- $0"
 echo "| We're here at: `pwd` (rel.: $here)"
 echo "|"
 
+if [ $# -ge 1 ]; then
+    echo "| Ok, additional arguments provided will be for Ninja :"
+    echo "|"
+    echo "|   $@"
+    echo "|"
+fi
+
 if [ -d build ]; then
     echo "| Removing build/ directory."
     rm -rf build/
@@ -34,7 +41,7 @@ echo "| Running make..."
 echo "|"
 
 #time make
-time ninja -v
+time ninja -v "$@"
 
 retv=$?
 if [ $retv -gt 0 ]; then

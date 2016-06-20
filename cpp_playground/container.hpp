@@ -13,8 +13,17 @@
 
 #include <cxxabi.h>
 
+//#include <boost/log/trivial.hpp>
+// ^ fixme: linking pb.
+
+#ifdef BOOST_LOG_TRIVIAL
+#  define logtrace() BOOST_LOG_TRIVIAL(trace)
+#else
+#  define logtrace(message) std::cerr << "TRACE: " << message << std::endl
+#endif
+
+
 #include "object.hpp"
-//#include "ServiceDefinition.hpp"
 
 namespace fabic {
     namespace di {
@@ -197,6 +206,8 @@ namespace fabic {
 
             template<typename T, class PointerT = std::shared_ptr<T>>
             PointerT get_service(string id) {
+                logtrace("get_service('" << id << "')");
+
                 this->resolve_service_dependencies(id);
 
                 auto it = this->service_definitions.find(id);
@@ -206,9 +217,12 @@ namespace fabic {
 
                 auto def = it->second;
 
+                logtrace(" » found service: " << id << ", got a " << def->get_sevice_definition_type_name());
+
                 auto typed_def = dynamic_cast< service_definition<T, PointerT>* >(def);
 
                 if (typed_def != nullptr) {
+                    logtrace(" » service is-a : " << typed_def->get_type_info().name());
                     return typed_def->get_instance();
                 }
                 else {

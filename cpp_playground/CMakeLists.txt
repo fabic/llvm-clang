@@ -72,7 +72,13 @@ add_executable(test2 test2.cpp SomeClassA.cpp)
 # project('test_container')
 add_executable(test_container test_container.cpp container.cpp SomeClassA.cpp SomeClassB.cpp hack_cxa_throw_exception.cpp)
 target_include_directories(test_container PUBLIC ../../misc/yaml-cpp/include)
-target_link_libraries(test_container ${YamlCppLibSoPath} ${Boost_LIBRARIES} unwind dl)
+target_link_libraries(
+	test_container
+	${YamlCppLibSoPath}
+	${Boost_LIBRARIES}
+	unwind dl # for hack_cxa_throw_exception.cpp
+	pthread
+	)
 
 
 # project('fcgi_echo')
