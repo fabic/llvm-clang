@@ -65,8 +65,8 @@ namespace fabic {
             // thrown from some deep abyss "character conversion failed".
             //   http://www.boost.org/doc/libs/1_61_0/doc/html/program_options/howto.html#idp308994400
             //   http://en.cppreference.com/w/cpp/locale/locale/global
-            //std::locale::global(std::locale(""));
-            std::locale::global(std::locale("en_US.UTF-8"));
+            std::locale::global(std::locale(""));
+            //std::locale::global(std::locale("en_US.UTF-8"));
             //std::locale::global(std::locale::classic());
 
             po::options_description desc("Allowed options");

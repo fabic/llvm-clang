@@ -24,17 +24,17 @@ namespace fabic {
 //        	return it->second.second;
 //        }
 
-        Container& Container::loadFromYamlFile(string filename) {
-			YAML::Node yaml = YAML::LoadFile(filename);
-            std::cerr << yaml.Type() << std::endl;
-            const auto& srvs = yaml["services"];
-            if (srvs.IsDefined()) {
-                for(auto it = srvs.begin(); it != srvs.end(); it++) {
-                    std::cerr << it->Type() << std::endl;
-                }
-            }
-            return *this;
-		}
+  //       Container& Container::loadFromYamlFile(string filename) {
+		// 	YAML::Node yaml = YAML::LoadFile(filename);
+  //           std::cerr << yaml.Type() << std::endl;
+  //           const auto& srvs = yaml["services"];
+  //           if (srvs.IsDefined()) {
+  //               for(auto it = srvs.begin(); it != srvs.end(); it++) {
+  //                   std::cerr << it->Type() << std::endl;
+  //               }
+  //           }
+  //           return *this;
+		// }
 
 
         Container& Container::debugDumpContainer(std::ostream &os)
