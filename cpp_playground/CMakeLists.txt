@@ -32,8 +32,29 @@ endif()
 #include_directories("${BOOT_ROOT}/include")
 include_directories(../misc/boostcgi)
 
+find_library(YamlCpp yaml-cpp.so PATHS ../misc/yaml-cpp/build)
+# ^ fixme: fails.
 # find_library(YamlCpp yaml-cpp.so PATHS ../misc/yaml-cpp/build)
-find_file(YamlCppLibSoPath libyaml-cpp.so PATHS ../misc/yaml-cpp/build)
+
+##
+## cpp-netlib
+##
+## fixme: hard-coded paths, can't get my way 'round those CMake stuff...
+##
+include_directories(../misc/cpp-netlib)
+include_directories(../misc/cpp-netlib/deps/uri/include)
+
+find_file(
+	LibCppNetlibClientConnections
+	libcppnetlib-client-connections.so
+	PATHS ../misc/cpp-netlib/build/libs/network/src
+	)
+
+find_file(
+	LibCppNetlibServerParsers
+	libcppnetlib-server-parsers.so
+	PATHS ../misc/cpp-netlib/build/libs/network/src
+	)
 
 set(SOURCE_FILES main.cpp Process.cpp Process.h Syscall.h)
 add_executable(cpp_playground ${SOURCE_FILES})
@@ -67,3 +88,13 @@ add_executable(mixed_main mixed_main.cpp)
 # project('boost_playground')
 add_executable(boost_options_debug_encoding boost_options_debug_encoding.cpp)
 target_link_libraries(boost_options_debug_encoding ${Boost_LIBRARIES} dl unwind)
+
+
+add_executable(cppnetlib_test1 cppnetlib_test1.cpp)
+target_link_libraries(cppnetlib_test1
+	${Boost_LIBRARIES}
+	${LibCppNetlibClientConnections}
+	${LibCppNetlibServerParsers}
+	dl unwind
+	pthread
+	)
