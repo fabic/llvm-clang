@@ -73,7 +73,7 @@ namespace fabic {
         private:
             string service_id;
         public:
-            base_dependency_declaration() {}
+            base_dependency_declaration(string service_id) : service_id(service_id) {}
             virtual ~base_dependency_declaration() {}
 
             string get_service_id() { return this->service_id; }
@@ -90,7 +90,8 @@ namespace fabic {
             type_info type;
         public:
             dependency_declaration(string service_id)
-                    : type(typeid(T), false) {}
+                    : base_dependency_declaration(service_id),
+                      type(typeid(T), false) {}
 
             virtual const type_info& get_service_type() const {
                 return this->type;
@@ -117,7 +118,7 @@ namespace fabic {
                 throw new std::exception();
             }
 
-            string get_sevice_definition_type_name() {
+            string get_service_definition_type_name() {
                 return type_info::demangle_cxx_type_name(typeid(*this).name());
             }
 
@@ -156,12 +157,24 @@ namespace fabic {
 
             template<typename D>
             service_definition<T>&
-            requires(string service_id) {
-                this->dependencies.insert(
+            requires(string service_id)
+            {
+                logtrace("Service " << this->get_service_id() << " is-a " << this->get_service_definition_type_name() << ", requires(" << service_id << ").");
+
+                auto pair = this->dependencies.insert(
                         std::make_pair(
                                 service_id,
                                 new dependency_declaration<D>(service_id)
                         ));
+
+                bool success = pair.second;
+                if (!success)
+                    throw new std::exception();
+
+                auto it = pair.first;
+
+                logtrace(" » inserted dependency '" << it->second->get_service_id() << "' is-a " << type_info(*it->second).name() );
+
                 return *this;
             }
 
@@ -217,7 +230,7 @@ namespace fabic {
 
                 auto def = it->second;
 
-                logtrace(" » found service: " << id << ", got a " << def->get_sevice_definition_type_name());
+                logtrace(" » found service: " << id << ", got a " << def->get_service_definition_type_name());
 
                 auto typed_def = dynamic_cast< service_definition<T, PointerT>* >(def);
 

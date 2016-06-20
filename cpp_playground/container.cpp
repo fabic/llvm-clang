@@ -44,7 +44,7 @@ namespace fabic {
             for(const auto& pair : this->service_definitions) {
                 base_service_definition * base = pair.second;
                 os << base->get_service_id() << " : "
-                   << base->get_sevice_definition_type_name();
+                   << base->get_service_definition_type_name();
 
                 os << ", type: " << base->get_type_info().name();
 
@@ -71,7 +71,11 @@ namespace fabic {
 
             auto def = it->second;
 
+            logtrace(" » found service: " << service_id << ", got a " << def->get_service_definition_type_name());
+
             auto dependencies = def->get_dependencies_map();
+
+            logtrace(" » dependencies map contains " << dependencies.size() << " elements.");
 
             for(auto pair : dependencies) {
                 auto depdecl = pair.second;

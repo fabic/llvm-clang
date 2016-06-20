@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
         }
     );
 
-    auto ttt = def.get_instance();
+    //auto ttt = def.get_instance();
 
     auto huh = cnt.get_service<SomeClassA>("huh");
 
