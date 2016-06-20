@@ -38,8 +38,9 @@ namespace fabic {
          */
         int main(program_arguments &args) {
 
-            std::cout << "Hello world, you reached this point, can't believe it!"
-                    " (libcsdbg test 1)" << std::endl;
+            std::cout << "Hello world, you reached this point, can't believe it!" << std::endl;
+            std::cout << "  » address : " << args["address"].as<std::string>() << std::endl;
+            std::cout << "  » port : "    << args["port"].as<int>() << std::endl;
 
             return 0;
         }
@@ -70,8 +71,12 @@ namespace fabic {
             po::options_description desc("Allowed options");
             desc.add_options()
                     ("help", "produce help message")
-                    ("address", po::value<char>(), "Hostname or IP address")
-                    ("port", po::value<char>(), "TCP port number");
+                    ("address",
+                    	po::value<std::string>()->default_value("localhost"),
+                    	"Hostname or IP address")
+                    ("port",
+                    	po::value<int>()->default_value(1234),
+                    	"TCP port number");
 
             po::positional_options_description posit;
             posit.add("extra", -1);

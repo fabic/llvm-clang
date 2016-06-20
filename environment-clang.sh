@@ -27,6 +27,7 @@ fi
 if [ -d "$here/local/lib" ]; then
     pathprepend "$here/local/lib" LD_RUN_PATH
     pathprepend "$here/local/lib" LIBRARY_PATH
+    pathprepend "$here/local/lib" LD_LIBRARY_PATH
     export LD_RUN_PATH LIBRARY_PATH
 fi
 
