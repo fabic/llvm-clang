@@ -8,6 +8,7 @@
  *
  * EDIT/2016-06-17: -_- the "bug" disappeared magically after I rebuilt Boost.
  * EDIT/2016-06-17: -_- and re-appeared, grrr!
+ * EDIT/2016-06-20: Pb doesn't occur if I build against Clang's libcxx/abi.
  *
  * Buid with :
  *   - $CXX -g -O0 -rdynamic -std=c++14 -frtti -lboost_program_options -lunwind -ldl -lbfd -lpthread -o boost_options_debug_encoding boost_options_debug_encoding.cpp
