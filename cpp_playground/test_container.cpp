@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 //    auto a = cnt.get_service<SomeClassA>("huh");
 //    cout << "Here's type of service `huh` : " << di::type_info(a).name() << endl;
 
-    auto def = cnt.new_service_definition<SomeClassA>("huh");
+    auto& def = cnt.new_service_definition<SomeClassA>("huh");
 
     def.requires<SomeClassB>("huh_first_dep");
     def.requires<SomeClassB>("huh_second_dep");

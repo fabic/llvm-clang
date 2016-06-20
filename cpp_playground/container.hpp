@@ -6,12 +6,14 @@
 #include <forward_list>
 #include <string>
 #include <ostream>
+#include <cstdio>
 #include <typeinfo>
 #include <type_traits>
 #include <functional>
 #include <memory>
 
 #include <cxxabi.h>
+#include <boost/format.hpp>
 
 //#include <boost/log/trivial.hpp>
 // ^ fixme: linking pb.
@@ -22,6 +24,7 @@
 #  define logtrace(message) std::cerr << "TRACE: " << message << std::endl
 #endif
 
+#define format_address_of(x) (boost::format("%x") % x)
 
 #include "object.hpp"
 
@@ -159,7 +162,7 @@ namespace fabic {
             service_definition<T>&
             requires(string service_id)
             {
-                logtrace("Service " << this->get_service_id() << " is-a " << this->get_service_definition_type_name() << ", requires(" << service_id << ").");
+                logtrace("Service " << this->get_service_id() << " is-a " << this->get_service_definition_type_name() << ", requires(" << service_id << "), address : " << format_address_of(this));
 
                 auto pair = this->dependencies.insert(
                         std::make_pair(
@@ -173,8 +176,11 @@ namespace fabic {
 
                 auto it = pair.first;
 
-                logtrace(" » inserted dependency '" << it->second->get_service_id() << "' is-a " << type_info(*it->second).name() );
+                logtrace(" » inserted dependency '"
+                    << it->second->get_service_id()
+                    << "' is-a " << type_info(*it->second).name() );
 
+                logtrace(" » dependencies_map contains " << this->dependencies.size() << " elements.");
                 return *this;
             }
 
@@ -230,7 +236,7 @@ namespace fabic {
 
                 auto def = it->second;
 
-                logtrace(" » found service: " << id << ", got a " << def->get_service_definition_type_name());
+                logtrace(" » found service: " << id << ", got a " << def->get_service_definition_type_name() << ", address: " << format_address_of(this));
 
                 auto typed_def = dynamic_cast< service_definition<T, PointerT>* >(def);
 
@@ -249,7 +255,16 @@ namespace fabic {
             service_definition<T>&
             new_service_definition(string service_id) {
                 auto def = new service_definition<T>(service_id);
-                this->service_definitions.insert(std::make_pair(service_id, def));
+                auto pair = this->service_definitions.insert(std::make_pair(service_id, def));
+
+                bool success = pair.second == true;
+                if (!success)
+                    throw new std::exception();
+
+                auto it = pair.first;
+
+                logtrace("Container::new_service_definition('" << it->second->get_service_id() << "'), address: " << format_address_of(it->second));
+
                 return *def;
             }
 
