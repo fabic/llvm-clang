@@ -105,6 +105,10 @@ namespace fabic {
          *
          */
         class base_service_definition {
+            friend class Container;
+        private:
+            base_service_definition(const base_service_definition&) = delete;
+            base_service_definition& operator=(const base_service_definition&) = delete;
         public:
             typedef map<string, base_dependency_declaration *> dependencies_map;
 

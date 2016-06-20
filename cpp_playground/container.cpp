@@ -44,7 +44,8 @@ namespace fabic {
             for(const auto& pair : this->service_definitions) {
                 base_service_definition * base = pair.second;
                 os << base->get_service_id() << " : "
-                   << base->get_service_definition_type_name();
+                   << base->get_service_definition_type_name()
+                   << ", address: " << format_address_of(base);
 
                 os << ", type: " << base->get_type_info().name();
 
@@ -54,7 +55,9 @@ namespace fabic {
                 for(const auto& tuple : deps) {
                     base_dependency_declaration& dep = *tuple.second;
                     os << "  » " << dep.get_service_id()
-                       << " as " << dep.get_service_type().name() << std::endl;
+                       << " as " << dep.get_service_type().name()
+                       << ", address: " << format_address_of(&dep)
+                       << std::endl;
                 }
             }
 
