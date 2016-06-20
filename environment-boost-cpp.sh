@@ -28,7 +28,7 @@ fi
 boost_modular_dir="$here/misc/boost"
 
 # 1) try local/boost-1.61.0-clang/ install location
-BOOST_ROOT=( $( find "$here/local" -maxdepth 1 -type d -name "boost-*-${CC}" ) )
+BOOST_ROOT="$( find "$here/local" -maxdepth 1 -type d -name "boost-*-${CC}" )"
 
 echo -n "| Trying \$BOOST_ROOT = $BOOST_ROOT : "
 
