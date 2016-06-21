@@ -26,10 +26,9 @@ int main(int argc, char *argv[])
 {
     namespace di = fabic::di;
 
-    //di::Container cnt;
     auto cnt = di::Container::new_container_instance();
 
-    auto serv1 = std::make_shared<di::service<SomeClassA>>("some.class.a.1");
+    auto serv1 = std::make_shared<di::service<SomeClassA>>("huh");
 
     serv1->set_factory_function(
         [](di::base_service::dependencies_map_ref deps) -> std::shared_ptr<SomeClassA> {
@@ -41,6 +40,12 @@ int main(int argc, char *argv[])
 
     cnt->register_service( serv1 );
 
+    cnt->register_service( std::make_shared<di::service<SomeClassA>>("hey")   );
+    cnt->register_service( std::make_shared<di::service<SomeClassB>>("hello") );
+    cnt->register_service( std::make_shared<di::service<SomeClassB>>("world") );
+
+    ///////////////////////////////////////////////////////////////////
+
     auto huh = cnt->get_service<SomeClassA>("huh");
 
     cout << "Here's type of service `huh` : " << di::type_info(*huh).name() << endl;
@@ -49,21 +54,9 @@ int main(int argc, char *argv[])
     cout << "doSomething: ok" << endl;
     cout << "getThing: " << huh->getThing() << endl;
 
-    cnt->new_service_definition<SomeClassB>("hey.b.1");
-    cnt->new_service_definition<SomeClassB>("hey.b.2");
-
-    //SomeClassA& aaa = cnt->get_service("huh");
-
-//    if (p) {
-//    	//SomeClassA * b = (SomeClassA *) p;
-//    	SomeClassA * b = static_cast<SomeClassA *>( p );
-//    	int z = b->getThing();
-//        std::cout << "Z: " << z << std::endl;
-//    }
-
-    //
 
     //cnt->loadFromYamlFile("test_container.yml");
+
 
     cnt->debugDumpContainer(std::cout);
 

@@ -13,6 +13,7 @@ namespace di {
 // private btw.
 Container::Container() { }
 
+
 // static btw.
 Container::pointer
 Container::new_container_instance()
@@ -30,6 +31,7 @@ Container::new_container_instance()
 
     return container;
 }
+
 
 Container::service_ptr_t
 Container::service_map::find(string id) throw(Container::service_not_found_exception)
@@ -59,26 +61,33 @@ Container::service_map::find(string id) throw(Container::service_not_found_excep
 
 Container& Container::debugDumpContainer(std::ostream &os)
 {
-    os << "HEY !" << std::endl;
+    os << std::endl
+       << "CONTAINER DEBUG DUMP :"
+       << std::endl;
 
-    for(const auto& pair : this->services) {
-        base_service * base = pair.second;
-        os << base->id() << " : "
-           << base->get_service_definition_type_name()
-           << ", address: " << format_address_of(base);
+    for(const auto& pair : this->services_.get_map_impl())
+    {
+        service_ptr_t base = pair.second;
 
-        os << ", type: " << base->get_type_info().name();
-
-        os << std::endl;
+        os << "  » " << base->id() << " : " << std::endl
+           << "    - is-a:     " << base->get_service_definition_type_name() << std::endl
+           << "    - address : " << format_address_of(base)      << std::endl
+           << "    - type:     " << base->get_type_info().name() << std::endl
+           ;
 
         auto deps = base->get_dependencies_map();
+
+        os << "    - dependencies :" << std::endl;
+
         for(const auto& tuple : deps) {
             base_dependency_declaration& dep = *tuple.second;
-            os << "  » " << dep.get_service_id()
+            os << "        - " << dep.get_service_id()
                << " as " << dep.get_service_type().name()
-               << ", address: " << format_address_of(&dep)
+               << " [" << format_address_of(&dep) << "]"
                << std::endl;
         }
+
+        os << std::endl;
     }
 
     return *this;
