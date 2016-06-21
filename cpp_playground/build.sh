@@ -18,15 +18,29 @@ if [ $# -ge 1 ]; then
     echo "|"
 fi
 
-if [ -d build ]; then
+# Remove build/ subdir. only if no command line
+# arguments were provided (i.e. targets) :
+if [ -d build ] && [ $# -eq 0 ]; then
     echo "| Removing build/ directory."
     rm -rf build/
 fi
 
-mkdir build &&
-cd build || exit 126
+if [ ! -d build ]; then
+    echo "| Creating build/ sub-directory."
+    mkdir -v build ||
+      exit 126
+fi
 
-cmake -G Ninja ..
+if ! cd build/ ; then
+    echo "| FAILED: could not ch. dir. into 'build/'"
+    exit 125
+fi
+
+echo "|"
+echo "| Running CMake..."
+echo "|"
+
+cmake -G Ninja -Wdev --warn-uninitialized --clean-first ..
 
 retv=$?
 if [ $retv -gt 0 ]; then
@@ -37,7 +51,7 @@ if [ $retv -gt 0 ]; then
 fi
 
 echo "|"
-echo "| Running make..."
+echo "| Running Ninja..."
 echo "|"
 
 #time make
@@ -68,3 +82,5 @@ echo "+-- $0"
 echo
 
 exit $retv
+
+# vim: et ts=4 sw=4
