@@ -262,6 +262,7 @@ public:
  */
 class Container {
 public:
+    typedef std::shared_ptr<Container> pointer;
     typedef typename boost::call_traits<Container>::reference reference;
     typedef std::shared_ptr<base_service> service_ptr_t;
 
@@ -319,12 +320,21 @@ private:
     Container(const Container&) = delete;
     Container& operator=(const Container&) = delete;
 
-public:
     /**
-     * Constructor :
-     *   - “ this ” container registers itself as service `container`.
+     * Default ctor made private for we require client codes
+     * to go through new_container_instance() for we do need
+     * to instantiate this on the heap so that we may have
+     * a wrapping shared_ptr.
      */
     explicit Container();
+
+public:
+    /**
+     * Static helper that instantiates a new Container on the heap
+     * that is wrapped into a shared_ptr for injection of the “ container ”
+     * service.
+     */
+    static pointer new_container_instance();
 
     /**
      * Register (add) a service definition to this container.

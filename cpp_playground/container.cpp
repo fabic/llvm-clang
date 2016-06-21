@@ -10,13 +10,26 @@ namespace fabic {
 namespace di {
 
 
-Container::Container() {
+// private btw.
+Container::Container() { }
+
+// static btw.
+Container::pointer
+Container::new_container_instance()
+{
+    pointer container = std::shared_ptr<Container>(
+        new Container()
+    );
+
     auto self = std::make_shared< service<Container> >(
         "container",
-        std::shared_ptr<Container>(this));
-    this->register_service( self );
-}
+        container
+    );
 
+    container->register_service( self );
+
+    return container;
+}
 
 Container::service_ptr_t
 Container::service_map::find(string id) throw(Container::service_not_found_exception)

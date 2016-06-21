@@ -26,7 +26,8 @@ int main(int argc, char *argv[])
 {
     namespace di = fabic::di;
 
-    di::Container cnt;
+    //di::Container cnt;
+    auto cnt = di::Container::new_container_instance();
 
     auto serv1 = std::make_shared<di::service<SomeClassA>>("some.class.a.1");
 
@@ -38,9 +39,9 @@ int main(int argc, char *argv[])
         }
     );
 
-    cnt.register_service( serv1 );
+    cnt->register_service( serv1 );
 
-    auto huh = cnt.get_service<SomeClassA>("huh");
+    auto huh = cnt->get_service<SomeClassA>("huh");
 
     cout << "Here's type of service `huh` : " << di::type_info(*huh).name() << endl;
 
@@ -48,10 +49,10 @@ int main(int argc, char *argv[])
     cout << "doSomething: ok" << endl;
     cout << "getThing: " << huh->getThing() << endl;
 
-    cnt.new_service_definition<SomeClassB>("hey.b.1");
-    cnt.new_service_definition<SomeClassB>("hey.b.2");
+    cnt->new_service_definition<SomeClassB>("hey.b.1");
+    cnt->new_service_definition<SomeClassB>("hey.b.2");
 
-    //SomeClassA& aaa = cnt.get_service("huh");
+    //SomeClassA& aaa = cnt->get_service("huh");
 
 //    if (p) {
 //    	//SomeClassA * b = (SomeClassA *) p;
@@ -62,9 +63,9 @@ int main(int argc, char *argv[])
 
     //
 
-    //cnt.loadFromYamlFile("test_container.yml");
+    //cnt->loadFromYamlFile("test_container.yml");
 
-    cnt.debugDumpContainer(std::cout);
+    cnt->debugDumpContainer(std::cout);
 
     return 0;
 }
