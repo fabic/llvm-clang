@@ -9,11 +9,17 @@
 namespace fabic {
     namespace di {
 
-        Container::Container() {}
+
+        Container::Container() {
+            auto self = std::make_shared< service<Container> >(
+                "container",
+                std::shared_ptr<Container>(this));
+            this->register_service( self );
+        }
+
 
         Container::service_ptr_t
-          Container::service_map::find(string id)
-            throw(Container::service_not_found_exception)
+        Container::service_map::find(string id) throw(Container::service_not_found_exception)
         {
             auto it = this->services_.find( id );
 
@@ -25,22 +31,8 @@ namespace fabic {
             return service;
         }
 
-//
-//		Container& Container::registerService(string service_id, void * instance, string type_name) {
-//			auto p = std::make_pair(type_name, &instance);
-//			services.insert( std::make_pair(service_id, p) );
-//			return *this;
-//		}
-//
-//		void * Container::get_service(string id) {
-//        	auto it = services.find(id);
-//        	if (it == services.end())
-//        		return nullptr;
-//        	return it->second.second;
-//        }
-
   //       Container& Container::loadFromYamlFile(string filename) {
-		// 	YAML::Node yaml = YAML::LoadFile(filename);
+  //        YAML::Node yaml = YAML::LoadFile(filename);
   //           std::cerr << yaml.Type() << std::endl;
   //           const auto& srvs = yaml["services"];
   //           if (srvs.IsDefined()) {
@@ -49,7 +41,8 @@ namespace fabic {
   //               }
   //           }
   //           return *this;
-		// }
+  //       }
+
 
         Container& Container::debugDumpContainer(std::ostream &os)
         {
@@ -75,9 +68,9 @@ namespace fabic {
                 }
             }
 
-
             return *this;
         }
+
 
         void Container::resolve_service_dependencies(string id) {
             logtrace("Container::resolve_service_dependencies('" << id << "')");
@@ -96,7 +89,8 @@ namespace fabic {
             }
         }
 
-        // static
+
+        // static btw.
         string
         type_info::demangle_cxx_type_name(const char *mangled_name)
         {

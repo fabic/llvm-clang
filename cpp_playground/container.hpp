@@ -184,12 +184,20 @@ public:
               instance()
     { }
 
+    service(string id, PointerT ptr) : service(id) {}
+
     virtual ~service() {}
 
     virtual type_info& get_type_info() noexcept { return this->type; }
 
-    template<typename D>
-    service<T>&
+    /**
+     * Declare (add) a dependency over a given service that has type “ Over ”.
+     *
+     *     my_serv->requires<DatabaseConnection>("database.connection");
+     *     my_serv->requires<HttpRequest>("http.request");
+     */
+    template<typename Over>
+    reference
     requires(string service_id)
     {
         logtrace("Service "
@@ -201,7 +209,7 @@ public:
         auto pair = this->dependencies.insert(
             std::make_pair(
                 service_id,
-                new dependency_declaration<D>(service_id)));
+                new dependency_declaration<Over>(service_id)));
 
         bool success = pair.second;
         if (!success)
@@ -244,6 +252,13 @@ public:
 /**
  * Huh! a service container! in C++ ?
  * _yet another one goin' down this road ! why !?_
+ *
+ *
+ * THE DEPENDENCY INJECTION CONTAINER
+ *
+ *   a.k.a IoC container
+ *   a.k.a service container
+ *
  */
 class Container {
 public:
@@ -299,8 +314,17 @@ private:
     map<string, base_service * > services;
     service_map services_;
 
+private:
+    // Prevent implicit copies :
+    Container(const Container&) = delete;
+    Container& operator=(const Container&) = delete;
+
 public:
-    Container();
+    /**
+     * Constructor :
+     *   - “ this ” container registers itself as service `container`.
+     */
+    explicit Container();
 
     /**
      * Register (add) a service definition to this container.
