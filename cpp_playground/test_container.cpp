@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     def.requires<SomeClassB>("huh_second_dep");
 
     def.set_factory_function(
-        [](di::base_service_definition::dependencies_map& deps) -> std::shared_ptr<SomeClassA> {
+        [](di::base_service::dependencies_map_ref deps) -> std::shared_ptr<SomeClassA> {
             std::cerr << "YEAH! that's service `huh` factory functor bein' invoqued"
                          " which is quite remarkable, actually" << endl;
             return std::make_shared<SomeClassB>(1,2);

@@ -14,6 +14,7 @@
 
 #include <cxxabi.h>
 #include <boost/format.hpp>
+#include <boost/call_traits.hpp>
 
 //#include <boost/log/trivial.hpp>
 // ^ fixme: linking pb.
@@ -104,20 +105,22 @@ namespace fabic {
         /**
          *
          */
-        class base_service_definition {
-            friend class Container;
+        class base_service {
         private:
-            base_service_definition(const base_service_definition&) = delete;
-            base_service_definition& operator=(const base_service_definition&) = delete;
+            base_service(const base_service&) = delete;
+            base_service& operator=(const base_service&) = delete;
         public:
             typedef map<string, base_dependency_declaration *> dependencies_map;
-
+            typedef typename boost::call_traits<dependencies_map>::reference dependencies_map_ref;
+            typedef typename boost::call_traits<dependencies_map>::const_reference dependencies_map_cref;
         protected:
             string id;
-        public:
-            explicit base_service_definition(string name) : id(name) {}
+        protected:
 
-            virtual ~base_service_definition() {}
+        public:
+            explicit base_service(string name) : id(name) {}
+
+            virtual ~base_service() {}
 
             string get_service_id() { return this->id; }
 
@@ -129,7 +132,7 @@ namespace fabic {
                 return type_info::demangle_cxx_type_name(typeid(*this).name());
             }
 
-            virtual const dependencies_map& get_dependencies_map() const {
+            virtual dependencies_map_cref get_dependencies_map() const {
                 throw new std::exception();
             }
 
@@ -142,28 +145,29 @@ namespace fabic {
          *
          */
         template<class T, class PointerT = std::shared_ptr<T>>
-        class service_definition : public base_service_definition {
+        class service : public base_service {
         public:
-            typedef std::function<PointerT (base_service_definition::dependencies_map& deps)> factory_function_t;
+            typedef typename boost::call_traits<service>::reference service_ref;
+            typedef std::function<PointerT (dependencies_map_ref deps)> factory_function_t;
         private:
             type_info type;
             dependencies_map dependencies;
             factory_function_t factory;
             PointerT instance;
         public:
-            service_definition(string service_id)
-                    : base_service_definition(service_id),
+            service(string service_id)
+                    : base_service(service_id),
                       type(typeid(T), false),
                       factory(),
                       instance()
             { }
 
-            virtual ~service_definition() {}
+            virtual ~service() {}
 
             virtual type_info& get_type_info() noexcept { return this->type; }
 
             template<typename D>
-            service_definition<T>&
+            service<T>&
             requires(string service_id)
             {
                 logtrace("Service " << this->get_service_id() << " is-a " << this->get_service_definition_type_name() << ", requires(" << service_id << "), address : " << format_address_of(this));
@@ -188,11 +192,11 @@ namespace fabic {
                 return *this;
             }
 
-            virtual const dependencies_map& get_dependencies_map() const {
+            virtual dependencies_map_cref get_dependencies_map() const {
                 return this->dependencies;
             }
 
-            service_definition<T>&
+            service<T>&
             set_factory_function(factory_function_t functor) {
                 this->factory = functor;
                 return *this;
@@ -222,7 +226,7 @@ namespace fabic {
             class service_not_found_exception : std::exception {};
 
         private:
-            map<string, base_service_definition * > service_definitions;
+            map<string, base_service * > service_definitions;
 
         public:
             Container();
@@ -242,7 +246,7 @@ namespace fabic {
 
                 logtrace(" » found service: " << id << ", got a " << def->get_service_definition_type_name() << ", address: " << format_address_of(this));
 
-                auto typed_def = dynamic_cast< service_definition<T, PointerT>* >(def);
+                auto typed_def = dynamic_cast< service<T, PointerT>* >(def);
 
                 if (typed_def != nullptr) {
                     logtrace(" » service is-a : " << typed_def->get_type_info().name());
@@ -256,9 +260,9 @@ namespace fabic {
             void resolve_service_dependencies(string service_id);
 
             template<typename T>
-            service_definition<T>&
+            service<T>&
             new_service_definition(string service_id) {
-                auto def = new service_definition<T>(service_id);
+                auto def = new service<T>(service_id);
                 auto pair = this->service_definitions.insert(std::make_pair(service_id, def));
 
                 bool success = pair.second == true;

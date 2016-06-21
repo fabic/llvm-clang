@@ -14,10 +14,9 @@ then
 
     for e in ${Env[*]}; do
         if [ ! -z "${!e}" ]; then
-            echo "$e=${!e}"
+            echo "$e = ${!e}"
         fi
     done |
-        column -t -s= |
             while read line; do
                 echo "| $line"
             done

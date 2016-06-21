@@ -42,7 +42,7 @@ namespace fabic {
             os << "HEY !" << std::endl;
 
             for(const auto& pair : this->service_definitions) {
-                base_service_definition * base = pair.second;
+                base_service * base = pair.second;
                 os << base->get_service_id() << " : "
                    << base->get_service_definition_type_name()
                    << ", address: " << format_address_of(base);
