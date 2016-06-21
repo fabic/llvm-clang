@@ -105,3 +105,6 @@
 [submodule "libcsdbg"]
 	path = misc/libcsdbg
 	url = git@github.com:fabic/libcsdbg.git
+[submodule "ycmd"]
+	path = misc/valloric-ycmd
+	url = git@github.com:Valloric/ycmd.git

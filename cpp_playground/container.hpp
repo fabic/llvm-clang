@@ -39,6 +39,11 @@ using std::pair;
 
 /**
  *
+ * Type information in C++, huh! -_-
+ *
+ * That which everyone will tell you one shall never do, not even attempt to do
+ * _(but those have secretly tried it when they where younger)_.
+ *
  */
 class type_info {
 private:
@@ -94,6 +99,7 @@ public:
 
 };
 
+
 /**
  * Basic implementation of a dependency for a given service “ identifier ”
  * which is (_must be_) of type “ T ”.
@@ -112,8 +118,9 @@ public:
     }
 };
 
+
 /**
- *
+ * Base abstract class for a “ service definition ”.
  */
 class base_service {
 private:
@@ -126,8 +133,6 @@ public:
     typedef typename boost::call_traits<dependencies_map>::const_reference dependencies_map_cref;
 protected:
     string id_;
-protected:
-
 public:
     explicit base_service(string name) : id_(name) {}
 
@@ -142,6 +147,7 @@ public:
         throw new std::exception();
     }
 
+    // FIXME: temp.
     string get_service_definition_type_name() {
         return type_info::demangle_cxx_type_name(typeid(*this).name());
     }
@@ -186,7 +192,6 @@ public:
     service<T>&
     requires(string service_id)
     {
-        static_assert
         logtrace("Service "
             << this->id()
             << " is-a " << this->get_service_definition_type_name()

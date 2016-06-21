@@ -20,7 +20,7 @@ fi
 
 # Remove build/ subdir. only if no command line
 # arguments were provided (i.e. targets) :
-if [ -d build ] && [ $# -eq 0 ]; then
+if false && [ -d build ] && [ $# -eq 0 ]; then
     echo "| Removing build/ directory."
     rm -rf build/
 fi
@@ -72,8 +72,12 @@ echo "| List of executable files under '$here/build/' :"
 echo "|"
 
 # move out of build/ (return to previous dir.)
+echo &&
 popd &&
-    find "$here/build/" \( -type d -name CMakeFiles -prune \) -o -type f -perm -a+x -ls
+echo &&
+  find "$here/build/" \( -type d -name CMakeFiles -prune \) -o -type f -perm -a+x -print0 | \
+    xargs -0r ls -ltrh | \
+      sed -e 's@^@|    &@'
 
 echo "|"
 echo "| FINISHED, exit status: $retv"

@@ -51,6 +51,9 @@ then
 
     export BOOST_ROOT
 
+    # Actually I think the actual correct one is _without_ the blankee.
+    export BOOSTROOT="$BOOST_ROOT"
+
     # This appears to be needed by CMake for it to find Boost,
     # BOOST_ROOT ain't enough it appears.
     [ -d "$BOOST_ROOT/include" ] && BOOST_INCLUDE_DIRS="${BOOST_ROOT}/include"
@@ -60,8 +63,9 @@ then
 
     pathappend "$BOOST_INCLUDE_DIRS" CPLUS_INCLUDE_PATH
     pathappend "$BOOST_LIBRARY_DIRS" LD_RUN_PATH
+    pathappend "$BOOST_LIBRARY_DIRS" LD_LIBRARY_PATH
 
-    export CPLUS_INCLUDE_PATH LD_RUN_PATH
+    export CPLUS_INCLUDE_PATH LD_RUN_PATH LD_LIBRARY_PATH
 
     #INCLUDE_PATH="$BOOST_ROOT/include:$INCLUDE_PATH"
     #export INCLUDE_PATH

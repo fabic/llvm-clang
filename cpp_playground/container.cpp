@@ -51,7 +51,6 @@ namespace fabic {
   //           return *this;
 		// }
 
-
         Container& Container::debugDumpContainer(std::ostream &os)
         {
             os << "HEY !" << std::endl;
@@ -75,6 +74,7 @@ namespace fabic {
                        << std::endl;
                 }
             }
+
 
             return *this;
         }

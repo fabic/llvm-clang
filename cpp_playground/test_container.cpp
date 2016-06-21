@@ -30,14 +30,7 @@ int main(int argc, char *argv[])
 
     auto serv1 = std::make_shared<di::service<SomeClassA>>("some.class.a.1");
 
-    cnt.register_service(serv1);
-
-    auto& def = cnt.new_service_definition<SomeClassA>("huh");
-
-    def.requires<SomeClassB>("huh_first_dep");
-    def.requires<SomeClassB>("huh_second_dep");
-
-    def.set_factory_function(
+    serv1->set_factory_function(
         [](di::base_service::dependencies_map_ref deps) -> std::shared_ptr<SomeClassA> {
             std::cerr << "YEAH! that's service `huh` factory functor bein' invoqued"
                          " which is quite remarkable, actually" << endl;
@@ -45,7 +38,7 @@ int main(int argc, char *argv[])
         }
     );
 
-    //auto ttt = def.get_instance();
+    cnt.register_service( serv1 );
 
     auto huh = cnt.get_service<SomeClassA>("huh");
 
