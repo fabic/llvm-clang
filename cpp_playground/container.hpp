@@ -209,7 +209,8 @@ public:
         auto pair = this->dependencies.insert(
             std::make_pair(
                 service_id,
-                new dependency_declaration<Over>(service_id)));
+                new dependency_declaration<Over>(service_id)
+        ));
 
         bool success = pair.second;
         if (!success)

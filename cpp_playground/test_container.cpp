@@ -44,6 +44,10 @@ int main(int argc, char *argv[])
     cnt->register_service( std::make_shared<di::service<SomeClassB>>("hello") );
     cnt->register_service( std::make_shared<di::service<SomeClassB>>("world") );
 
+    serv1->requires<SomeClassB>("world");
+    serv1->requires<SomeClassB>("hello");
+    serv1->requires<SomeClassA>("hey");
+
     ///////////////////////////////////////////////////////////////////
 
     auto huh = cnt->get_service<SomeClassA>("huh");
