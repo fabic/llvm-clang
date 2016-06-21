@@ -28,13 +28,9 @@ int main(int argc, char *argv[])
 
     di::Container cnt;
 
-    auto b = new SomeClassB(2, 4);
+    auto serv1 = std::make_shared<di::service<SomeClassA>>("some.class.a.1");
 
-    //cnt.registerService("huh", b, typeid(b).name());
-//    cnt.registerService<SomeClassA>("huh", *b);
-
-//    auto a = cnt.get_service<SomeClassA>("huh");
-//    cout << "Here's type of service `huh` : " << di::type_info(a).name() << endl;
+    cnt.register_service(serv1);
 
     auto& def = cnt.new_service_definition<SomeClassA>("huh");
 

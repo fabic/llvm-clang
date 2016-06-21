@@ -10,6 +10,21 @@ namespace fabic {
     namespace di {
 
         Container::Container() {}
+
+        Container::service_ptr_t
+          Container::service_map::find(string id)
+            throw(Container::service_not_found_exception)
+        {
+            auto it = this->services_.find( id );
+
+            if (it == this->services_.end())
+                throw new service_not_found_exception();
+
+            auto service = it->second;
+
+            return service;
+        }
+
 //
 //		Container& Container::registerService(string service_id, void * instance, string type_name) {
 //			auto p = std::make_pair(type_name, &instance);
@@ -41,9 +56,9 @@ namespace fabic {
         {
             os << "HEY !" << std::endl;
 
-            for(const auto& pair : this->service_definitions) {
+            for(const auto& pair : this->services) {
                 base_service * base = pair.second;
-                os << base->get_service_id() << " : "
+                os << base->id() << " : "
                    << base->get_service_definition_type_name()
                    << ", address: " << format_address_of(base);
 
@@ -64,19 +79,14 @@ namespace fabic {
             return *this;
         }
 
-        void Container::resolve_service_dependencies(string service_id) {
-            logtrace("Container::resolve_service_dependencies('" << service_id << "')");
+        void Container::resolve_service_dependencies(string id) {
+            logtrace("Container::resolve_service_dependencies('" << id << "')");
 
-            auto it = this->service_definitions.find(service_id);
+            service_ptr_t service = this->services_.find(id);
 
-            if (it == this->service_definitions.end())
-                throw new service_not_found_exception();
+            logtrace(" » found service: " << service->id() << ", got a " << service->get_service_definition_type_name());
 
-            auto def = it->second;
-
-            logtrace(" » found service: " << service_id << ", got a " << def->get_service_definition_type_name());
-
-            auto dependencies = def->get_dependencies_map();
+            auto dependencies = service->get_dependencies_map();
 
             logtrace(" » dependencies map contains " << dependencies.size() << " elements.");
 
