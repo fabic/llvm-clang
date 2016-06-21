@@ -148,7 +148,7 @@ namespace fabic {
         };
 
         /**
-         *
+         * A service definition
          */
         template<class T, class PointerT = std::shared_ptr<T>>
         class service : public base_service {
@@ -178,13 +178,16 @@ namespace fabic {
             service<T>&
             requires(string service_id)
             {
-                logtrace("Service " << this->id() << " is-a " << this->get_service_definition_type_name() << ", requires(" << service_id << "), address : " << format_address_of(this));
+                logtrace("Service "
+                    << this->id()
+                    << " is-a " << this->get_service_definition_type_name()
+                    << ", requires(" << service_id << ")"
+                    << ", address : " << format_address_of(this));
 
                 auto pair = this->dependencies.insert(
-                        std::make_pair(
-                                service_id,
-                                new dependency_declaration<D>(service_id)
-                        ));
+                    std::make_pair(
+                        service_id,
+                        new dependency_declaration<D>(service_id)));
 
                 bool success = pair.second;
                 if (!success)
@@ -192,9 +195,8 @@ namespace fabic {
 
                 auto it = pair.first;
 
-                logtrace(" » inserted dependency '"
-                    << it->second->get_service_id()
-                    << "' is-a " << type_info(*it->second).name() );
+                logtrace(" » inserted dependency '" << it->second->get_service_id() << "' is-a "
+                                                    << type_info(*it->second).name());
 
                 logtrace(" » dependencies_map contains " << this->dependencies.size() << " elements.");
                 return *this;
