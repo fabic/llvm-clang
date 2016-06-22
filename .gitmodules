@@ -108,3 +108,6 @@
 [submodule "ycmd"]
 	path = misc/valloric-ycmd
 	url = git@github.com:Valloric/ycmd.git
+[submodule "odb_orm_libcutl"]
+	path = misc/odb_orm/libcutl
+	url = http://scm.codesynthesis.com/libcutl/libcutl.git
