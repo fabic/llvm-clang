@@ -80,12 +80,18 @@ int main(int argc, char *argv[])
 
     auto huh = cnt->get_service<SomeClassA>("huh");
 
-    cout << "Here's type of service `huh` : " << di::type_info(*huh).name() << endl;
+    cout << endl << "Here's type of service `huh` : " << di::type_info(*huh).name() << endl;
 
     huh->doSomething1();
     cout << "doSomething: ok" << endl;
     cout << "getThing: " << huh->getThing() << endl;
 
+    cout << endl;
+
+
+    auto tutu = cnt->get_service<SomeClassA>("huh");
+    huh->doSomething1();
+    cout << "getThing (again): " << huh->getThing() << endl;
 
     //cnt->loadFromYamlFile("test_container.yml");
 
