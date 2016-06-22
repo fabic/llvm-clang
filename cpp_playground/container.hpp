@@ -80,7 +80,6 @@ public:
     static string demangle_cxx_type_name(const char *mangled_name);
 };
 
-
 /**
  * Base abstract class for representing service dependencies.
  */
@@ -97,24 +96,53 @@ public:
         throw new std::exception();
     }
 
+    /**
+     * Tell whether this dependency is now/presently bound to an actual service
+     * definition, i.e. dependency resolution was performed and succeeded for
+     * the given service.
+     */
+    virtual bool has_service() const =0;
+
+    // NOTE: No virtual `set_service(...)` definition: we'll rely on static
+    //       (compile-time) polymorphism for this one.
 };
 
+// Forward decl.
+template<class T, class PointerT>
+  class service;
 
 /**
  * Basic implementation of a dependency for a given service “ identifier ”
  * which is (_must be_) of type “ T ”.
  */
-template<class T>
+template<class T, class PointerT = std::shared_ptr<T>>
 class dependency_declaration : public base_dependency_declaration {
+public:
+    typedef std::shared_ptr<service<T, PointerT>> service_ptr_t;
 private:
     type_info type;
+    /// Will end up storing a pointer to the actual service upon dependency resolution.
+    service_ptr_t service_;
 public:
     dependency_declaration(string service_id)
             : base_dependency_declaration(service_id),
-              type(typeid(T), false) {}
+              type(typeid(T), false),
+              service_(nullptr) {}
 
     virtual const type_info& get_service_type() const {
         return this->type;
+    }
+
+    virtual bool has_service() const {
+        return this->service_.get() != nullptr;
+    }
+
+    /**
+     * Set the “ service definition ” that was for this dependency.
+     */
+    template<class S, class PointerS>
+    void set_service( service_ptr_t serv ) {
+        this->service_ = serv;
     }
 };
 

@@ -94,7 +94,8 @@ Container& Container::debugDumpContainer(std::ostream &os)
 }
 
 
-void Container::resolve_service_dependencies(string id) {
+void
+Container::resolve_service_dependencies(string id) {
     logtrace("Container::resolve_service_dependencies('" << id << "')");
 
     service_ptr_t service = this->services_.find(id);
