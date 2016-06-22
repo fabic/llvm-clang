@@ -94,7 +94,7 @@ Container& Container::debugDumpContainer(std::ostream &os)
 }
 
 
-void
+Container::service_ptr_t
 Container::resolve_service_dependencies(string id) {
     logtrace("Container::resolve_service_dependencies('" << id << "')");
 
@@ -102,14 +102,47 @@ Container::resolve_service_dependencies(string id) {
 
     logtrace(" » found service: " << service->id() << ", got a " << service->get_service_definition_type_name());
 
+    if ( service->was_visited() )
+        return service;
+    else if (service->is_resolving_in_progress())
+        return nullptr; // todo: throw ex. ? is this a cycle ?
+
+    logtrace(" » resolving dependencies...");
+
+    service->set_resolving_in_progress(true);
+
     auto dependencies = service->get_dependencies_map();
 
     logtrace(" » dependencies map contains " << dependencies.size() << " elements.");
 
     for(auto pair : dependencies) {
         auto depdecl = pair.second;
-        std::cout << depdecl->get_service_type().name();
+
+        logtrace("     - depends on service "
+            << depdecl->get_service_id()
+            << ", type: " << depdecl->get_service_type().name());
+
+        service_ptr_t serv = this->resolve_service_dependencies(
+            depdecl->get_service_id()
+        );
+
+        logtrace(" » " << service->id()
+            << " : finished processing dep. : " << depdecl->get_service_id());
+
+        depdecl->set_service( serv );
     }
+
+    logtrace(" » " << service->id() << " : end of dependencies resolution.");
+    logtrace(" » " << service->id() << " : about to construct service.");
+
+    service->construct();
+
+    logtrace(" » " << service->id() << " : construct() done.");
+
+    service->set_resolving_in_progress(false);
+    service->set_visited(true);
+
+    return service;
 }
 
 

@@ -11,6 +11,7 @@
 #include <type_traits>
 #include <functional>
 #include <memory>
+#include <cassert>
 
 #include <cxxabi.h>
 #include <boost/format.hpp>
@@ -80,6 +81,11 @@ public:
     static string demangle_cxx_type_name(const char *mangled_name);
 };
 
+
+// Forward decl.
+class base_service;
+
+
 /**
  * Base abstract class for representing service dependencies.
  */
@@ -105,6 +111,7 @@ public:
 
     // NOTE: No virtual `set_service(...)` definition: we'll rely on static
     //       (compile-time) polymorphism for this one.
+    virtual void set_service(std::shared_ptr<base_service> serv) =0;
 };
 
 // Forward decl.
@@ -118,7 +125,8 @@ template<class T, class PointerT>
 template<class T, class PointerT = std::shared_ptr<T>>
 class dependency_declaration : public base_dependency_declaration {
 public:
-    typedef std::shared_ptr<service<T, PointerT>> service_ptr_t;
+    typedef service<T, PointerT>       service_t;
+    typedef std::shared_ptr<service_t> service_ptr_t;
 private:
     type_info type;
     /// Will end up storing a pointer to the actual service upon dependency resolution.
@@ -137,13 +145,20 @@ public:
         return this->service_.get() != nullptr;
     }
 
+    virtual void set_service(std::shared_ptr<base_service> serv) {
+        auto ptr = std::dynamic_pointer_cast<service_t>( serv );
+        if (ptr == nullptr)
+            throw new std::exception();
+        this->service_ = ptr;
+    }
+
     /**
      * Set the “ service definition ” that was for this dependency.
      */
-    template<class S, class PointerS>
-    void set_service( service_ptr_t serv ) {
-        this->service_ = serv;
-    }
+    // template<class S, class PointerS>
+    // void set_service( service_ptr_t serv ) {
+    //     this->service_ = serv;
+    // }
 };
 
 
@@ -156,11 +171,15 @@ private:
     base_service(const base_service&) = delete;
     base_service& operator=(const base_service&) = delete;
 public:
+    typedef std::shared_ptr<base_service> pointer;
     typedef map<string, base_dependency_declaration *> dependencies_map;
     typedef typename boost::call_traits<dependencies_map>::reference dependencies_map_ref;
     typedef typename boost::call_traits<dependencies_map>::const_reference dependencies_map_cref;
 protected:
     string id_;
+    // Depth-first post-order search
+    bool dfs_resolving_ = false;
+    bool dfs_visited_   = false;
 public:
     explicit base_service(string name) : id_(name) {}
 
@@ -184,9 +203,15 @@ public:
         throw new std::exception();
     }
 
-    virtual void construct() throw(std::exception) {
-        throw new std::exception();
-    }
+    virtual bool has_instance() const =0;
+
+    virtual void construct() =0;
+
+    bool is_resolving_in_progress() const { return this->dfs_resolving_ ; }
+    bool was_visited() const { return this->dfs_visited_ ; }
+
+    void set_resolving_in_progress(bool b) { this->dfs_resolving_ = b ;}
+    void set_visited(bool b) { this->dfs_visited_ = b ;}
 };
 
 /**
@@ -199,11 +224,15 @@ public:
     typedef typename std::shared_ptr<service<T,PointerT>> pointer;
     typedef PointerT factory_function_prototype(dependencies_map_ref deps);
     typedef std::function<factory_function_prototype> factory_function_t;
+
+    class no_defined_factory_functor : std::exception {};
+
 private:
     type_info type;
     dependencies_map dependencies;
     factory_function_t factory;
     PointerT instance;
+
 public:
     service(string service_id)
             : base_service(service_id),
@@ -264,16 +293,20 @@ public:
     }
 
     virtual void construct() throw(std::exception) {
-        if (! this->has_instance())
-            this->instance = this->factory( this->dependencies );
+        if (this->has_instance())
+            throw new std::exception();
+        else if (this->factory == nullptr)
+            throw new no_defined_factory_functor();
+        this->instance = this->factory( this->dependencies );
     }
 
-    bool has_instance() const {
+    virtual bool has_instance() const {
         return this->instance != nullptr;
     }
 
     PointerT get_instance() {
-        this->construct();
+        if (! this->has_instance())
+            throw new std::exception();
         return this->instance;
     }
 };
@@ -385,19 +418,18 @@ public:
      */
     template<typename T, class PointerT = std::shared_ptr<T>>
     PointerT get_service(string id) {
-        logtrace("get_service('" << id << "')");
+        logtrace("Container::get_service('" << id << "') :"
+            << " about to resolve dependencies...");
 
-        this->resolve_service_dependencies(id);
+        service_ptr_t serv = this->resolve_service_dependencies(id);
 
-        service_ptr_t serv = this->services_.find(id);
-
-        logtrace(" » found service: "
-            << serv->id()
+        logtrace(" » ok, found service : " << serv->id()
             << ", got a " << serv->get_service_definition_type_name()
-            << ", address: " << format_address_of(&serv));
+            << ", address: " << format_address_of(serv.get()));
 
-        auto concrete =
-                dynamic_cast< service<T, PointerT> * >(serv.get());
+        //typedef std::shared_ptr<service<T, PointerT>> concrete_ptr_t;
+
+        auto concrete = std::dynamic_pointer_cast<service<T, PointerT>>( serv );
 
         if (concrete != nullptr) {
             logtrace(" » service is-a : " << concrete->get_type_info().name());
@@ -408,24 +440,7 @@ public:
         }
     }
 
-    void resolve_service_dependencies(string service_id);
-
-    template<typename T>
-    service<T>&
-    new_service_definition(string service_id) {
-        auto def = new service<T>(service_id);
-        auto pair = this->services.insert(std::make_pair(service_id, def));
-
-        bool success = pair.second == true;
-        if (!success)
-            throw new std::exception();
-
-        auto it = pair.first;
-
-        logtrace("Container::new_service_definition('" << it->second->id() << "'), address: " << format_address_of(it->second));
-
-        return *def;
-    }
+    service_ptr_t resolve_service_dependencies(string service_id);
 
     Container& loadFromYamlFile(string filename);
 

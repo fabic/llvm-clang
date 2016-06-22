@@ -40,13 +40,41 @@ int main(int argc, char *argv[])
 
     cnt->register_service( serv1 );
 
-    cnt->register_service( std::make_shared<di::service<SomeClassA>>("hey")   );
-    cnt->register_service( std::make_shared<di::service<SomeClassB>>("hello") );
-    cnt->register_service( std::make_shared<di::service<SomeClassB>>("world") );
-
     serv1->requires<SomeClassB>("world");
     serv1->requires<SomeClassB>("hello");
     serv1->requires<SomeClassA>("hey");
+
+    auto hey   = std::make_shared<di::service<SomeClassA>>("hey");
+    auto hello = std::make_shared<di::service<SomeClassB>>("hello");
+    auto world = std::make_shared<di::service<SomeClassB>>("world");
+
+    hey->requires<SomeClassB>("hello");
+
+    hey->set_factory_function(
+        [](di::base_service::dependencies_map_ref deps) -> std::shared_ptr<SomeClassA> {
+            std::cerr << "YEAH! that's service `hey` factory functor bein' invoqued "
+                         "(and I'm a concrete SomeClassB actually)." << endl;
+            return std::make_shared<SomeClassB>(1,2);
+        }
+    );
+
+    hello->set_factory_function(
+        [](di::base_service::dependencies_map_ref deps) -> std::shared_ptr<SomeClassB> {
+            std::cerr << "YEAH! that's service `hello` factory functor bein' invoqued " << endl;
+            return std::make_shared<SomeClassB>(1,2);
+        }
+    );
+
+    world->set_factory_function(
+        [](di::base_service::dependencies_map_ref deps) -> std::shared_ptr<SomeClassB> {
+            std::cerr << "YEAH! that's service `hello` factory functor bein' invoqued " << endl;
+            return std::make_shared<SomeClassB>(1,2);
+        }
+    );
+
+    cnt->register_service( hey   );
+    cnt->register_service( hello );
+    cnt->register_service( world );
 
     ///////////////////////////////////////////////////////////////////
 
