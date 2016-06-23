@@ -222,8 +222,12 @@ class service : public base_service {
 public:
     typedef typename boost::call_traits<service<T,PointerT>>::reference reference;
     typedef typename std::shared_ptr<service<T,PointerT>> pointer;
+
     typedef PointerT factory_function_prototype(dependencies_map_ref deps);
     typedef std::function<factory_function_prototype> factory_function_t;
+
+    typedef bool starter_function_prototype(pointer service);
+    typedef std::function<factory_function_prototype> starter_function_t;
 
     class no_defined_factory_functor : std::exception {};
 
@@ -231,6 +235,7 @@ private:
     type_info type;
     dependencies_map dependencies;
     factory_function_t factory;
+    starter_function_t starter_function;
     PointerT instance;
 
 public:
@@ -286,9 +291,15 @@ public:
         return this->dependencies;
     }
 
-    service<T>&
+    reference
     set_factory_function(factory_function_t functor) {
         this->factory = functor;
+        return *this;
+    }
+
+    reference
+    set_starter_function(starter_function_t functor) {
+        this->starter_function = functor;
         return *this;
     }
 

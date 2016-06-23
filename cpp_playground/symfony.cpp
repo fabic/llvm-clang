@@ -58,9 +58,11 @@ namespace symfony {
 
         auto cnt = di::Container::new_container_instance();
 
-        auto http_server = std::make_shared<di::service<server>>("http.server");
+        typedef di::service<server> server_service_t;
 
-        http_server->set_factory_function(
+        auto http_server_service = std::make_shared<server_service_t>("http.server");
+
+        http_server_service->set_factory_function(
             [](di::base_service::dependencies_map_ref deps) -> std::shared_ptr<http::server<hello_world>>
             {
                 std::cerr
@@ -89,16 +91,33 @@ namespace symfony {
                 }
                 catch (std::exception &e) {
                     std::cerr << e.what() << std::endl;
-                    return nullptr;
+                    //return nullptr;
+                    throw e;
                 }
             }
         );
 
-        cnt->register_service( http_server );
+        http_server_service->set_starter_function(
+            [](server_service_t::pointer serv) -> bool
+            {
+                std::cerr
+                    << std::endl
+                    << "YEAH! that's service `...` factory functor bein' invoqued"
+                       " which is quite remarkable, actually"
+                    << std::endl;
+                return false;
+            }
+        );
 
-        //http_server->requires<SomeClassB>("world");
+        cnt->register_service( http_server_service );
+
+        //http_server_service->requires<SomeClassB>("world");
 
         cnt->debugDumpContainer(std::cout);
+
+
+        auto huh = cnt->get_service<server>("http.server");
+
 
         return 0;
     }
