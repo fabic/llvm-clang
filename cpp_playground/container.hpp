@@ -5,7 +5,8 @@
 #include <memory>
 #include <forward_list>
 #include <string>
-#include <ostream>
+#include <iostream>
+//#include <ostream>
 #include <cstdio>
 #include <typeinfo>
 #include <type_traits>
@@ -54,6 +55,27 @@ namespace di {
 using std::string;
 using std::map;
 using std::pair;
+
+class Container;
+
+/**
+ * The actual service container instance is managed through a shared pointer.
+ */
+typedef std::shared_ptr<Container> container_shared_ptr_t;
+
+// Forward decl.
+template<class T, class PointerT>
+class service;
+
+/**
+ * Type of the _service definition_ for containers.
+ */
+typedef service<Container, container_shared_ptr_t> container_service_definition_t;
+
+/**
+ * The shared pointer type to the _service definition_ ``of service container instances``.
+ */
+typedef std::shared_ptr<container_service_definition_t> container_service_definition_ptr_t;
 
 
 /**
@@ -133,9 +155,6 @@ public:
 };
 
 
-// Forward decl.
-template<class T, class PointerT>
-  class service;
 
 
 /**
@@ -342,6 +361,49 @@ public:
     }
 };
 
+
+/**
+ * Interface for life-cycle aware services.
+ */
+class startable_service {
+public:
+    virtual bool start() =0;
+    virtual bool stop() =0;
+};
+
+
+/**
+ * Base abstract class for services that manage a thread
+ * (multiple threads too ?)
+ */
+class threaded_service : startable_service {
+
+};
+
+
+/**
+ * Something that provides service definitions
+ * to be declared (added) into the given container.
+ */
+class service_provider {
+private:
+    container_shared_ptr_t container_;
+
+private:
+    service_provider() = delete;
+    // Prevent implicit copy
+    service_provider(const service_provider&) = delete;
+    service_provider& operator=(const service_provider&) = delete;
+
+public:
+    /**
+     * Constructor
+     */
+    service_provider(container_shared_ptr_t container)
+        : container_(container)
+    { }
+};
+
 /**
  * Huh! a service container! in C++ ?
  * _yet another one goin' down this road ! why !?_
@@ -427,7 +489,7 @@ public:
      * that is wrapped into a shared_ptr for injection of the “ container ”
      * service.
      */
-    static pointer new_container_instance();
+    static container_shared_ptr_t new_container_instance();
 
     /**
      * Register (add) a service definition to this container.

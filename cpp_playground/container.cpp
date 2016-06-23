@@ -15,19 +15,25 @@ Container::Container() { }
 
 
 // static btw.
-Container::pointer
+container_shared_ptr_t
 Container::new_container_instance()
 {
-    pointer container = std::shared_ptr<Container>(
+    // The container instance, managed by shared_ptr.
+    auto container = container_shared_ptr_t(
         new Container()
     );
 
-    auto self = std::make_shared< service<Container> >(
-        "container",
-        container
+    // Register...
+    container->register_service(
+        container_service_definition_ptr_t(
+            // a new service with ID `container`
+            new container_service_definition_t(
+                "container",
+                // of the above created container
+                container
+            )
+        )
     );
-
-    container->register_service( self );
 
     return container;
 }
