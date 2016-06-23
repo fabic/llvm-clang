@@ -96,11 +96,24 @@ add_executable(boost_options_debug_encoding boost_options_debug_encoding.cpp)
 target_link_libraries(boost_options_debug_encoding ${Boost_LIBRARIES} dl unwind)
 
 
-add_executable(cppnetlib_test1 cppnetlib_test1.cpp)
+add_executable(cppnetlib_test1 cppnetlib_test1.cpp hack_cxa_throw_exception.cpp)
 target_link_libraries(cppnetlib_test1
 	${Boost_LIBRARIES}
 	${LibCppNetlibClientConnections}
 	${LibCppNetlibServerParsers}
 	dl unwind
+	pthread
+	)
+
+
+add_executable(symfony symfony.cpp container.cpp hack_cxa_throw_exception.cpp)
+target_include_directories(test_container PUBLIC ../../misc/yaml-cpp/include)
+target_link_libraries(
+	symfony
+	${YamlCppLibSoPath}
+	${Boost_LIBRARIES}
+	${LibCppNetlibClientConnections}
+	${LibCppNetlibServerParsers}
+	unwind dl # for hack_cxa_throw_exception.cpp
 	pthread
 	)
