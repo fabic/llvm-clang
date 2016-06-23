@@ -83,7 +83,7 @@ Container& Container::debugDumpContainer(std::ostream &os)
             base_dependency_declaration& dep = *tuple.second;
             os << "        - " << dep.get_service_id()
                << " as " << dep.get_service_type().name()
-               << " [" << format_address_of(&dep) << "]"
+               << " [" << format_address_of(dep) << "]"
                << std::endl;
         }
 

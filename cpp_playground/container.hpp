@@ -17,18 +17,36 @@
 #include <boost/format.hpp>
 #include <boost/call_traits.hpp>
 
+#include "object.hpp"
+
 //#include <boost/log/trivial.hpp>
 // ^ fixme: linking pb.
-
 #ifdef BOOST_LOG_TRIVIAL
 #  define logtrace() BOOST_LOG_TRIVIAL(trace)
 #else
 #  define logtrace(message) std::cerr << "TRACE: " << message << std::endl
 #endif
 
-#define format_address_of(x) (boost::format("%x") % x)
+#define format_address_of(x) (boost::format("%x") % (std::addressof(x)))
 
-#include "object.hpp"
+namespace fabic {
+namespace util {
+
+    /*
+    template<typename T, class IsPointer = std::is_pointer<T>>
+    T* addressof(const T& ref) { return nullptr; }
+
+
+    template<typename T>
+      T* addressof(const T& ref) { return std::addressof(ref); }
+
+    template<typename T, 1>
+      T* addressof(const T* const ptr) { return std::addressof(*ptr); }
+    */
+
+}
+}
+
 
 namespace fabic {
 namespace di {
@@ -114,9 +132,11 @@ public:
     virtual void set_service(std::shared_ptr<base_service> serv) =0;
 };
 
+
 // Forward decl.
 template<class T, class PointerT>
   class service;
+
 
 /**
  * Basic implementation of a dependency for a given service “ identifier ”
@@ -227,7 +247,7 @@ public:
     typedef std::function<factory_function_prototype> factory_function_t;
 
     typedef bool starter_function_prototype(pointer service);
-    typedef std::function<factory_function_prototype> starter_function_t;
+    typedef std::function<starter_function_prototype> starter_function_t;
 
     class no_defined_factory_functor : std::exception {};
 
@@ -266,7 +286,7 @@ public:
             << this->id()
             << " is-a " << this->get_service_definition_type_name()
             << ", requires(" << service_id << ")"
-            << ", address : " << format_address_of(this));
+            << ", address : " << format_address_of(*this));
 
         auto pair = this->dependencies.insert(
             std::make_pair(
@@ -436,7 +456,7 @@ public:
 
         logtrace(" » ok, found service : " << serv->id()
             << ", got a " << serv->get_service_definition_type_name()
-            << ", address: " << format_address_of(serv.get()));
+            << ", address: " << format_address_of(serv));
 
         //typedef std::shared_ptr<service<T, PointerT>> concrete_ptr_t;
 
