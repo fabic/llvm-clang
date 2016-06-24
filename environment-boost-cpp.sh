@@ -28,7 +28,10 @@ fi
 boost_modular_dir="$here/misc/boost"
 
 # 1) try local/boost-1.61.0-clang/ install location
-BOOSTROOT="$( find "$here/local" -maxdepth 1 -type d -name "boost-*-${CC}" )"
+#
+#    NOTE: first script arg. may be an absolute path.
+#
+BOOSTROOT=${1:-"$( find "$here/local" -maxdepth 1 -type d -name "boost-*-${CC}" )"}
 
 echo -n "| Trying \$BOOSTROOT = $BOOSTROOT : "
 
