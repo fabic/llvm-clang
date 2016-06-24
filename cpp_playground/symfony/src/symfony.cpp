@@ -52,7 +52,7 @@ namespace symfony {
 
         namespace di = fabic::di;
 
-        auto cnt = di::Container::new_container_instance();
+        auto cnt = di::service_container::new_container_instance();
 
         typedef di::service<server> server_service_t;
 

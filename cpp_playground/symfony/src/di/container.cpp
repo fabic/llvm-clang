@@ -11,16 +11,16 @@ namespace di {
 
 
 // private btw.
-Container::Container() { }
+service_container::service_container() { }
 
 
 // static btw.
 container_shared_ptr_t
-Container::new_container_instance()
+service_container::new_container_instance()
 {
     // The container instance, managed by shared_ptr.
     auto container = container_shared_ptr_t(
-        new Container()
+        new service_container()
     );
 
     // Register...
@@ -39,8 +39,8 @@ Container::new_container_instance()
 }
 
 
-Container::service_ptr_t
-Container::service_map::find(string id) throw(Container::service_not_found_exception)
+service_container::service_ptr_t
+service_container::service_map::find(string id) throw(service_container::service_not_found_exception)
 {
     auto it = this->services_.find( id );
 
@@ -52,7 +52,7 @@ Container::service_map::find(string id) throw(Container::service_not_found_excep
     return service;
 }
 
-//       Container& Container::loadFromYamlFile(string filename) {
+//       service_container& service_container::loadFromYamlFile(string filename) {
 //        YAML::Node yaml = YAML::LoadFile(filename);
 //           std::cerr << yaml.Type() << std::endl;
 //           const auto& srvs = yaml["services"];
@@ -65,7 +65,7 @@ Container::service_map::find(string id) throw(Container::service_not_found_excep
 //       }
 
 
-Container& Container::debugDumpContainer(std::ostream &os)
+service_container& service_container::debugDumpContainer(std::ostream &os)
 {
     os << std::endl
        << "CONTAINER DEBUG DUMP :"
@@ -100,9 +100,9 @@ Container& Container::debugDumpContainer(std::ostream &os)
 }
 
 
-Container::service_ptr_t
-Container::resolve_service_dependencies(string id) {
-    logtrace << "Container::resolve_service_dependencies('" << id << "')" ;
+service_container::service_ptr_t
+service_container::resolve_service_dependencies(string id) {
+    logtrace << "service_container::resolve_service_dependencies('" << id << "')" ;
 
     service_ptr_t service = this->services_.find(id);
 

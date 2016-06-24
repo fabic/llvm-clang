@@ -37,10 +37,10 @@ namespace fabic {
      *   a.k.a service container
      *
      */
-    class Container {
+    class service_container {
     public:
-        typedef std::shared_ptr<Container> pointer;
-        typedef typename boost::call_traits<Container>::reference reference;
+        typedef std::shared_ptr<service_container> pointer;
+        typedef typename boost::call_traits<service_container>::reference reference;
         typedef std::shared_ptr<base_service> service_ptr_t;
 
         class service_not_found_exception : std::exception {};
@@ -51,7 +51,7 @@ namespace fabic {
          */
         class service_map {
         public:
-            typedef map<string, Container::service_ptr_t> map_t;
+            typedef map<string, service_container::service_ptr_t> map_t;
             typedef typename boost::call_traits<map_t>::reference map_ref;
             typedef typename boost::call_traits<service_map>::reference reference;
         private:
@@ -94,8 +94,8 @@ namespace fabic {
 
     private:
         // Prevent implicit copies :
-        Container(const Container&) = delete;
-        Container& operator=(const Container&) = delete;
+        service_container(const service_container&) = delete;
+        service_container& operator=(const service_container&) = delete;
 
         /**
          * Default ctor made private for we require client codes
@@ -103,11 +103,11 @@ namespace fabic {
          * to instantiate this on the heap so that we may have
          * a wrapping shared_ptr.
          */
-        explicit Container();
+        explicit service_container();
 
     public:
         /**
-         * Static helper that instantiates a new Container on the heap
+         * Static helper that instantiates a new service_container on the heap
          * that is wrapped into a shared_ptr for injection of the “ container ”
          * service.
          */
@@ -133,7 +133,7 @@ namespace fabic {
          */
         template<typename T, class PointerT = std::shared_ptr<T>>
         PointerT get_service(string id) {
-            logtrace << "Container::get_service('" << id << "') :"
+            logtrace << "service_container::get_service('" << id << "') :"
                         " about to resolve dependencies..." ;
 
             service_ptr_t serv = this->resolve_service_dependencies(id);
@@ -157,9 +157,9 @@ namespace fabic {
 
         service_ptr_t resolve_service_dependencies(string service_id);
 
-        Container& loadFromYamlFile(string filename);
+        service_container& loadFromYamlFile(string filename);
 
-        Container& debugDumpContainer(std::ostream& os);
+        service_container& debugDumpContainer(std::ostream& os);
     };
 
   } // di ns.
