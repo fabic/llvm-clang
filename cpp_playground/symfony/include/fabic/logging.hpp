@@ -1,0 +1,66 @@
+//
+// Created by cadet on 6/24/16.
+//
+
+#ifndef FABICCPPPLAYGROUND_LOGGING_HPP
+#define FABICCPPPLAYGROUND_LOGGING_HPP
+
+#include <boost/format.hpp>
+#include <boost/log/trivial.hpp>
+
+#ifdef BOOST_LOG_TRIVIAL
+#  define logtrace_(message) (BOOST_LOG_TRIVIAL(trace) << message)
+#else
+#  define logtrace(message) std::cerr << "TRACE: " << message << std::endl
+#endif
+
+// fixme temp
+#  define logtrace(message) std::cerr << "TRACE: " << message << std::endl
+
+#define format_address_of(x) (boost::format("%x") % (std::addressof(x)))
+
+/* !!! NOTE !!!
+ *
+ * Boost.log library... may break the build from time to time at link stage.
+ *
+ * If you get this sort of errors :
+ *
+ *    « undefined reference to `boost::log::v2s_mt_posix::trivial::logger::get()' »
+ *
+ * then it is actually about the sub-namepace `v2s_mt_posix`.
+ *
+ * Found the following from the manual :
+ *
+ * http://www.boost.org/doc/libs/1_61_0/libs/log/doc/html/log/rationale/namespace_mangling.html
+ *
+ * “ The library declares the boost::log namespace which should be used in
+ *   client code to access library components. However, internally the library
+ *   uses another nested namespace for actual implementation.
+ *   [...] it often appears in compiler and linker errors and in some cases
+ *         it is useful to know how to decode its name.
+ *
+ *   Currently, the namespace name is composed from the following elements:
+ *
+ *      <version><linkage>_<threading>_<system>
+ *
+ *   * The <version>   component describes the library major version.
+ *                     It is currently v2.
+ *   * The <linkage>   component tells whether the library is linked statically or dynamically.
+ *                     It is s if the library is linked statically and empty otherwise.
+ *   * The <threading> component is st for single-threaded builds and mt for multi-threaded ones.
+ *   * The <system>    component describes the underlying OS API used by the library.
+ *                     Currently, it is only specified for multi-threaded builds.
+ *                     Depending on the target platform and configuration,
+ *                     it can be posix, nt5 or nt6.
+ *
+ * As a couple quick examples :
+ *
+ *   “ v2s_st corresponds to v2 static single-threaded build of the library ;
+ *     and v2_mt_posix - to v2 dynamic multi-threaded build for POSIX system API.
+ *
+ * [...] One common mistake is to build dynamic version of the library
+ *       and not define BOOST_LOG_DYN_LINK or BOOST_ALL_DYN_LINK when building
+ *       the application, so that the library assumes static linking by default. »
+ */
+
+#endif //FABICCPPPLAYGROUND_LOGGING_HPP

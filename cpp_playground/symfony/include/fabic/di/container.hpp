@@ -15,22 +15,10 @@
 #include <cassert>
 
 #include <cxxabi.h>
-#include <boost/format.hpp>
 #include <boost/call_traits.hpp>
 //#include <boost/dll/import.hpp>
 
-#include "fabic/di/typedefs.hpp"
 #include "fabic/di/service_definition.hpp"
-
-//#include <boost/log/trivial.hpp>
-// ^ fixme: linking pb.
-#ifdef BOOST_LOG_TRIVIAL
-#  define logtrace() BOOST_LOG_TRIVIAL(trace)
-#else
-#  define logtrace(message) std::cerr << "TRACE: " << message << std::endl
-#endif
-
-#define format_address_of(x) (boost::format("%x") % (std::addressof(x)))
 
 
 namespace fabic {

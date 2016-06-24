@@ -50,21 +50,28 @@ then
     echo "| FYI: Found Boost C++ @ '$BOOSTROOT', ok."
 
     export BOOSTROOT
+    # ^ This one variable is the sole one one needed by CMake's find_package(Boost ...), actually.
 
-    # This appears to be needed by CMake for it to find Boost,
-    # BOOSTROOT ain't enough it appears.
-    if false; then
-        [ -d "$BOOSTROOT/include" ] && BOOST_INCLUDE_DIRS="${BOOSTROOT}/include"
-        [ -d "$BOOSTROOT/lib" ]     && BOOST_LIBRARY_DIRS="${BOOSTROOT}/lib"
-        export BOOST_INCLUDE_DIRS BOOST_LIBRARY_DIRS
-    fi
+    # These two may also help CMake's find_package()...
+    [ -d "$BOOSTROOT/include" ] && BOOST_INCLUDE_DIRS="${BOOSTROOT}/include"
+    [ -d "$BOOSTROOT/lib" ]     && BOOST_LIBRARY_DIRS="${BOOSTROOT}/lib"
+    # ^ !! BUT !! we're _NOT_ exporting these (we want to rely on CMake only).
+    #export BOOST_INCLUDE_DIRS BOOST_LIBRARY_DIRS
 
+    # We're _NOT_ adding Boost's include dir. to any env. var.
+    # (we leave this to CMake).
     #pathappend "$BOOST_INCLUDE_DIRS" CPLUS_INCLUDE_PATH
     #export CPLUS_INCLUDE_PATH 
 
-    pathappend "$BOOST_LIBRARY_DIRS" LD_RUN_PATH
-    pathappend "$BOOST_LIBRARY_DIRS" LD_LIBRARY_PATH
-    export LD_RUN_PATH LD_LIBRARY_PATH
+    # However we need to set this which usually (in principe) entails that
+    # -Wl,-rpath=... is passed to the linker.
+    pathprepend "$BOOST_LIBRARY_DIRS" LD_RUN_PATH
+    export LD_RUN_PATH
+
+    # However it occurs that we also need LD_LIBRARY_PATH for _some_ libboost_...so
+    # happen not to be resolved :-/
+    pathprepend  "$BOOST_LIBRARY_DIRS" LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH
 
     #INCLUDE_PATH="$BOOSTROOT/include:$INCLUDE_PATH"
     #export INCLUDE_PATH

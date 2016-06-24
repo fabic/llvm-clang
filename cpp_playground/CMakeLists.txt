@@ -15,22 +15,51 @@ set (FabicCppPlayground_VERSION_MINOR 1)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++ -Wall")
 
-# fixme: temp.
-set(BOOSTROOT ../local/boost-1.61.0-clang)
-# set(BOOST_ROOT ../local/boost-1.61.0-clang)
-# set(BOOST_INCLUDE_DIRS ${BOOST_ROOT}/include)
-# set(BOOST_LIBRARY_DIRS ${BOOST_ROOT}/local/boost-1.61.0-clang/lib)
+###
+# Boost C++
+#
+# https://cmake.org/cmake/help/latest/module/FindBoost.html
+# https://svn.boost.org/trac/boost/wiki/CMakeBuildFeatures
 
+  # Hard-coded path if needed for `find_package(Boost...)`
+  # Or simply set this as an environment variable,
+  # or pass `-DBOOSTROOT=...` when running CMake.
+  #set(BOOSTROOT ../local/boost-1.61.0-clang)
 
-# find_package(Boost 1.61.0 REQUIRED)
-find_package(Boost 1.56.0 REQUIRED)
+  # These two ain't needed, actually...
+  # set(BOOST_INCLUDE_DIRS ${BOOSTROOT}/include)
+  # set(BOOST_LIBRARY_DIRS ${BOOSTROOT}/local/boost-1.61.0-clang/lib)
 
-if (Boost_FOUND)
-	set (Boost_USE_MULTITHREAD ON)  # enable multithreading
-	set (Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
-	include_directories(${Boost_INCLUDE_DIR})
-	find_package (Boost COMPONENTS REQUIRED program_options filesystem system)
-endif()
+  #set (Boost_DEBUG)
+  # ^ this turns out debug output _only for the CMake module!_.
+
+  set (Boost_USE_MULTITHREAD ON)  # enable multithreading
+  set (Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
+
+  add_definitions(-DBOOST_ALL_DYN_LINK)
+  # ^ solves linking problems, notably with Boost.log library.
+  #   See http://www.boost.org/doc/libs/1_61_0/libs/log/doc/html/log/rationale/namespace_mangling.html
+  #   See also `symfony/include/fabic/logging.hpp`
+  # ^ Note that the following would also solve the "unresolved symbol `v2s_mt_posix`"
+  #   problem _for the `log` module only.
+  #add_definitions(-DBOOST_LOG_DYN_LINK)
+
+  find_package(Boost 1.61.0 REQUIRED)
+
+  if (Boost_FOUND)
+  	include_directories(${Boost_INCLUDE_DIR})
+  	find_package (
+      Boost
+      COMPONENTS REQUIRED
+        log log_setup
+        program_options
+        filesystem
+        system
+    )
+  endif()
+
+# ^ Boost C++
+###
 
 
 add_subdirectory(symfony)

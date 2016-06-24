@@ -5,7 +5,9 @@
 #ifndef FABICCPPPLAYGROUND_SERVICE_DEFINITION_HPP
 #define FABICCPPPLAYGROUND_SERVICE_DEFINITION_HPP
 
+#include "fabic/di/typedefs.hpp"
 #include "fabic/di/type_info.hpp"
+#include "fabic/di/dependency.hpp"
 
 namespace fabic {
   namespace di{
@@ -13,85 +15,6 @@ namespace fabic {
     using std::string;
     using std::map;
     using std::pair;
-
-    // Forward decl.
-    class base_service;
-
-
-    /**
-     * Base abstract class for representing service dependencies.
-     */
-    class base_dependency_declaration {
-    private:
-        string service_id;
-    public:
-        base_dependency_declaration(string service_id) : service_id(service_id) {}
-        virtual ~base_dependency_declaration() {}
-
-        string get_service_id() { return this->service_id; }
-
-        virtual const type_info& get_service_type() const {
-            throw new std::exception();
-        }
-
-        /**
-         * Tell whether this dependency is now/presently bound to an actual service
-         * definition, i.e. dependency resolution was performed and succeeded for
-         * the given service.
-         */
-        virtual bool has_service() const =0;
-
-        // NOTE: No virtual `set_service(...)` definition: we'll rely on static
-        //       (compile-time) polymorphism for this one.
-        virtual void set_service(std::shared_ptr<base_service> serv) =0;
-    };
-
-
-
-
-    /**
-     * Basic implementation of a dependency for a given service “ identifier ”
-     * which is (_must be_) of type “ T ”.
-     */
-    template<class T, class PointerT = std::shared_ptr<T>>
-    class dependency_declaration : public base_dependency_declaration {
-    public:
-        typedef service<T, PointerT>       service_t;
-        typedef std::shared_ptr<service_t> service_ptr_t;
-    private:
-        type_info type;
-        /// Will end up storing a pointer to the actual service upon dependency resolution.
-        service_ptr_t service_;
-    public:
-        dependency_declaration(string service_id)
-            : base_dependency_declaration(service_id),
-              type(typeid(T), false),
-              service_(nullptr) {}
-
-        virtual const type_info& get_service_type() const {
-            return this->type;
-        }
-
-        virtual bool has_service() const {
-            return this->service_.get() != nullptr;
-        }
-
-        virtual void set_service(std::shared_ptr<base_service> serv) {
-            auto ptr = std::dynamic_pointer_cast<service_t>( serv );
-            if (ptr == nullptr)
-                throw new std::exception();
-            this->service_ = ptr;
-        }
-
-        /**
-         * Set the “ service definition ” that was for this dependency.
-         */
-        // template<class S, class PointerS>
-        // void set_service( service_ptr_t serv ) {
-        //     this->service_ = serv;
-        // }
-    };
-
 
     /**
      * Base abstract class for a “ service definition ”.

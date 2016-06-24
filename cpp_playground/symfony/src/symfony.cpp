@@ -46,7 +46,8 @@ namespace symfony {
      */
     int main(program_arguments &args)
     {
-        std::cout
+        //std::cout
+        BOOST_LOG_TRIVIAL(trace)
             << std::endl
             << "Hello world, you reached this point, can't believe it!" << std::endl
             << "  » address : " << args["address"].as<std::string>()    << std::endl

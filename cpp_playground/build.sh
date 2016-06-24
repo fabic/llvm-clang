@@ -40,7 +40,9 @@ echo "|"
 echo "| Running CMake..."
 echo "|"
 
-cmake -G Ninja -Wdev --warn-uninitialized --clean-first ..
+cmake -G Ninja \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -Wdev --warn-uninitialized --clean-first ..
 
 retv=$?
 if [ $retv -gt 0 ]; then
