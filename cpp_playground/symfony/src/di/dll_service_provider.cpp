@@ -18,17 +18,23 @@ namespace fabic {
               boost::dll::load_mode::append_decorations
           );
 
-          if ( ! lib.has("create_plugin") ) {
+          if ( ! lib.has(module_api_symbol) ) {
               logwarn << " » skipping library " << path
                   << ": doesn't have symbol (function) : " << module_api_symbol ;
           }
           else {
               logtrace << " » ok, found symbol : " << module_api_symbol ;
 
-              boost::dll::import_alias<module_api_func_t>(
-                  std::move(lib),
-                  module_api_symbol
-              );
+              std::function<module_api_func_t>
+                di_register_services_func =
+                  boost::dll::import_alias<module_api_func_t>(
+                      std::move(lib),
+                      module_api_symbol
+                  );
+
+              logtrace << " » ok, invoking it, beware !" ;
+
+              di_register_services_func( this->get_service_container() );
           }
 
           logtrace << "load_library(" << path << ") : end." ;

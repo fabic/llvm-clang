@@ -6,7 +6,7 @@ namespace di = fabic::di;
 void
 hey_di_register_services(di::container_shared_ptr_t container)
 {
-
+  logtrace << "HEY! that's module-http-server ;- Hura!" ;
 }
 
 

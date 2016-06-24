@@ -33,6 +33,10 @@ namespace fabic {
             : container_(container) {}
 
         virtual ~service_provider() {}
+
+        container_shared_ptr_t get_service_container() {
+            return this->container_ ;
+        }
     };
 
   } // di ns.
