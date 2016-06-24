@@ -6,19 +6,17 @@
 #define MIXED_DATATYPE_OBJECT_HPP
 
 namespace fabic {
-    namespace di {
 
-        /** Base _dependency container manageable_ object class.
-         *
-         * for type checking `dynamic_cast<object>(...)` ability
-         * and storage by the container.
-         */
-        class object {
-        public:
-            virtual ~object() {}
-        };
+  /** Base _dependency container manageable_ object class.
+   *
+   * for type checking `dynamic_cast<object>(...)` ability
+   * and storage by the container.
+   */
+  class object {
+  public:
+      virtual ~object() {}
+  };
 
-    }
 }
 
 #endif //MIXED_DATATYPE_OBJECT_HPP
