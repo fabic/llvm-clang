@@ -29,40 +29,49 @@ include_directories(include)
     libcppnetlib-server-parsers.so
     PATHS ${CMAKE_SOURCE_DIR}/../misc/cpp-netlib/build/libs/network/src
     )
-
 # ^ cpp-netlib
 ##
 
 
-add_executable(
-  symfony
-  src/symfony.cpp
-  src/di/container.cpp
-  src/di/dll_service_provider.cpp
-  src/hacks/hack_cxa_throw_exception.cpp)
+###
+# BINARY: build/symfony/symfony
 
-# For Boost.DLL which recommends this flag
-#   http://www.boost.org/doc/libs/1_61_0/doc/html/boost_dll/getting_started.html
-#   https://cmake.org/cmake/help/latest/command/target_compile_options.html
-target_compile_options(
-  symfony
-  PUBLIC
-  -fvisibility=hidden
-  )
+  add_executable(
+    symfony
+    src/symfony.cpp
+    src/di/container.cpp
+    src/di/dll_service_provider.cpp
+    src/hacks/hack_cxa_throw_exception.cpp)
 
-target_link_libraries(
-  symfony
-  ${Boost_LIBRARIES}
-  ${LibCppNetlibClientConnections}
-  ${LibCppNetlibServerParsers}
-  unwind dl # for hack_cxa_throw_exception.cpp
-  dl        # for Boost.DLL
-  pthread
-  )
+  # For Boost.DLL which recommends this flag
+  #   http://www.boost.org/doc/libs/1_61_0/doc/html/boost_dll/getting_started.html
+  #   https://cmake.org/cmake/help/latest/command/target_compile_options.html
+  target_compile_options(
+    symfony
+    PUBLIC
+    -fvisibility=hidden
+    )
 
-# https://cmake.org/cmake/help/v3.0/command/add_library.html
-add_library(
-  module-http-server
-  MODULE
-  src/module-http-server.cpp
-  )
+  target_link_libraries(
+    symfony
+    ${Boost_LIBRARIES}
+    ${LibCppNetlibClientConnections}
+    ${LibCppNetlibServerParsers}
+    unwind dl # for hack_cxa_throw_exception.cpp
+    dl        # for Boost.DLL
+    pthread
+    )
+
+# ^ Symfony
+###
+
+###
+# build/symfony/libmodule-http-server.so
+  # https://cmake.org/cmake/help/v3.0/command/add_library.html
+  add_library(
+    module-http-server
+    MODULE
+    src/module-http-server.cpp
+    )
+# ^ build/symfony/libmodule-http-server.so
+###

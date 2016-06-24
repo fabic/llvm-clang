@@ -15,10 +15,21 @@ namespace fabic {
 
       class dll_service_provider : service_provider {
       public:
-        dll_service_provider(container_shared_ptr_t container)
-            : service_provider(container) {}
+          //typedef boost::shared_ptr<my_plugin_api> (pluginapi_create_t)();
+          typedef void (module_api_func_t)(container_shared_ptr_t container);
 
-        void load_library(boost::filesystem::path path);
+          std::string module_api_symbol = "di_register_services";
+
+      public:
+          dll_service_provider(container_shared_ptr_t container)
+              : service_provider(container) {}
+
+          /**
+           * http://www.boost.org/doc/libs/1_61_0/libs/filesystem/doc/reference.html#class-path
+           *
+           * @param path Ex. "build/symfony/libmodule-http-server.so"
+           */
+          void load_library(boost::filesystem::path path);
       };
 
     } // dll ns.
