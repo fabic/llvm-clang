@@ -18,16 +18,19 @@ namespace fabic {
         // Prevent client codes from having implicit copies.
         base_definition(const base_definition&) = delete;
         base_definition& operator=(const base_definition&) = delete;
+
     public:
         typedef std::shared_ptr<base_definition> pointer;
         typedef map<string, base_dependency_declaration *> dependencies_map;
         typedef typename boost::call_traits<dependencies_map>::reference dependencies_map_ref;
         typedef typename boost::call_traits<dependencies_map>::const_reference dependencies_map_cref;
+
     protected:
         string id_;
         // Depth-first post-order search
         bool dfs_resolving_ = false;
         bool dfs_visited_   = false;
+
     public:
         explicit base_definition(string name) : id_(name) {}
 

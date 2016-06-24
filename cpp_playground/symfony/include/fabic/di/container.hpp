@@ -87,7 +87,7 @@ namespace fabic {
              * @return self
              */
             template<typename T, class PointerT = std::shared_ptr<T>>
-            reference insert(std::shared_ptr<service<T,PointerT>> service)
+            reference insert(std::shared_ptr<definition<T,PointerT>> service)
             throw(service_already_exists_exception)
             {
                 auto pair = this->services_.insert( std::make_pair(service->id(), service) );
@@ -136,7 +136,7 @@ namespace fabic {
          * @return
          */
         template<typename T, class PointerT = std::shared_ptr<T>>
-        reference register_service(std::shared_ptr<service<T,PointerT>> service) {
+        reference register_service(std::shared_ptr<definition<T,PointerT>> service) {
             this->services_.insert(service);
             return *this;
         };
@@ -158,9 +158,9 @@ namespace fabic {
                       << ", got a "    << serv->get_service_definition_type_name()
                       << ", address: " << format_address_of(serv) ;
 
-            //typedef std::shared_ptr<service<T, PointerT>> concrete_ptr_t;
+            //typedef std::shared_ptr<definition<T, PointerT>> concrete_ptr_t;
 
-            auto concrete = std::dynamic_pointer_cast<service<T, PointerT>>( serv );
+            auto concrete = std::dynamic_pointer_cast<definition<T, PointerT>>( serv );
 
             if (concrete != nullptr) {
                 logtrace << " » service is-a : " << concrete->get_type_info().name() ;

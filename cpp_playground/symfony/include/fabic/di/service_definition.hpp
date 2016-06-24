@@ -12,10 +12,10 @@ namespace fabic {
      * A service definition
      */
     template<class T, class PointerT = std::shared_ptr<T>>
-    class service : public base_definition {
+    class definition : public base_definition {
     public:
-        typedef typename boost::call_traits<service<T,PointerT>>::reference reference;
-        typedef typename std::shared_ptr<service<T,PointerT>> pointer;
+        typedef typename boost::call_traits<definition<T,PointerT>>::reference reference;
+        typedef typename std::shared_ptr<definition<T,PointerT>> pointer;
 
         typedef PointerT factory_function_prototype(dependencies_map_ref deps);
         typedef std::function<factory_function_prototype> factory_function_t;
@@ -33,16 +33,16 @@ namespace fabic {
         PointerT instance;
 
     public:
-        service(string service_id)
+        definition(string service_id)
             : base_definition(service_id),
               type(typeid(T), false),
               factory(),
               instance()
         { }
 
-        service(string id, PointerT ptr) : service(id) {}
+        definition(string id, PointerT ptr) : definition(id) {}
 
-        virtual ~service() {}
+        virtual ~definition() {}
 
         virtual type_info& get_type_info() noexcept { return this->type; }
 

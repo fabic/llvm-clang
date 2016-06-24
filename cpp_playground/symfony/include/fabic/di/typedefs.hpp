@@ -15,7 +15,7 @@ namespace fabic {
 
     // Forward decl.
     template<class T, class PointerT>
-    class service;
+    class definition;
 
     /**
      * The actual service container instance is managed through a shared pointer.
@@ -26,7 +26,7 @@ namespace fabic {
     /**
      * Type of the _service definition_ for containers.
      */
-    typedef service<service_container, container_shared_ptr_t> container_service_definition_t;
+    typedef definition<service_container, container_shared_ptr_t> container_service_definition_t;
 
     /**
      * The shared pointer type to the _service definition_ ``of service container instances``.

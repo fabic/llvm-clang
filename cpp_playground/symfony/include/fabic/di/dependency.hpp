@@ -48,7 +48,7 @@ namespace fabic {
     template<class T, class PointerT = std::shared_ptr<T>>
     class dependency_declaration : public base_dependency_declaration {
     public:
-        typedef service<T, PointerT>       service_t;
+        typedef definition<T, PointerT>       service_t;
         typedef std::shared_ptr<service_t> service_ptr_t;
     private:
         type_info type;

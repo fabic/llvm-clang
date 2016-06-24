@@ -54,7 +54,7 @@ namespace symfony {
 
         auto cnt = di::service_container::new_container_instance();
 
-        typedef di::service<server> server_service_t;
+        typedef di::definition<server> server_service_t;
 
         auto http_server_service = std::make_shared<server_service_t>("http.server");
 
