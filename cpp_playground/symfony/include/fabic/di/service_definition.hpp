@@ -19,13 +19,13 @@ namespace fabic {
     /**
      * Base abstract class for a “ service definition ”.
      */
-    class base_service {
+    class base_definition {
     private:
         // Prevent client codes from having implicit copies.
-        base_service(const base_service&) = delete;
-        base_service& operator=(const base_service&) = delete;
+        base_definition(const base_definition&) = delete;
+        base_definition& operator=(const base_definition&) = delete;
     public:
-        typedef std::shared_ptr<base_service> pointer;
+        typedef std::shared_ptr<base_definition> pointer;
         typedef map<string, base_dependency_declaration *> dependencies_map;
         typedef typename boost::call_traits<dependencies_map>::reference dependencies_map_ref;
         typedef typename boost::call_traits<dependencies_map>::const_reference dependencies_map_cref;
@@ -35,9 +35,9 @@ namespace fabic {
         bool dfs_resolving_ = false;
         bool dfs_visited_   = false;
     public:
-        explicit base_service(string name) : id_(name) {}
+        explicit base_definition(string name) : id_(name) {}
 
-        virtual ~base_service() {}
+        virtual ~base_definition() {}
 
         /**
          * @return the service identifier / name.
@@ -72,7 +72,7 @@ namespace fabic {
      * A service definition
      */
     template<class T, class PointerT = std::shared_ptr<T>>
-    class service : public base_service {
+    class service : public base_definition {
     public:
         typedef typename boost::call_traits<service<T,PointerT>>::reference reference;
         typedef typename std::shared_ptr<service<T,PointerT>> pointer;
@@ -94,7 +94,7 @@ namespace fabic {
 
     public:
         service(string service_id)
-            : base_service(service_id),
+            : base_definition(service_id),
               type(typeid(T), false),
               factory(),
               instance()

@@ -41,7 +41,7 @@ namespace fabic {
     public:
         typedef std::shared_ptr<service_container> pointer;
         typedef typename boost::call_traits<service_container>::reference reference;
-        typedef std::shared_ptr<base_service> service_ptr_t;
+        typedef std::shared_ptr<base_definition> service_ptr_t;
 
         class service_not_found_exception : std::exception {};
         class service_already_exists_exception : std::exception {};
@@ -89,7 +89,7 @@ namespace fabic {
         };
 
     private:
-        map<string, base_service * > services;
+        map<string, base_definition * > services;
         service_map services_;
 
     private:

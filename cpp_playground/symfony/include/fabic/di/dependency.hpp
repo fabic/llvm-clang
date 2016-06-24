@@ -12,7 +12,7 @@ namespace fabic {
 
 
     // Forward decl.
-    class base_service;
+    class base_definition;
 
 
     /**
@@ -40,7 +40,7 @@ namespace fabic {
 
         // NOTE: No virtual `set_service(...)` definition: we'll rely on static
         //       (compile-time) polymorphism for this one.
-        virtual void set_service(std::shared_ptr<base_service> serv) =0;
+        virtual void set_service(std::shared_ptr<base_definition> serv) =0;
     };
 
 
@@ -71,7 +71,7 @@ namespace fabic {
             return this->service_.get() != nullptr;
         }
 
-        virtual void set_service(std::shared_ptr<base_service> serv) {
+        virtual void set_service(std::shared_ptr<base_definition> serv) {
             auto ptr = std::dynamic_pointer_cast<service_t>( serv );
             if (ptr == nullptr)
                 throw new std::exception();

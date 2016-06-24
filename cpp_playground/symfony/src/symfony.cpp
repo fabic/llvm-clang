@@ -59,7 +59,7 @@ namespace symfony {
         auto http_server_service = std::make_shared<server_service_t>("http.server");
 
         http_server_service->set_factory_function(
-            [](di::base_service::dependencies_map_ref deps) -> std::shared_ptr<http::server<hello_world>>
+            [](di::base_definition::dependencies_map_ref deps) -> std::shared_ptr<http::server<hello_world>>
             {
                 std::cerr
                     << std::endl
