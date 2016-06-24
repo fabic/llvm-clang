@@ -58,7 +58,9 @@ namespace symfony {
 
         // DLL
 
-        auto dll = new di::dll::dll_service_provider(cnt);
+        auto dll = std::make_shared<di::dll::dll_service_provider>(cnt);
+
+        dll->load_library( "build/symfony/libmodule-http-server.so" );
 
         // CPP NETLIB
 

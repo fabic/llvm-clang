@@ -5,7 +5,9 @@
 #ifndef FABICCPPPLAYGROUND_DLL_SERVICE_PROVIDER_HPP
 #define FABICCPPPLAYGROUND_DLL_SERVICE_PROVIDER_HPP
 
-#include "fabic/di/service_provider.hpp"
+#include <boost/dll/import.hpp>
+
+# include "fabic/di/service_provider.hpp"
 
 namespace fabic {
   namespace di   {
@@ -15,6 +17,8 @@ namespace fabic {
       public:
         dll_service_provider(container_shared_ptr_t container)
             : service_provider(container) {}
+
+        void load_library(boost::filesystem::path path);
       };
 
     } // dll ns.

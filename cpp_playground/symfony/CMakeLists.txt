@@ -59,3 +59,10 @@ target_link_libraries(
   dl        # for Boost.DLL
   pthread
   )
+
+# https://cmake.org/cmake/help/v3.0/command/add_library.html
+add_library(
+  module-http-server
+  MODULE
+  src/module-http-server.cpp
+  )
