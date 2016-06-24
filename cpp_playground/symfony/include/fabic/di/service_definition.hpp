@@ -116,11 +116,11 @@ namespace fabic {
         reference
         requires(string service_id)
         {
-            logtrace("Service "
-                         << this->id()
-                         << " is-a " << this->get_service_definition_type_name()
-                         << ", requires(" << service_id << ")"
-                         << ", address : " << format_address_of(*this));
+            logtrace << "Service "
+                      << this->id()
+                      << " is-a "       << this->get_service_definition_type_name()
+                      << ", requires("  << service_id << ")"
+                      << ", address : " << format_address_of(*this) ;
 
             auto pair = this->dependencies.insert(
                 std::make_pair(
@@ -134,10 +134,14 @@ namespace fabic {
 
             auto it = pair.first;
 
-            logtrace(" » inserted dependency '" << it->second->get_service_id() << "' is-a "
-                                                << type_info(*it->second).name());
+            logtrace << " » inserted dependency '"
+                      << it->second->get_service_id()
+                      << "' is-a " << type_info(*it->second).name() ;
 
-            logtrace(" » dependencies_map contains " << this->dependencies.size() << " elements.");
+            logtrace << " » dependencies_map contains "
+                      << this->dependencies.size()
+                      << " elements." ;
+
             return *this;
         }
 

@@ -135,21 +135,21 @@ namespace fabic {
          */
         template<typename T, class PointerT = std::shared_ptr<T>>
         PointerT get_service(string id) {
-            logtrace("Container::get_service('" << id << "') :"
-                                                << " about to resolve dependencies...");
+            logtrace << "Container::get_service('" << id << "') :"
+                        " about to resolve dependencies..." ;
 
             service_ptr_t serv = this->resolve_service_dependencies(id);
 
-            logtrace(" » ok, found service : " << serv->id()
-                                               << ", got a " << serv->get_service_definition_type_name()
-                                               << ", address: " << format_address_of(serv));
+            logtrace << " » ok, found service : " << serv->id()
+                      << ", got a "    << serv->get_service_definition_type_name()
+                      << ", address: " << format_address_of(serv) ;
 
             //typedef std::shared_ptr<service<T, PointerT>> concrete_ptr_t;
 
             auto concrete = std::dynamic_pointer_cast<service<T, PointerT>>( serv );
 
             if (concrete != nullptr) {
-                logtrace(" » service is-a : " << concrete->get_type_info().name());
+                logtrace << " » service is-a : " << concrete->get_type_info().name() ;
                 return concrete->get_instance();
             }
             else {

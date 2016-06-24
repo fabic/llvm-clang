@@ -51,7 +51,9 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++ -Wall")
   	find_package (
       Boost
       COMPONENTS REQUIRED
-        log log_setup
+        log
+        #log_setup
+        # ^ ain't needed it appears.
         program_options
         filesystem
         system

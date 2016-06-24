@@ -9,13 +9,15 @@
 #include <boost/log/trivial.hpp>
 
 #ifdef BOOST_LOG_TRIVIAL
-#  define logtrace_(message) (BOOST_LOG_TRIVIAL(trace) << message)
+#  define logtrace  BOOST_LOG_TRIVIAL(trace)
+#  define logdebug  BOOST_LOG_TRIVIAL(debug)
+#  define loginfo   BOOST_LOG_TRIVIAL(info)
+#  define logwarn   BOOST_LOG_TRIVIAL(warning)
+#  define logerror  BOOST_LOG_TRIVIAL(error)
+#  define logfatal  BOOST_LOG_TRIVIAL(fatal)
 #else
-#  define logtrace(message) std::cerr << "TRACE: " << message << std::endl
+#  define logtrace (std::cerr << "TRACE: ")
 #endif
-
-// fixme temp
-#  define logtrace(message) std::cerr << "TRACE: " << message << std::endl
 
 #define format_address_of(x) (boost::format("%x") % (std::addressof(x)))
 
@@ -61,6 +63,10 @@
  * [...] One common mistake is to build dynamic version of the library
  *       and not define BOOST_LOG_DYN_LINK or BOOST_ALL_DYN_LINK when building
  *       the application, so that the library assumes static linking by default. »
+ *
+ * Solution :
+ *   - CMakeLists.txt : add_definitions(-DBOOST_LOG_DYN_LINK)
+ *   - So that it passes `-DBOOST_LOG_DYN_LINK` as compiler argument.
  */
 
 #endif //FABICCPPPLAYGROUND_LOGGING_HPP
