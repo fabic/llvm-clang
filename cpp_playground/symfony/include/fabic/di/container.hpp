@@ -16,7 +16,6 @@
 
 #include <cxxabi.h>
 #include <boost/call_traits.hpp>
-#include <boost/dll/import.hpp>
 
 #include "fabic/logging.hpp"
 #include "fabic/object.hpp"

@@ -11,6 +11,9 @@ namespace fabic {
   namespace di   {
     namespace dll {
 
+      class dll_service_provider : service_provider {
+
+      };
 
     } // dll ns.
   } // di ns.
