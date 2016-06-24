@@ -8,6 +8,8 @@ cmake_minimum_required(VERSION 3.3)
 
 project(FabicCppPlayground)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 set (FabicCppPlayground_VERSION_MAJOR 0)
 set (FabicCppPlayground_VERSION_MINOR 1)
 
