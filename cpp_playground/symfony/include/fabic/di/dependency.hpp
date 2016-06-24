@@ -5,8 +5,13 @@
 #ifndef FABICCPPPLAYGROUND_DEPENDENCY_HPP
 #define FABICCPPPLAYGROUND_DEPENDENCY_HPP
 
+# include "fabic/di/typedefs.hpp"
+# include "fabic/di/type_info.hpp"
+
 namespace fabic {
   namespace di {
+
+    using std::string;
 
     // Forward decl.
     class base_definition;

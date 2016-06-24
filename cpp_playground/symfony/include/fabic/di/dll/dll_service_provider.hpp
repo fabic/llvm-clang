@@ -12,7 +12,9 @@ namespace fabic {
     namespace dll {
 
       class dll_service_provider : service_provider {
-
+      public:
+        dll_service_provider(container_shared_ptr_t container)
+            : service_provider(container) {}
       };
 
     } // dll ns.

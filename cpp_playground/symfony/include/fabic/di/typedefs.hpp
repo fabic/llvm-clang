@@ -6,6 +6,10 @@
 #define FABICCPPPLAYGROUND_TYPEDEFS_HPP
 
 #include <memory>
+#include <boost/call_traits.hpp>
+
+#include "fabic/logging.hpp"
+#include "fabic/object.hpp"
 
 namespace fabic {
   namespace di {

@@ -27,7 +27,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++ -Wall")
   #   - or simply set this as an environment variable,
   #   - or pass `-DBOOSTROOT=...` when running CMake.
   # (works ok with my CMake v3.4.3)
-  set(BOOSTROOT ../local/boost-1.61.0-clang)
+  #set(BOOSTROOT ../local/boost-1.61.0-clang)
 
   # This one is for JetBrains' CLion bundled CMake (v3.5.2) :
   set(BOOST_ROOT ${BOOSTROOT})
@@ -42,13 +42,13 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++ -Wall")
   set (Boost_USE_MULTITHREAD ON)  # enable multithreading
   set (Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
 
-  add_definitions(-DBOOST_ALL_DYN_LINK)
+  #add_definitions(-DBOOST_ALL_DYN_LINK)
   # ^ solves linking problems, notably with Boost.log library.
   #   See http://www.boost.org/doc/libs/1_61_0/libs/log/doc/html/log/rationale/namespace_mangling.html
   #   See also `symfony/include/fabic/logging.hpp`
   # ^ Note that the following would also solve the "unresolved symbol `v2s_mt_posix`"
   #   problem _for the `log` module only.
-  #add_definitions(-DBOOST_LOG_DYN_LINK)
+  add_definitions(-DBOOST_LOG_DYN_LINK)
 
   find_package(Boost 1.61.0 REQUIRED)
 

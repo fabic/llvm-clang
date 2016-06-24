@@ -5,8 +5,17 @@
 #ifndef FABICCPPPLAYGROUND_SERVICE_DEFINITION_HPP
 #define FABICCPPPLAYGROUND_SERVICE_DEFINITION_HPP
 
+# include <string>
+# include <map>
+
+# include "fabic/di/base_definition.hpp"
+
 namespace fabic {
   namespace di {
+
+    using std::string;
+    using std::map;
+    using std::pair;
 
     /**
      * A service definition

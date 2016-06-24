@@ -15,10 +15,7 @@
 #include <cassert>
 
 #include <cxxabi.h>
-#include <boost/call_traits.hpp>
 
-#include "fabic/logging.hpp"
-#include "fabic/object.hpp"
 
 # include "fabic/di/typedefs.hpp"
 # include "fabic/di/type_info.hpp"

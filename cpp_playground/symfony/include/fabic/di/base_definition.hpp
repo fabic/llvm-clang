@@ -5,10 +5,15 @@
 #ifndef FABICCPPPLAYGROUND_BASE_SERVICE_DEFINITION_HPP
 #define FABICCPPPLAYGROUND_BASE_SERVICE_DEFINITION_HPP
 
+
+# include "fabic/di/dependency.hpp"
+
 namespace fabic {
   namespace di {
 
+    using std::string;
     using std::map;
+    using std::pair;
 
     /**
      * Base abstract class for “ service definitions ”.

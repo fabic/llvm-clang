@@ -5,7 +5,7 @@
 #ifndef FABICCPPPLAYGROUND_SERVICE_PROVIDER_HPP
 #define FABICCPPPLAYGROUND_SERVICE_PROVIDER_HPP
 
-#include "fabic/di/typedefs.hpp"
+#include "fabic/di/service_definition.hpp"
 
 namespace fabic {
   namespace di {
@@ -31,6 +31,8 @@ namespace fabic {
          */
         service_provider(container_shared_ptr_t container)
             : container_(container) {}
+
+        virtual ~service_provider() {}
     };
 
   } // di ns.

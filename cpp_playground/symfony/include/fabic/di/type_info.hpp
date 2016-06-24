@@ -5,6 +5,8 @@
 #ifndef FABICCPPPLAYGROUND_TYPE_INFO_HPP
 #define FABICCPPPLAYGROUND_TYPE_INFO_HPP
 
+# include "fabic/object.hpp"
+
 namespace fabic {
   namespace di {
 
