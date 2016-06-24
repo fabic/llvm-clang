@@ -4,7 +4,9 @@
 
 //#include <yaml-cpp/yaml.h>
 #include <iostream>
-#include "fabic/di/container.hpp"
+
+# include "fabic/di/container.hpp"
+# include "fabic/di/service_provider.hpp"
 
 namespace fabic {
 namespace di {

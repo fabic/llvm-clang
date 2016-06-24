@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "fabic/di/container.hpp"
+#include "fabic/di/dll/dll_service_provider.hpp"
 
 #include <boost/program_options.hpp>
 #include <boost/network/protocol/http/server.hpp>
@@ -53,6 +54,13 @@ namespace symfony {
         namespace di = fabic::di;
 
         auto cnt = di::service_container::new_container_instance();
+
+
+        // DLL
+
+        auto dll = new di::dll::dll_service_provider(cnt);
+
+        // CPP NETLIB
 
         typedef di::definition<server> server_service_t;
 
