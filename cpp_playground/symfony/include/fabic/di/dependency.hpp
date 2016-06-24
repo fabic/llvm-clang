@@ -5,11 +5,6 @@
 #ifndef FABICCPPPLAYGROUND_DEPENDENCY_HPP
 #define FABICCPPPLAYGROUND_DEPENDENCY_HPP
 
-namespace fabic {
-  namespace di{
-
-    using std::string;
-
 
     // Forward decl.
     class base_definition;
@@ -87,7 +82,5 @@ namespace fabic {
         // }
     };
 
-  } // di ns.
-} // fabic ns.
 
 #endif //FABICCPPPLAYGROUND_DEPENDENCY_HPP

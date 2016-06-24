@@ -8,34 +8,32 @@
 #include "fabic/di/typedefs.hpp"
 
 namespace fabic {
-namespace di{
+  namespace di {
 
-
-/**
- * Something that provides service definitions
- * to be declared (added) into the given container.
- */
-class service_provider {
-private:
-    container_shared_ptr_t container_;
-
-private:
-    service_provider() = delete;
-    // Prevent implicit copy
-    service_provider(const service_provider&) = delete;
-    service_provider& operator=(const service_provider&) = delete;
-
-public:
     /**
-     * Constructor
+     * Something that provides service definitions
+     * to be declared (added) into the given container.
      */
-    service_provider(container_shared_ptr_t container)
-        : container_(container)
-    { }
-};
+    class service_provider {
+    private:
+        container_shared_ptr_t container_;
 
+    private:
+        service_provider() = delete;
+        // Prevent implicit copy
+        service_provider(const service_provider &) = delete;
+        service_provider &
+        operator=(const service_provider &) = delete;
 
-} // di ns.
+    public:
+        /**
+         * Constructor
+         */
+        service_provider(container_shared_ptr_t container)
+            : container_(container) {}
+    };
+
+  } // di ns.
 } // fabic ns.
 
 #endif //FABICCPPPLAYGROUND_SERVICE_PROVIDER_HPP

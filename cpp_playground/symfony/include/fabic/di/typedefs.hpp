@@ -5,11 +5,6 @@
 #ifndef FABICCPPPLAYGROUND_TYPEDEFS_HPP
 #define FABICCPPPLAYGROUND_TYPEDEFS_HPP
 
-#include "fabic/logging.hpp"
-
-namespace fabic {
-  namespace di {
-
     // Forward decl.
     class service_container;
 
@@ -33,7 +28,5 @@ namespace fabic {
      */
     typedef std::shared_ptr <container_service_definition_t> container_service_definition_ptr_t;
 
-  } // di ns.
-} // fabic ns.
 
 #endif //FABICCPPPLAYGROUND_TYPEDEFS_HPP

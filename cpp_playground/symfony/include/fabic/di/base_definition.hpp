@@ -1,0 +1,61 @@
+//
+// Created by cadet on 6/24/16.
+//
+
+#ifndef FABICCPPPLAYGROUND_BASE_SERVICE_DEFINITION_HPP
+#define FABICCPPPLAYGROUND_BASE_SERVICE_DEFINITION_HPP
+
+
+    /**
+     * Base abstract class for “ service definitions ”.
+     */
+    class base_definition {
+    private:
+        // Prevent client codes from having implicit copies.
+        base_definition(const base_definition&) = delete;
+        base_definition& operator=(const base_definition&) = delete;
+    public:
+        typedef std::shared_ptr<base_definition> pointer;
+        typedef map<string, base_dependency_declaration *> dependencies_map;
+        typedef typename boost::call_traits<dependencies_map>::reference dependencies_map_ref;
+        typedef typename boost::call_traits<dependencies_map>::const_reference dependencies_map_cref;
+    protected:
+        string id_;
+        // Depth-first post-order search
+        bool dfs_resolving_ = false;
+        bool dfs_visited_   = false;
+    public:
+        explicit base_definition(string name) : id_(name) {}
+
+        virtual ~base_definition() {}
+
+        /**
+         * @return the service identifier / name.
+         */
+        string id() { return this->id_; }
+
+        virtual type_info& get_type_info() throw(std::exception) {
+            throw new std::exception();
+        }
+
+        // FIXME: temp.
+        string get_service_definition_type_name() {
+            return type_info::demangle_cxx_type_name(typeid(*this).name());
+        }
+
+        virtual dependencies_map_cref get_dependencies_map() const {
+            throw new std::exception();
+        }
+
+        virtual bool has_instance() const =0;
+
+        virtual void construct() =0;
+
+        bool is_resolving_in_progress() const { return this->dfs_resolving_ ; }
+        bool was_visited() const { return this->dfs_visited_ ; }
+
+        void set_resolving_in_progress(bool b) { this->dfs_resolving_ = b ;}
+        void set_visited(bool b) { this->dfs_visited_ = b ;}
+    };
+
+#endif //FABICCPPPLAYGROUND_BASE_SERVICE_DEFINITION_HPP

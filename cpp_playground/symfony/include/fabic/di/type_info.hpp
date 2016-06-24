@@ -5,16 +5,6 @@
 #ifndef FABICCPPPLAYGROUND_TYPE_INFO_HPP
 #define FABICCPPPLAYGROUND_TYPE_INFO_HPP
 
-#include <string>
-
-#include "fabic/object.hpp"
-
-namespace fabic {
-  namespace di {
-
-    using std::string;
-    using fabic::object;
-
     /**
      *
      * Type information in C++, huh! -_-
@@ -58,6 +48,4 @@ namespace fabic {
         static string demangle_cxx_type_name(const char *mangled_name);
     };
 
-  } // di ns.
-} // fabic ns.
 #endif //FABICCPPPLAYGROUND_TYPE_INFO_HPP
