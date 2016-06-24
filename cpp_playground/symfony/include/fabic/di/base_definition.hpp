@@ -5,6 +5,10 @@
 #ifndef FABICCPPPLAYGROUND_BASE_SERVICE_DEFINITION_HPP
 #define FABICCPPPLAYGROUND_BASE_SERVICE_DEFINITION_HPP
 
+namespace fabic {
+  namespace di {
+
+    using std::map;
 
     /**
      * Base abstract class for “ service definitions ”.
@@ -58,4 +62,6 @@
         void set_visited(bool b) { this->dfs_visited_ = b ;}
     };
 
+  } // di ns.
+} // fabic ns.
 #endif //FABICCPPPLAYGROUND_BASE_SERVICE_DEFINITION_HPP

@@ -18,9 +18,18 @@
 #include <boost/call_traits.hpp>
 #include <boost/dll/import.hpp>
 
-
 #include "fabic/logging.hpp"
 #include "fabic/object.hpp"
+
+# include "fabic/di/typedefs.hpp"
+# include "fabic/di/type_info.hpp"
+# include "fabic/di/dependency.hpp"
+# include "fabic/di/base_definition.hpp"
+# include "fabic/di/service_definition.hpp"
+// ^ ^ ^ WIP ^ ^ ^
+// Quickfix /me struggling to split things but running into
+// header & type definitions issues vs namespacing & forward decl.
+// + incomplete types troubles, this is C++...
 
 
 namespace fabic {
@@ -31,15 +40,6 @@ namespace fabic {
     using std::pair;
 
     using fabic::object;
-
-// Quickfix /me struggling to split things but running into
-// header & type definitions issues vs namespacing & forward decl.
-// + incomplete types troubles, this is C++...
-# include "fabic/di/typedefs.hpp"
-# include "fabic/di/type_info.hpp"
-# include "fabic/di/dependency.hpp"
-# include "fabic/di/base_definition.hpp"
-# include "fabic/di/service_definition.hpp"
 
 
 

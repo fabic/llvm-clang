@@ -5,6 +5,8 @@
 #ifndef FABICCPPPLAYGROUND_SERVICE_DEFINITION_HPP
 #define FABICCPPPLAYGROUND_SERVICE_DEFINITION_HPP
 
+namespace fabic {
+  namespace di {
 
     /**
      * A service definition
@@ -137,4 +139,6 @@
 
     };
 
+  } // di ns.
+} // fabic ns.
 #endif //FABICCPPPLAYGROUND_SERVICE_DEFINITION_HPP
