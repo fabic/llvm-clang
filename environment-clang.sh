@@ -35,7 +35,8 @@ if [ -d "$here/local/include/c++/v1" ] && [ -f "$here/local/include/c++/v1/cxxab
     echo "|"
     echo "| » Hey! good, found local/include/c++/v1 (LLVM/Clang libc++/abi STL implementation)"
     echo "|"
-    CXXFLAGS="-std=c++1y -stdlib=libc++ $CXXFLAGS"
+    #CXXFLAGS="-std=c++1y -stdlib=libc++ $CXXFLAGS"
+    #CXXFLAGS="-g -Wall $CXXFLAGS"
     pathprepend "$here/local/include/c++/v1" CPLUS_INCLUDE_PATH
     export CXXFLAGS CPLUS_INCLUDE_PATH
 fi

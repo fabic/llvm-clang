@@ -28,54 +28,53 @@ fi
 boost_modular_dir="$here/misc/boost"
 
 # 1) try local/boost-1.61.0-clang/ install location
-BOOST_ROOT="$( find "$here/local" -maxdepth 1 -type d -name "boost-*-${CC}" )"
+BOOSTROOT="$( find "$here/local" -maxdepth 1 -type d -name "boost-*-${CC}" )"
 
-echo -n "| Trying \$BOOST_ROOT = $BOOST_ROOT : "
+echo -n "| Trying \$BOOSTROOT = $BOOSTROOT : "
 
 # 2) fallback to ~/boost-1.61.0-clang/
-if [ -d "$BOOST_ROOT/include" ] && [ -d "$BOOST_ROOT/lib" ]; then
+if [ -d "$BOOSTROOT/include" ] && [ -d "$BOOSTROOT/lib" ]; then
     echo "found."
 else
-    BOOST_ROOT="$HOME/boost-*-${CC}"
+    BOOSTROOT="$HOME/boost-*-${CC}"
 fi
 
 # 3) will entail fallback to the checked-out sources under misc/boost/
-[ -d "$BOOST_ROOT/include" ] && [ -d "$BOOST_ROOT/lib" ] || BOOST_ROOT="" 
+[ -d "$BOOSTROOT/include" ] && [ -d "$BOOSTROOT/lib" ] || BOOSTROOT="" 
 
 ##
 ## Found Boost installation
 ##
-if [ ! -z "$BOOST_ROOT" ];
+if [ ! -z "$BOOSTROOT" ];
 then
-    echo "| FYI: Found Boost C++ @ '$BOOST_ROOT', ok."
+    echo "| FYI: Found Boost C++ @ '$BOOSTROOT', ok."
 
-    export BOOST_ROOT
-
-    # Actually I think the actual correct one is _without_ the blankee.
-    export BOOSTROOT="$BOOST_ROOT"
+    export BOOSTROOT
 
     # This appears to be needed by CMake for it to find Boost,
-    # BOOST_ROOT ain't enough it appears.
-    [ -d "$BOOST_ROOT/include" ] && BOOST_INCLUDE_DIRS="${BOOST_ROOT}/include"
-    [ -d "$BOOST_ROOT/lib" ]     && BOOST_LIBRARY_DIRS="${BOOST_ROOT}/lib"
+    # BOOSTROOT ain't enough it appears.
+    if false; then
+        [ -d "$BOOSTROOT/include" ] && BOOST_INCLUDE_DIRS="${BOOSTROOT}/include"
+        [ -d "$BOOSTROOT/lib" ]     && BOOST_LIBRARY_DIRS="${BOOSTROOT}/lib"
+        export BOOST_INCLUDE_DIRS BOOST_LIBRARY_DIRS
+    fi
 
-    export BOOST_INCLUDE_DIRS BOOST_LIBRARY_DIRS
+    #pathappend "$BOOST_INCLUDE_DIRS" CPLUS_INCLUDE_PATH
+    #export CPLUS_INCLUDE_PATH 
 
-    pathappend "$BOOST_INCLUDE_DIRS" CPLUS_INCLUDE_PATH
     pathappend "$BOOST_LIBRARY_DIRS" LD_RUN_PATH
     pathappend "$BOOST_LIBRARY_DIRS" LD_LIBRARY_PATH
+    export LD_RUN_PATH LD_LIBRARY_PATH
 
-    export CPLUS_INCLUDE_PATH LD_RUN_PATH LD_LIBRARY_PATH
-
-    #INCLUDE_PATH="$BOOST_ROOT/include:$INCLUDE_PATH"
+    #INCLUDE_PATH="$BOOSTROOT/include:$INCLUDE_PATH"
     #export INCLUDE_PATH
 
-    #fhs_path_setup_for "$BOOST_ROOT"
+    #fhs_path_setup_for "$BOOSTROOT"
 
 ## Failed search for boost installation
 ##   => fallback to the eventually checked-out raw sources :
 else
-    echo "| OUPS! Couldn't find out where Boost C++ may be (\$BOOST_ROOT)"
+    echo "| OUPS! Couldn't find out where Boost C++ may be (\$BOOSTROOT)"
     echo "|       Trying '$boost_modular_dir'..."
 
     if [ -d "$boost_modular_dir/boost" ];
@@ -95,17 +94,17 @@ else
         echo "| No “ Boost C++ modular ” sources found at '$boost_modular_dir', exiting..."
     fi
 
-    BOOST_ROOT="$boost_modular_dir"
-    BOOST_INCLUDE_DIRS="${BOOST_ROOT}"
-    BOOST_LIBRARY_DIRS=""
+    BOOSTROOT="$boost_modular_dir"
+    #BOOST_INCLUDE_DIRS="${BOOSTROOT}"
+    #BOOST_LIBRARY_DIRS=""
 
-    pathappend "$BOOST_INCLUDE_DIRS" CPLUS_INCLUDE_PATH
+    #pathappend "$BOOST_INCLUDE_DIRS" CPLUS_INCLUDE_PATH
 
     # TODO ?
-    #[ -d "$BOOST_ROOT/lib" ] && BOOST_LIBRARY_DIRS="${BOOST_ROOT}/lib"
+    #[ -d "$BOOSTROOT/lib" ] && BOOST_LIBRARY_DIRS="${BOOSTROOT}/lib"
     #pathappend "$BOOST_LIBRARY_DIRS" LD_RUN_PATH
 
-    export BOOST_ROOT BOOST_INCLUDE_DIRS CPLUS_INCLUDE_PATH
+    export BOOSTROOT BOOST_INCLUDE_DIRS CPLUS_INCLUDE_PATH
 fi
 
 sh $here/show-environment.sh
