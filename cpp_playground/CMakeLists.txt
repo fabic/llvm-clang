@@ -8,6 +8,8 @@ cmake_minimum_required(VERSION 3.3)
 
 project(FabicCppPlayground)
 
+# This will cause -I. and similar/redondant directives like -I../symfony/..
+# to be emitted.
 # set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set (FabicCppPlayground_VERSION_MAJOR 0)
@@ -22,9 +24,13 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++ -Wall")
 # https://svn.boost.org/trac/boost/wiki/CMakeBuildFeatures
 
   # Hard-coded path if needed for `find_package(Boost...)`
-  # Or simply set this as an environment variable,
-  # or pass `-DBOOSTROOT=...` when running CMake.
-  #set(BOOSTROOT ../local/boost-1.61.0-clang)
+  #   - or simply set this as an environment variable,
+  #   - or pass `-DBOOSTROOT=...` when running CMake.
+  # (works ok with my CMake v3.4.3)
+  set(BOOSTROOT ../local/boost-1.61.0-clang)
+
+  # This one is for JetBrains' CLion bundled CMake (v3.5.2) :
+  set(BOOST_ROOT ${BOOSTROOT})
 
   # These two ain't needed, actually...
   # set(BOOST_INCLUDE_DIRS ${BOOSTROOT}/include)
