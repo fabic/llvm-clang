@@ -38,7 +38,17 @@ add_executable(
   symfony
   src/symfony.cpp
   src/di/container.cpp
+  src/di/dll_service_provider.cpp
   src/hacks/hack_cxa_throw_exception.cpp)
+
+# For Boost.DLL which recommends this flag
+#   http://www.boost.org/doc/libs/1_61_0/doc/html/boost_dll/getting_started.html
+#   https://cmake.org/cmake/help/latest/command/target_compile_options.html
+target_compile_options(
+  symfony
+  PUBLIC
+  -fvisibility=hidden
+  )
 
 target_link_libraries(
   symfony
@@ -46,5 +56,6 @@ target_link_libraries(
   ${LibCppNetlibClientConnections}
   ${LibCppNetlibServerParsers}
   unwind dl # for hack_cxa_throw_exception.cpp
+  dl        # for Boost.DLL
   pthread
   )

@@ -5,6 +5,8 @@
 #ifndef FABICCPPPLAYGROUND_TYPEDEFS_HPP
 #define FABICCPPPLAYGROUND_TYPEDEFS_HPP
 
+#include <memory>
+
 namespace fabic {
   namespace di {
 
