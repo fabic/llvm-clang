@@ -24,7 +24,7 @@ namespace fabic {
     /**
      * The actual service container instance is managed through a shared pointer.
      */
-    typedef std::shared_ptr <service_container> container_shared_ptr_t;
+    typedef std::shared_ptr<service_container> container_shared_ptr_t;
 
 
     /**

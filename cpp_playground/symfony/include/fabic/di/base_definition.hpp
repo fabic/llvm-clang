@@ -18,7 +18,8 @@ namespace fabic {
     /**
      * Base abstract class for “ service definitions ”.
      */
-    class base_definition {
+    class base_definition
+        : public std::enable_shared_from_this<base_definition> {
     private:
         // Prevent client codes from having implicit copies.
         base_definition(const base_definition&) = delete;

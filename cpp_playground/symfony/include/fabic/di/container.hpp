@@ -39,7 +39,7 @@ namespace fabic {
      *   a.k.a service container
      *
      */
-    class service_container {
+    class service_container : public std::enable_shared_from_this<service_container> {
     public:
         typedef std::shared_ptr<service_container> pointer;
         typedef typename boost::call_traits<service_container>::reference reference;
@@ -112,6 +112,8 @@ namespace fabic {
          * Static helper that instantiates a new service_container on the heap
          * that is wrapped into a shared_ptr for injection of the “ container ”
          * service.
+         *
+         * todo: this may no longer be needed due to enable_shared_from_this ?
          */
         static container_shared_ptr_t new_container_instance();
 

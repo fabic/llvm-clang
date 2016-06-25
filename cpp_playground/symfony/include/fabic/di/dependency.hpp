@@ -20,7 +20,8 @@ namespace fabic {
     /**
      * Base abstract class for representing service dependencies.
      */
-    class base_dependency_declaration {
+    class base_dependency_declaration
+        : public std::enable_shared_from_this<base_dependency_declaration> {
     private:
         string service_id;
     public:
