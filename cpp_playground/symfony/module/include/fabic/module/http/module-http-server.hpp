@@ -3,6 +3,7 @@
 #include <boost/dll/alias.hpp>
 #include <boost/network/protocol/http/server.hpp>
 
+# include "fabic/logging.hpp"
 # include "fabic/di/container.hpp"
 # include "fabic/module/http/handler_functor.hpp"
 
@@ -10,66 +11,62 @@ namespace fabic {
   namespace module {
     namespace http {
 
-      namespace bhttp = boost::network::http;
+      namespace netlib = boost::network::http;
 
       // Forward decl. for the below typedef `bserver_t`.
-      class handler_functor;
+      class http_server;
+
+      typedef std::shared_ptr<http_server> http_server_ptr_t;
 
       /**
        * “Boost cpp-netlib `boost::network::http::server<class Handler>`”
        */
-      typedef bhttp::server<handler_functor> bserver_t;
+      typedef netlib::server<http_server>            netlib_http_server_t;
+      typedef std::shared_ptr<netlib_http_server_t>  netlib_http_server_ptr_t;
 
 
-      /**
-       *
-       */
-      class handler_functor {
-      public:
-        /*<< This is the function that handles the incoming request. >>*/
-        void operator()(
-            bserver_t::request const &request,
-            bserver_t::connection_ptr connection
-            )
-        {
-          bserver_t::string_type ip = source(request);
-          unsigned int port = request.source_port;
-
-          std::ostringstream data;
-
-          data << "Hello, " << ip << ':' << port << '!';
-
-          connection->write(data.str());
-        }
-      };
-
-
-      //class server : public bhttp::server<handler_functor> {
+      //class server : public netlib::server<handler_functor> {
       // ^ not easy to extend this, actually...
+
 
       /**
        * Wrapper around the Boost cpp-netlib server thing.
        */
-      class http_server : std::enable_shared_from_this<http_server> {
+      class http_server
+          : public std::enable_shared_from_this<http_server>
+      {
       private:
-        bserver_t::options options_;
-        handler_functor handler_;
-        bserver_t bserver_;
+        netlib_http_server_t::options  options_;
+        netlib_http_server_ptr_t       server_;
+
       public:
+        /// Ctor
         explicit http_server();
 
         /**
+         * This _is_ the _“ entry point ”_ of this module (`.so` library),
+         * which is “exported” as C-style symbole `di_register_services`
+         * from `symfony/module/http/module-http-server.cpp` :
          *
+         *     BOOST_DLL_ALIAS(
+         *         fabic::module::http::http_server::__di_register_services,
+         *         di_register_services
+         *     )
          */
         static void
         __di_register_services(di::container_shared_ptr_t container);
 
         /**
-         * Factory method for `__di_register_services`
+         * This is the function that handles the incoming request.
+         *
+         * @param request
+         * @param connection
          */
-        static
-        std::shared_ptr<http_server>
-        __construct();
+        void operator()(
+            netlib_http_server_t::request const &request,
+            netlib_http_server_t::connection_ptr connection
+        );
+
       };
 
     }

@@ -7,79 +7,74 @@ namespace fabic {
   namespace module {
     namespace http {
 
+
+      // Ctor.
+      http_server::http_server() : options_(*this)
+      {
+        // set io_serv. ?
+        this->server_ = std::make_shared< netlib_http_server_t >( this->options_ );
+      }
+
+
       // static btw.
       void
       http_server::__di_register_services(di::container_shared_ptr_t container)
       {
-        logtrace << "HEY! that's module-http-server ;- Hura!" ;
+        logtrace << "HEY! that's module-http-server __di_register_services() ;- Hura!";
 
         typedef di::definition<http_server> server_service_t;
 
         auto http_server_service = std::make_shared<server_service_t>("http.server");
 
-        // http_server_service->set_factory_function(
-        //   [](di::base_definition::dependencies_map_ref deps) -> std::shared_ptr<http::server<hello_world>>
-        //   {
-        //     std::cerr
-        //         << std::endl
-        //         << "YEAH! that's service `...` factory functor bein' invoqued"
-        //            " which is quite remarkable, actually"
-        //         << std::endl;
+        http_server_service->set_factory_function(
+            [](di::base_definition::dependencies_map_ref deps) -> http_server_ptr_t {
+              logtrace << "YEAH! that's service `http.server` factory functor bein' invoqued !"
+                    " (which is quite remarkable, actually)";
 
-        //     try {                /*<< Creates the request handler. >>*/
-        //         hello_world handler;
+              try {
+                http_server_ptr_t server_ = std::make_shared<http_server>();
 
-        //         /*<< Creates the server. >>*/
-        //         server::options options(handler);
+                /*<< Runs the server. >>*/
+                //server_.run();
 
-        //         // options.address(args["address"].as<std::string>())
-        //         //         .port(args["port"].as<std::string>());
-        //         options.address("localhost")
-        //                 .port("1234");
+                return server_;
+              }
+              catch (std::exception &ex) {
+                logfatal << "Caught exception at `http.server` service factory lambda (forwarding it).";
+                throw ex;
+              }
+            }
+        );
 
-        //         auto server_ = std::make_shared<server>( options );
+        http_server_service->set_starter_function(
+            [](server_service_t::pointer serv) -> bool {
+              logtrace << "YEAH! that's service `http.server` factory FUNCTOR bein' invoqued !"
+                          " (which is also remarkable)." ;
 
-        //         /*<< Runs the server. >>*/
-        //         //server_.run();
-        //         return server_;
-        //     }
-        //     catch (std::exception &e) {
-        //         std::cerr << e.what() << std::endl;
-        //         //return nullptr;
-        //         throw e;
-        //     }
-        //   }
-        // );
+              return false;
+            }
+        );
 
-              // http_server_service->set_starter_function(
-              //     [](server_service_t::pointer serv) -> bool
-              //     {
-              //         std::cerr
-              //             << std::endl
-              //             << "YEAH! that's service `...` factory functor bein' invoqued"
-              //                " which is quite remarkable, actually"
-              //             << std::endl;
-              //         return false;
-              //     }
-              // );
+        // cnt->register_service( http_server_service );
 
-              // cnt->register_service( http_server_service );
-
-              // //http_server_service->requires<SomeClassB>("world");
+        // //http_server_service->requires<SomeClassB>("world");
 
       }
 
-      // Ctor.
-      http_server::http_server() : options_(handler_), bserver_(options_)
-      {
 
-      }
+      void
+      http_server::operator()(
+          netlib_http_server_t::request const &request,
+          netlib_http_server_t::connection_ptr connection
+      ) {
+        netlib_http_server_t::string_type ip = source(request);
+        unsigned int port = request.source_port;
 
-      // static btw.
-      std::shared_ptr<http_server>
-      __construct()
-      {
+        std::ostringstream data;
 
+        data << "Hello, " << ip << ':' << port << '!';
+
+        connection->write(data.str());
       }
 
     }
