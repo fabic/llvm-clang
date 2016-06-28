@@ -8,29 +8,8 @@ cmake_minimum_required(VERSION 3.3)
 
 project(Symfony)
 
+# i.e. -Isymfony/include
 include_directories(include)
-
-###
-# cpp-netlib
-#
-# fixme: hard-coded paths, can't get my way 'round those CMake stuff...
-
-  include_directories(${CMAKE_SOURCE_DIR}/../misc/cpp-netlib)
-  include_directories(${CMAKE_SOURCE_DIR}/../misc/cpp-netlib/deps/uri/include)
-
-  find_file(
-    LibCppNetlibClientConnections
-    libcppnetlib-client-connections.so
-    PATHS ${CMAKE_SOURCE_DIR}/../misc/cpp-netlib/build/libs/network/src
-    )
-
-  find_file(
-    LibCppNetlibServerParsers
-    libcppnetlib-server-parsers.so
-    PATHS ${CMAKE_SOURCE_DIR}/../misc/cpp-netlib/build/libs/network/src
-    )
-# ^ cpp-netlib
-##
 
 
 ###
@@ -41,7 +20,8 @@ include_directories(include)
     src/symfony.cpp
     src/di/container.cpp
     src/di/dll_service_provider.cpp
-    src/hacks/hack_cxa_throw_exception.cpp)
+    src/hacks/hack_cxa_throw_exception.cpp
+  )
 
   # For Boost.DLL which recommends this flag
   #   http://www.boost.org/doc/libs/1_61_0/doc/html/boost_dll/getting_started.html
@@ -55,8 +35,6 @@ include_directories(include)
   target_link_libraries(
     symfony
     ${Boost_LIBRARIES}
-    ${LibCppNetlibClientConnections}
-    ${LibCppNetlibServerParsers}
     unwind dl # for hack_cxa_throw_exception.cpp
     dl        # for Boost.DLL
     pthread
@@ -65,13 +43,9 @@ include_directories(include)
 # ^ Symfony
 ###
 
+
 ###
-# build/symfony/libmodule-http-server.so
-  # https://cmake.org/cmake/help/v3.0/command/add_library.html
-  add_library(
-    module-http-server
-    MODULE
-    src/module-http-server.cpp
-    )
-# ^ build/symfony/libmodule-http-server.so
+# “ Modules ” ~~> libmodule-xxx.so
+  add_subdirectory(module)
+#
 ###

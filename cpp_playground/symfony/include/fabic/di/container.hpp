@@ -113,7 +113,7 @@ namespace fabic {
          * that is wrapped into a shared_ptr for injection of the “ container ”
          * service.
          *
-         * todo: this may no longer be needed due to enable_shared_from_this ?
+         * TODO: this may no longer be needed due to enable_shared_from_this ?
          */
         static container_shared_ptr_t new_container_instance();
 

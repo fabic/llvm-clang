@@ -9,35 +9,14 @@
 #include "fabic/di/dll/dll_service_provider.hpp"
 
 #include <boost/program_options.hpp>
-#include <boost/network/protocol/http/server.hpp>
 
 
 namespace fabic {
 namespace symfony {
 
     namespace po   = boost::program_options;
-    namespace http = boost::network::http;
 
     using program_arguments = po::variables_map;
-
-
-    /*<< Defines the server. >>*/
-    struct hello_world;
-    typedef http::server<hello_world> server;
-
-
-    /*<< Defines the request handler.  It's a class that defines two
-         functions, `operator()` and `log()` >>*/
-    struct hello_world {
-        /*<< This is the function that handles the incoming request. >>*/
-        void operator()(server::request const &request, server::connection_ptr connection) {
-            server::string_type ip = source(request);
-            unsigned int port = request.source_port;
-            std::ostringstream data;
-            data << "Hello, " << ip << ':' << port << '!';
-            connection->write(data.str());
-        }
-    };
 
 
     /**
@@ -62,67 +41,11 @@ namespace symfony {
 
         dll->load_library( "build/symfony/libmodule-http-server.so" );
 
-        // CPP NETLIB
-
-        typedef di::definition<server> server_service_t;
-
-        auto http_server_service = std::make_shared<server_service_t>("http.server");
-
-        http_server_service->set_factory_function(
-            [](di::base_definition::dependencies_map_ref deps) -> std::shared_ptr<http::server<hello_world>>
-            {
-                std::cerr
-                    << std::endl
-                    << "YEAH! that's service `...` factory functor bein' invoqued"
-                       " which is quite remarkable, actually"
-                    << std::endl;
-
-                try {
-                    /*<< Creates the request handler. >>*/
-                    hello_world handler;
-
-                    /*<< Creates the server. >>*/
-                    server::options options(handler);
-
-                    // options.address(args["address"].as<std::string>())
-                    //         .port(args["port"].as<std::string>());
-                    options.address("localhost")
-                            .port("1234");
-
-                    auto server_ = std::make_shared<server>( options );
-
-                    /*<< Runs the server. >>*/
-                    //server_.run();
-                    return server_;
-                }
-                catch (std::exception &e) {
-                    std::cerr << e.what() << std::endl;
-                    //return nullptr;
-                    throw e;
-                }
-            }
-        );
-
-        http_server_service->set_starter_function(
-            [](server_service_t::pointer serv) -> bool
-            {
-                std::cerr
-                    << std::endl
-                    << "YEAH! that's service `...` factory functor bein' invoqued"
-                       " which is quite remarkable, actually"
-                    << std::endl;
-                return false;
-            }
-        );
-
-        cnt->register_service( http_server_service );
-
-        //http_server_service->requires<SomeClassB>("world");
 
         cnt->debugDumpContainer(std::cout);
 
 
-        auto huh = cnt->get_service<server>("http.server");
+        //auto huh = cnt->get_service<server>("http.server");
 
 
         return 0;
