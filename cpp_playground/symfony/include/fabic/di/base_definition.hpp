@@ -69,7 +69,11 @@ namespace fabic {
 
         void set_resolving_in_progress(bool b) { this->dfs_resolving_ = b ;}
         void set_visited(bool b) { this->dfs_visited_ = b ;}
-    };
+
+        virtual bool is_startable() const =0;
+        virtual bool start() =0;
+
+      };
 
   } // di ns.
 } // fabic ns.

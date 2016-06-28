@@ -42,6 +42,8 @@ namespace fabic {
 
       //auto huh = cnt->get_service<server>("http.server");
 
+      cnt->start_startable_services();
+
       return 0;
     }
 

@@ -57,10 +57,9 @@ namespace fabic {
             }
         );
 
-        // cnt->register_service( http_server_service );
+         //http_server_service->requires<SomeClassB>("world");
 
-        // //http_server_service->requires<SomeClassB>("world");
-
+         container->register_service( http_server_service );
       }
 
 

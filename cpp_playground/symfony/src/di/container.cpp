@@ -157,11 +157,35 @@ namespace fabic {
       return service;
     }
 
-
     void
-      service_container::start_startable_services()
+    service_container::start_startable_services()
     {
-      // todo: impl.
+      logtrace << "service_container::start_startable_services(): begin.";
+
+      // todo: have a custom container::for_each(...) and for_each_matching()... things...
+
+      for (const auto &pair : this->services_.get_map_impl())
+      {
+        service_ptr_t base = pair.second;
+
+        if (! base->is_startable()) {
+          logtrace << " » Skipping non-startable service " << base->id();
+          continue;
+        }
+
+        service_ptr_t tmp = this->resolve_service_dependencies( base->id() );
+
+        // resolution should really have resolved the _same_ service definition.
+        assert( tmp == base );
+
+        logtrace << " » starting service " << base->id();
+
+        base->start();
+
+        logtrace << " » started service " << base->id();
+      }
+
+      logtrace << "service_container::start_startable_services(): end.";
     }
 
     // static btw.
