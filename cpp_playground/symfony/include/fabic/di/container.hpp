@@ -49,6 +49,8 @@ namespace fabic {
 
       /**
        * Wrapper around the std::map<>.
+       *
+       * TODO: have this _not_ be an inner class ?
        */
       class service_map {
       public:
@@ -153,6 +155,7 @@ namespace fabic {
         }
         else {
           throw new std::exception();
+          // TODO: ^ have a custom ex. type like service exists but cast failed.
         }
       }
 
@@ -162,6 +165,11 @@ namespace fabic {
        * @return
        */
       service_ptr_t resolve_service_dependencies(string service_id);
+
+      /**
+       *
+       */
+      void start_startable_services();
 
       /// TODO: remove this...
       service_container &loadFromYamlFile(string filename);
