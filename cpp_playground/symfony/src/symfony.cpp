@@ -36,7 +36,8 @@ namespace fabic {
 
       auto dll = std::make_shared<di::dll::dll_service_provider>(cnt);
 
-      dll->load_library("build/symfony/module/http/libmodule-http-server.so");
+      //dll->load_library("build/symfony/module/http/libmodule-http-server.so");
+      dll->load_library("libmodule-http-server.so");
 
       cnt->debugDumpContainer(std::cout);
 
