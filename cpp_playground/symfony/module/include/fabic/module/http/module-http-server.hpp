@@ -1,4 +1,5 @@
 
+#include <memory>
 #include <boost/dll/alias.hpp>
 #include <boost/network/protocol/http/server.hpp>
 
@@ -15,7 +16,7 @@ namespace fabic {
       class handler_functor;
 
       /**
-       *
+       * “Boost cpp-netlib `boost::network::http::server<class Handler>`”
        */
       typedef bhttp::server<handler_functor> bserver_t;
 
@@ -49,17 +50,26 @@ namespace fabic {
       /**
        * Wrapper around the Boost cpp-netlib server thing.
        */
-      class http_server {
+      class http_server : std::enable_shared_from_this<http_server> {
       private:
+        bserver_t::options options_;
+        handler_functor handler_;
         bserver_t bserver_;
       public:
+        explicit http_server();
 
         /**
          *
          */
         static void
-        di_register_services(di::container_shared_ptr_t container);
+        __di_register_services(di::container_shared_ptr_t container);
 
+        /**
+         * Factory method for `__di_register_services`
+         */
+        static
+        std::shared_ptr<http_server>
+        __construct();
       };
 
     }
