@@ -54,7 +54,10 @@ namespace fabic {
 
         /**
          * Demangles the C++ type name through `abi::__cxa_demangle()`.
+         *
+         * todo: see `boost::core::demangle` from `boost/dll/detail/demangling/demangle_symbol.hpp`
          */
+        BOOST_SYMBOL_EXPORT
         static string demangle_cxx_type_name(const char *mangled_name);
     };
 

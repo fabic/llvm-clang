@@ -4,11 +4,11 @@
  */
 
 #include <iostream>
+#include <boost/program_options.hpp>
 
 #include "fabic/di/container.hpp"
 #include "fabic/di/dll/dll_service_provider.hpp"
 
-#include <boost/program_options.hpp>
 
 
 namespace fabic {
@@ -26,9 +26,10 @@ namespace symfony {
      */
     int main(program_arguments &args)
     {
-        loginfo << "Hello world, you reached this point, can't believe it!";
+        loginfo << "MAIN: Hello world, you reached this point, can't believe it!";
         loginfo << "  » address : " << args["address"].as<std::string>();
         loginfo << "  » port : "    << args["port"].as<int>();
+        loginfo << "";
 
         namespace di = fabic::di;
 
@@ -39,8 +40,7 @@ namespace symfony {
 
         auto dll = std::make_shared<di::dll::dll_service_provider>(cnt);
 
-        dll->load_library( "build/symfony/libmodule-http-server.so" );
-
+        dll->load_library( "build/symfony/module/http/libmodule-http-server.so" );
 
         cnt->debugDumpContainer(std::cout);
 

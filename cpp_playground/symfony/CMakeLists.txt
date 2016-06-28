@@ -10,6 +10,7 @@ project(Symfony)
 
 # i.e. -Isymfony/include
 include_directories(include)
+include_directories(module/include)
 
 
 ###

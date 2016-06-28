@@ -26,6 +26,7 @@ namespace fabic {
 
         auto http_server_service = std::make_shared<server_service_t>("http.server");
 
+        // Declare the FACTORY functor :
         http_server_service->set_factory_function(
             [](di::base_definition::dependencies_map_ref deps) -> http_server_ptr_t {
               logtrace << "YEAH! that's service `http.server` factory functor bein' invoqued !"
@@ -46,6 +47,7 @@ namespace fabic {
             }
         );
 
+        // Declare a STARTER functor :
         http_server_service->set_starter_function(
             [](server_service_t::pointer serv) -> bool {
               logtrace << "YEAH! that's service `http.server` factory FUNCTOR bein' invoqued !"
