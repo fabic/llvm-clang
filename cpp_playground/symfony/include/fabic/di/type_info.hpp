@@ -31,7 +31,7 @@ namespace fabic {
      * \link http://www.boost.org/doc/libs/1_61_0/doc/html/boost_typeindex/getting_started.html
      *
      */
-    class type_info
+    class FABIC_SYMBOL_EXPORT type_info
         // : public stl_type_index
         // ^ Don't specialize this one: it keeps a pointer to the std::type_info instance,
         //   which happens to be on the stack from time to time -_- wtf /me hoped "static

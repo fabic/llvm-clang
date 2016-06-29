@@ -40,6 +40,24 @@ namespace fabic {
           logtrace << "load_library(" << path << ") : end." ;
       }
 
+
+      void
+      dll_service_provider::load_modules_from_self()
+      {
+          logtrace << "load_modules_from_self() : begin." ;
+
+          auto self = boost::dll::shared_library( boost::dll::program_location() );
+
+          std::function<module_api_func_t> di_register_services_func
+              = self.get_alias<module_api_func_t>( module_api_symbol );
+
+          logtrace << " » symbol " << module_api_symbol << " found, invoking it, beware !" ;
+
+          di_register_services_func( this->get_service_container() );
+
+          logtrace << "load_modules_from_self() : end." ;
+      }
+
     }
   }
 }

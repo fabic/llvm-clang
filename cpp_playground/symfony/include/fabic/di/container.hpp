@@ -35,7 +35,7 @@ namespace fabic {
      *   a.k.a service container
      *
      */
-    class service_container
+    class FABIC_SYMBOL_EXPORT service_container
         : public std::enable_shared_from_this<service_container>
     {
     public:

@@ -14,7 +14,7 @@ namespace fabic {
      * Something that provides service definitions
      * to be declared (added) into the given container.
      */
-    class service_provider {
+    class FABIC_SYMBOL_EXPORT service_provider {
     private:
         container_shared_ptr_t container_;
 

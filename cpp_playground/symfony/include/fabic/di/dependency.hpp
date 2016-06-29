@@ -20,7 +20,7 @@ namespace fabic {
     /**
      * Base abstract class for representing service dependencies.
      */
-    class base_dependency_declaration
+    class FABIC_SYMBOL_EXPORT base_dependency_declaration
         : public std::enable_shared_from_this<base_dependency_declaration> {
     private:
         string service_id;
@@ -52,7 +52,7 @@ namespace fabic {
      * which is (_must be_) of type “ T ”.
      */
     template<class T, class PointerT = std::shared_ptr<T>>
-    class dependency_declaration : public base_dependency_declaration {
+    class FABIC_SYMBOL_EXPORT dependency_declaration : public base_dependency_declaration {
     public:
         typedef definition<T, PointerT>       service_t;
         typedef std::shared_ptr<service_t> service_ptr_t;

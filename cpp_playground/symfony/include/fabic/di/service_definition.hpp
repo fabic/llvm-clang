@@ -22,7 +22,7 @@ namespace fabic {
      * A service definition
      */
     template<class T, class PointerT = std::shared_ptr<T>>
-    class definition : public base_definition {
+    class FABIC_SYMBOL_EXPORT definition : public base_definition {
     public:
       typedef definition<T, PointerT>                         self_t;
       typedef typename std::shared_ptr<self_t>                pointer;   // todo: self_ptr_t ?

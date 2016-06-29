@@ -18,7 +18,7 @@ namespace fabic {
     /**
      * Base abstract class for “ service definitions ”.
      */
-    class base_definition
+    class FABIC_SYMBOL_EXPORT base_definition
         : public std::enable_shared_from_this<base_definition> {
     private:
         // Prevent client codes from having implicit copies.

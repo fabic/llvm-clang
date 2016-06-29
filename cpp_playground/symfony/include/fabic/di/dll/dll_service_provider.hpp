@@ -6,6 +6,7 @@
 #define FABICCPPPLAYGROUND_DLL_SERVICE_PROVIDER_HPP
 
 #include <boost/dll/import.hpp>
+#include <boost/dll/runtime_symbol_info.hpp>    // for program_location()
 
 # include "fabic/di/service_provider.hpp"
 
@@ -30,6 +31,7 @@ namespace fabic {
            * @param path Ex. "build/symfony/libmodule-http-server.so"
            */
           void load_library(boost::filesystem::path path);
+          void load_modules_from_self();
       };
 
     } // dll ns.
