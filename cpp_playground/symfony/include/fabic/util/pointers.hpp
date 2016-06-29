@@ -14,8 +14,14 @@ namespace fabic {
 
     template<typename T>
     const typename T::element_type *
-    addressof(T&& v) {
+    address_of(T& v) {
       return v.get();
+    }
+
+    template<typename T>
+    const T *
+    address_of(const T * ptr) {
+      return ptr;
     }
 
     // template<typename Y, typename T = std::shared_ptr<Y>>
@@ -27,8 +33,8 @@ namespace fabic {
 
     template<typename T>
     boost::format
-    format_address_of(T&& v) {
-      return boost::format(" [%x] ") % addressof(v);
+    format_address_of(T& v) {
+      return boost::format(" [%x] ") % address_of(v);
     }
 
 /* failed.

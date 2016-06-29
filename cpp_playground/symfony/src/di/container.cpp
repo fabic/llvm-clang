@@ -77,6 +77,7 @@ namespace fabic {
       for (const auto &pair : this->services_.get_map_impl()) {
         service_ptr_t base = pair.second;
         logdebug << " » " << base->id() << fabic::util::format_address_of(base);
+        logdebug << " » " << base->id() << fabic::util::address_of(base);
         logdebug << " » " << base->id() << " --- " << base.get();
 
       }
