@@ -9,9 +9,17 @@ namespace fabic {
 
 
       // Ctor.
-      http_server::http_server() : options_(*this)
+      http_server::http_server()
+          : options_(*this) // declare *this http_server as the Handler,
+                            // we indeed have an operator() and act as a
+                            // functor for Cpp-netlib/Boost.Asio
       {
         // set io_serv. ?
+
+        this->options()
+            .address("localhost")
+            .port("1234");
+
         this->server_ = std::make_shared< netlib_http_server_t >( this->options_ );
       }
 
@@ -54,6 +62,10 @@ namespace fabic {
             [](server_service_t::reference serv) -> bool {
               logtrace << "YEAH! that's service `http.server` factory FUNCTOR bein' invoqued !"
                           " (which is also remarkable)." ;
+
+              http_server_ptr_t server_ = serv.get_instance();
+
+              server_->run();
 
               return false;
             }

@@ -97,6 +97,8 @@ include_directories(module/include)
   target_link_libraries(
     symfony2
     ${Boost_LIBRARIES}
+    ${LibCppNetlibClientConnections}
+    ${LibCppNetlibServerParsers}
     unwind dl # for hack_cxa_throw_exception.cpp
     dl        # for Boost.DLL
     pthread

@@ -1,5 +1,6 @@
 
 #include <memory>
+#include <thread>
 #include <boost/dll/alias.hpp>
 #include <boost/network/protocol/http/server.hpp>
 
@@ -67,6 +68,13 @@ namespace fabic {
             netlib_http_server_t::connection_ptr connection
         );
 
+        netlib_http_server_t::options& options() { return this->options_; }
+
+        // fixme temp: move impl to .cpp
+        void run() {
+          std::thread t1([&server = *this] { server.run(); });
+          //server_->run();
+        }
       };
 
     }
