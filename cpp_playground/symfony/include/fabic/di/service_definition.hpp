@@ -31,7 +31,7 @@ namespace fabic {
       typedef PointerT factory_function_prototype(dependencies_map_ref deps);
       typedef std::function<factory_function_prototype> factory_function_t;
 
-      typedef bool starter_function_prototype(pointer service);
+      typedef bool starter_function_prototype(reference service);
       typedef std::function<starter_function_prototype> starter_function_t;
 
       class no_defined_factory_functor : std::exception {}; // todo: refactor ex. out of here.
@@ -156,7 +156,7 @@ namespace fabic {
       virtual bool start() {
         if (! this->is_startable() )
           throw new std::exception(); // todo: throw specific ex. here.
-        return this->starter_function( pointer(this) );
+        return this->starter_function( *this );
       };
 
     };

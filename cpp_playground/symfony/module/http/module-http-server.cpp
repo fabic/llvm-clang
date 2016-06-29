@@ -51,7 +51,7 @@ namespace fabic {
 
         // Declare a STARTER functor :
         http_server_service->set_starter_function(
-            [](server_service_t::pointer serv) -> bool {
+            [](server_service_t::reference serv) -> bool {
               logtrace << "YEAH! that's service `http.server` factory FUNCTOR bein' invoqued !"
                           " (which is also remarkable)." ;
 
@@ -90,6 +90,8 @@ namespace fabic {
 //     fabic::module::http::http_server::__di_register_services,
 //     di_register_services
 // )
+
+
 BOOST_DLL_ALIAS_SECTIONED(
     fabic::module::http::http_server::__di_register_services,
     howdy,

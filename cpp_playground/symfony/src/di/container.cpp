@@ -169,7 +169,7 @@ namespace fabic {
 
       // todo: have a custom container::for_each(...) and for_each_matching()... things...
 
-      for (const auto &pair : this->services_.get_map_impl())
+      for (const auto& pair : this->services_.get_map_impl())
       {
         service_ptr_t base = pair.second;
 
