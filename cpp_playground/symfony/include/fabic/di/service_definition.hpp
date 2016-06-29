@@ -70,7 +70,7 @@ namespace fabic {
                  << this->id()
                  << " is-a " << this->get_service_definition_type_name()
                  << ", requires(" << service_id << ")"
-                 << ", address : " << format_address_of(*this);
+                 << ", address : " << util::format_address_of(*this);
 
         auto pair = this->dependencies.insert(
             std::make_pair(

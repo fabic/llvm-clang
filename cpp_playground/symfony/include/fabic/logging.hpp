@@ -8,6 +8,8 @@
 #include <boost/format.hpp>
 #include <boost/log/trivial.hpp>
 
+# include <fabic/util/pointers.hpp>
+
 #ifdef BOOST_LOG_TRIVIAL
 #  define logtrace  BOOST_LOG_TRIVIAL(trace)
 #  define logdebug  BOOST_LOG_TRIVIAL(debug)
@@ -19,7 +21,8 @@
 #  define logtrace (std::cerr << "TRACE: ")
 #endif
 
-#define format_address_of(x) (boost::format("%x") % (std::addressof(x)))
+
+
 
 /* !!! NOTE !!!
  *

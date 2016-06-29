@@ -70,33 +70,40 @@ namespace fabic {
 
 
     service_container&
-      service_container::debugDumpContainer(std::ostream &os)
+      service_container::debugDumpContainer()
     {
-      os << std::endl
-         << "CONTAINER DEBUG DUMP :"
-         << std::endl;
+      logdebug << "CONTAINER DEBUG DUMP (1 - basic) :";
+
+      for (const auto &pair : this->services_.get_map_impl()) {
+        service_ptr_t base = pair.second;
+        logdebug << " » " << base->id() << fabic::util::format_address_of(base);
+        logdebug << " » " << base->id() << " --- " << base.get();
+
+      }
+
+      logdebug << "CONTAINER DEBUG DUMP (2 - detail) :";
 
       for (const auto &pair : this->services_.get_map_impl()) {
         service_ptr_t base = pair.second;
 
-        os << "  » " << base->id() << " : " << std::endl
+        logdebug << "  » " << base->id() << " : " << std::endl
            << "    - is-a:     " << base->get_service_definition_type_name() << std::endl
-           << "    - address : " << format_address_of(base) << std::endl
+           << "    - address : " << fabic::util::format_address_of(base) << std::endl
            << "    - type:     " << base->get_type_info().name() << std::endl;
 
         auto deps = base->get_dependencies_map();
 
-        os << "    - dependencies :" << std::endl;
+        logdebug << "    - dependencies :" << std::endl;
 
         for (const auto &tuple : deps) {
           base_dependency_declaration &dep = *tuple.second;
-          os << "        - " << dep.get_service_id()
+          logdebug << "        - " << dep.get_service_id()
              << " as " << dep.get_service_type().name()
-             << " [" << format_address_of(dep) << "]"
+             << " [" << fabic::util::format_address_of(dep) << "]"
              << std::endl;
         }
 
-        os << std::endl;
+        logdebug << std::endl;
       }
 
       return *this;

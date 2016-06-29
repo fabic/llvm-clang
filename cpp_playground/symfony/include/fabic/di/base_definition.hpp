@@ -53,8 +53,9 @@ namespace fabic {
 
         // FIXME: temp.
         string get_service_definition_type_name() {
-            auto& _type = typeid(*this);
-            return type_info::demangle_cxx_type_name(_type.name());
+            //auto& _type = typeid(*this);
+            //return type_info::demangle_cxx_type_name(_type.name());
+            return "XXXX";
         }
 
         virtual dependencies_map_cref get_dependencies_map() const {
