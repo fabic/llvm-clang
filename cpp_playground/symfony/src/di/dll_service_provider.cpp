@@ -10,7 +10,7 @@ namespace fabic {
       {
           logtrace << "load_library(" << path << ") : begin." ;
 
-          auto lib = boost::dll::shared_library(
+          boost::dll::shared_library lib(
               path,
               // Will try/search for .so/.ddl extension,
               // then fallback to the actual `path` as file name.
@@ -46,14 +46,24 @@ namespace fabic {
       {
           logtrace << "load_modules_from_self() : begin." ;
 
-          auto self = boost::dll::shared_library( boost::dll::program_location() );
+          boost::dll::library_info libinfo( boost::dll::program_location() );
 
-          std::function<module_api_func_t> di_register_services_func
-              = self.get_alias<module_api_func_t>( module_api_symbol );
+          std::vector<std::string> symbols = libinfo.symbols("Anna");
 
-          logtrace << " » symbol " << module_api_symbol << " found, invoking it, beware !" ;
+          boost::dll::shared_library self( boost::dll::program_location() );
 
-          di_register_services_func( this->get_service_container() );
+          for(const auto& sym : symbols) {
+            logtrace << " » Found symbol from section Anna : " << sym;
+
+            std::function<module_api_func_t>
+              di_register_services_func =
+                self.get_alias<module_api_func_t>( sym );
+
+            logtrace << " » Got symbol " << sym ;
+            logtrace << " » Invoking it now, beware !" ;
+
+            di_register_services_func( this->get_service_container() );
+          }
 
           logtrace << "load_modules_from_self() : end." ;
       }

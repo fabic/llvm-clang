@@ -85,8 +85,13 @@ namespace fabic {
 }
 
 
-// http://www.boost.org/doc/libs/1_61_0/doc/html/boost_dll/tutorial.html#boost_dll.tutorial.searching_for_a_symbol_in_multiple_plugins
-BOOST_DLL_ALIAS(
+// http://www.boost.org/doc/libs/1_61_0/doc/html/boost_dll/tutorial.html
+// BOOST_DLL_ALIAS(
+//     fabic::module::http::http_server::__di_register_services,
+//     di_register_services
+// )
+BOOST_DLL_ALIAS_SECTIONED(
     fabic::module::http::http_server::__di_register_services,
-    di_register_services
-)
+    howdy,
+    Anna
+  )

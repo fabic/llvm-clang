@@ -15,7 +15,25 @@ project(FabicCppPlayground)
 set (FabicCppPlayground_VERSION_MAJOR 0)
 set (FabicCppPlayground_VERSION_MINOR 1)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++ -Wall")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++ -Wall -pedantic")
+
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
+# ^ requires LLVMgold.so, missing on my Sabayon system (Clang 3.8).
+#   http://clang.llvm.org/docs/LTOVisibility.html
+
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
+# ^ implies -g
+
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address  -fsanitize=undefined -fsanitize=dataflow -fsanitize=cfi -flto -fsanitize=safe-stack")
+# ^ -fsanitize=memory -fsanitize=thread :
+# “ It is not possible to combine more than one of the -fsanitize=address, -fsanitize=thread, and -fsanitize=memory checkers in the same program. ”
+# http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation
+
+# -fwhole-program-vtables
+
+add_compile_options(
+  -fvisibility=hidden
+)
 
 ###
 # Boost C++
