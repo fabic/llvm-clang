@@ -26,7 +26,7 @@ namespace fabic {
 
         auto http_server_service = std::make_shared<server_service_t>("http.server");
 
-        logtrace << "http_server_service type name : " << http_server_service->get_type_info().name();
+        logtrace << "http_server_service type name : " << http_server_service->get_type_info().pretty_name();
 
         // Declare the FACTORY functor :
         http_server_service->set_factory_function(

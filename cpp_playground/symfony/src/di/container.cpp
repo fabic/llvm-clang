@@ -76,10 +76,7 @@ namespace fabic {
 
       for (const auto &pair : this->services_.get_map_impl()) {
         service_ptr_t base = pair.second;
-        logdebug << " » " << base->id() << fabic::util::format_address_of(base);
-        logdebug << " » " << base->id() << fabic::util::address_of(base);
-        logdebug << " » " << base->id() << " --- " << base.get();
-
+        logdebug << " » " << base->id() << " [" << fabic::util::address_of(base) << "]";
       }
 
       logdebug << "CONTAINER DEBUG DUMP (2 - detail) :";
@@ -89,22 +86,22 @@ namespace fabic {
 
         logdebug << "  » " << base->id() << " : " << std::endl
            << "    - is-a:     " << base->get_service_definition_type_name() << std::endl
-           << "    - address : " << fabic::util::format_address_of(base) << std::endl
-           << "    - type:     " << base->get_type_info().name() << std::endl;
+           << "    - address : " << " [" << fabic::util::address_of(base) << "]" << std::endl
+           << "    - type:     " << base->get_type_info().pretty_name() << std::endl;
 
-        auto deps = base->get_dependencies_map();
-
-        logdebug << "    - dependencies :" << std::endl;
-
-        for (const auto &tuple : deps) {
-          base_dependency_declaration &dep = *tuple.second;
-          logdebug << "        - " << dep.get_service_id()
-             << " as " << dep.get_service_type().name()
-             << " [" << fabic::util::format_address_of(dep) << "]"
-             << std::endl;
-        }
-
-        logdebug << std::endl;
+//        auto deps = base->get_dependencies_map();
+//
+//        logdebug << "    - dependencies :" << std::endl;
+//
+//        for (const auto &tuple : deps) {
+//          base_dependency_declaration &dep = *tuple.second;
+//          logdebug << "        - " << dep.get_service_id()
+//             << " as " << dep.get_service_type().name()
+//             << " [" << fabic::util::address_of(dep) << "]"
+//             << std::endl;
+//        }
+//
+//        logdebug << std::endl;
       }
 
       return *this;
@@ -140,7 +137,7 @@ namespace fabic {
 
         logtrace << "     - depends on service "
                  << depdecl->get_service_id()
-                 << ", type: " << depdecl->get_service_type().name();
+                 << ", type: " << depdecl->get_service_type().pretty_name();
 
         service_ptr_t serv = this->resolve_service_dependencies(
             depdecl->get_service_id()

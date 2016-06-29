@@ -63,7 +63,7 @@ namespace fabic {
     public:
         dependency_declaration(string service_id)
             : base_dependency_declaration(service_id),
-              type(typeid(T), false),
+              type(type_info::type_id<T>()),
               service_(nullptr) {}
 
         virtual const type_info& get_service_type() const {

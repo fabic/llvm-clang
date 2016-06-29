@@ -47,15 +47,13 @@ namespace fabic {
          */
         string id() { return this->id_; }
 
-        virtual type_info& get_type_info() throw(std::exception) {
+        virtual const type_info& get_type_info() const {
             throw new std::exception();
         }
 
         // FIXME: temp.
         string get_service_definition_type_name() {
-            //auto& _type = typeid(*this);
-            //return type_info::demangle_cxx_type_name(_type.name());
-            return "XXXX";
+            return type_info::type_id_runtime(*this).pretty_name();
         }
 
         virtual dependencies_map_cref get_dependencies_map() const {

@@ -143,7 +143,7 @@ namespace fabic {
 
         logtrace << " » ok, found service : " << serv->id()
                  << ", got a " << serv->get_service_definition_type_name()
-                 << ", address: " << fabic::util::format_address_of(serv);
+                 << ", address: " << fabic::util::address_of(serv);
 
         //typedef std::shared_ptr<definition<T, PointerT>> concrete_ptr_t;
 

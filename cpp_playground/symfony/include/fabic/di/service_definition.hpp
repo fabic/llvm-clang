@@ -44,17 +44,34 @@ namespace fabic {
       PointerT            instance;
 
     public:
+      /**
+       * Ctor
+       *
+       * @param service_id
+       * @return
+       */
       definition(string service_id)
           : base_definition(service_id),
-            type(typeid(T), false),
-            factory(),
-            instance() {}
+            type(type_info::type_id<T>()),
+            instance() // i.e. null (typically an empty shared_ptr<T>) pointer.
+      { }
 
-      definition(string id, PointerT ptr) : definition(id) {}
+      /**
+       * Ctor with an existing instance of the thing.
+       *
+       * @param id
+       * @param ptr
+       * @return
+       */
+      definition(string id, PointerT ptr)
+          : base_definition(id),
+            type(type_info::type_id<T>()),
+            instance(ptr)
+      { }
 
       virtual ~definition() {}
 
-      virtual type_info &get_type_info() noexcept { return this->type; }
+      virtual const type_info& get_type_info() const { return this->type; }
 
       /**
        * Declare (add) a dependency over a given service that has type “ Over ”.
@@ -70,7 +87,7 @@ namespace fabic {
                  << this->id()
                  << " is-a " << this->get_service_definition_type_name()
                  << ", requires(" << service_id << ")"
-                 << ", address : " << util::format_address_of(*this);
+                 << ", address : " << util::address_of(this);
 
         auto pair = this->dependencies.insert(
             std::make_pair(
