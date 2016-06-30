@@ -14,12 +14,25 @@ echo "|"
   cd "$here/llvm-clang" || exit 1
 
   localdir=${1:-"$(mkdir -p "$here/local" && cd "$here/local" && pwd)"}
+  builddir=${2:-"build"}
+
+  # Ensure destination "install target" directory is an absolute path :
+  if [ "X${localdir#/}" == "X${localdir}" ]; then
+    echo "| First argument '$localdir' ain't an absolute path, "
+    echo "| prefixing with current directory :"
+      localdir="$(pwd)/$localdir"
+    echo "|"
+    echo "|   \$localdir = $localdir"
+    echo "|"
+  fi
 
 echo "| Entered `pwd`/"
-echo "| \$localdir = '$localdir'"
+echo "|"
+echo "|   \$localdir = '$localdir'"
+echo "|   \$builddir = '$builddir'"
 
-###
-#
+
+##
 function show_some_sensitive_settings() {
   echo "|"
   echo "| FYI: Here's the value of sensitive environment variables :"
@@ -37,6 +50,10 @@ function show_some_sensitive_settings() {
   echo "|   \$LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
   echo "|"
   echo "|   ^ please ensure that somehow... (TODO: talk!)"
+  echo "|"
+  echo "| NOTE libcxx & libcxxabi : if you have built these two separately"
+  echo "|      and installed these somewhere, please ensure if needs be that"
+  echo "|      the above settings are correct."
   echo "|"
   echo "| Note that you may [re-]source the shell script '$here/environment-clang.sh'"
   echo "| which may set things up correctly if you're lucky."
@@ -56,9 +73,9 @@ show_some_sensitive_settings
   fi
 
   # Ask/warn early about an eventually existing build/ directory.
-  if [ -d build ]; then
-    read -p "| REMOVE existing temporary `pwd`/build/ directory, Ok ?"
-    rm -rf build || exit 127
+  if [ -d "$builddir" ]; then
+    read -p "| REMOVE existing temporary `pwd`/$builddir/ directory, Ok ?"
+    rm -rf "$builddir" || exit 127
   fi
 
 
@@ -123,31 +140,33 @@ if true; then
     echo "+-"
     echo "| About to build LLVM/Clang compiler !"
     echo "|"
-    echo "| Entering temporary build/ directory."
+    echo "| Entering temporary the build directory '$builddir'."
 
-      if ! mkdir build || ! cd build/ ;
+      if ! mkdir "$builddir" || ! cd "$builddir" ;
       then
-        echo "+---> FAILED to create and/or enter the temporary build/ dir."
+        echo "+---> FAILED to create and/or enter the temporary build dir.: '$builddir'"
         exit 126
+      else
+        echo "|"
+        echo "| Ok, current dir. is now '`pwd`'"
+        echo "|"
       fi
 
-    echo "| Ok, current dir. is now '`pwd`'"
-    echo "|"
-    echo "+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    echo "+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo "|"
     echo "| Running CMake..."
     echo "|"
     echo "| Note that we're passing the following -Dxxx CMake options :"
-    echo "|   - LLVM_ENABLE_FFI=OFF       (default)"
-    echo "|   - BUILD_SHARED_LIBS=ON      (defaults to OFF)"
-    echo "|   - LLVM_BUILD_LLVM_DYLIB=OFF (defaults to OFF)"
-    echo "|   - LLVM_TARGETS_TO_BUILD=\"host;X86\"  (defaults to 'all')"
+    echo "|   - LLVM_ENABLE_FFI=OFF                  (default)"
+    echo "|   - BUILD_SHARED_LIBS=ON                 (defaults to OFF)"
+    echo "|   - LLVM_BUILD_LLVM_DYLIB=OFF            (defaults to OFF)"
+    echo "|   - LLVM_TARGETS_TO_BUILD=\"host;X86\"   (defaults to 'all')"
     echo "|   - CMAKE_CXX_FLAGS=\"-stdlib=libc++\"   (!!! BEWARE !!!)"
     echo "|"
     echo "| See http://llvm.org/docs/CMake.html"
     echo "| See http://www.linuxfromscratch.org/blfs/view/svn/general/llvm.html"
     echo "|"
-    echo "+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~"
+    echo "+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~"
     echo
 
       time \
@@ -176,6 +195,11 @@ if true; then
     echo "| (we didn't alter anything by the way, it's your settings!)"
     echo "|"
     show_some_sensitive_settings
+
+    echo
+    read -p "Ok to proceed ? (Ctrl-C to abort)"
+    echo
+
 
     echo
     echo "+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
