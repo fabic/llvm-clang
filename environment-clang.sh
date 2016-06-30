@@ -4,8 +4,31 @@ here=$( cd `dirname "${BASH_SOURCE[0]}"` && pwd )
 
 . $here/functions.sh
 
+echo "+--- ${BASH_SOURCE[0]} $@"
+echo "|"
+
+# FHS-like/compliant local/ dir.
+localdir=${1:-"$here/local"}
+localdir=${localdir%/}
+
+# Prepend local/bin to PATH (hopefully we have a Clang install. there).
+if [ -d "$localdir/bin" ]; then
+    echo "| Found directory '$localdir/bin' : prepending it to \$PATH. "
+    pathprepend "$here/local/bin"
+else
+    echo "| FYI: No FHS-like '$localdir' directory, ok this is fine."
+fi
+
+
+echo "| Searching for Clang/++"
+ClangBin=$(type -p clang)
+ClangCppBin=$(type -p clang)
+
+echo ${ClangBin} -- ${ClangBin#$localdir/bin/}
+
+
 # Check/output Clang version
-echo "Checking for Clang..."
+echo "| Checking Clang actually would execute (--version) :"
 if ! ( clang --version | sed -e 's/^/    &/' ); then
     retv=$?
     echo "Oups! couldn't execute Clang, exiting (retv=$retv)"

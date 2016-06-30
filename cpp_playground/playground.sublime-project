@@ -5,16 +5,22 @@
 			"path": "."
 		},
 		{
-			"path": "../misc/boost"
+			"path": "../local/include"
 		},
+		{
+			"path": "/usr/local/include"
+		},
+		// {
+		// 	"path": "/usr/include"
+		// },
 		{
 			"path": "../misc/cpp-netlib"
 		},
 		{
-			"path": "../misc/libcsdbg"
+			"path": "../misc/boost_1_61_0"
 		},
 		{
-			"path": "../libunwind"
+			"path": "../misc/valloric-ycmd"
 		}
 	]
 }

@@ -176,7 +176,7 @@ namespace fabic {
      * Base abstract class for services that manage a thread
      * (multiple threads too ?)
      */
-    class threaded_service : startable_service {
+    class threaded_service : public startable_service {
 
     };
 
