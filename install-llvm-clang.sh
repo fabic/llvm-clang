@@ -1,3 +1,38 @@
+#!/bin/sh
+#
+# fabic/2016-06-30
+
+here=$(cd `dirname "$0"` && pwd)
+
+echo "+--- $0"
+echo "|"
+echo "| This script builds the whole LLVM Clang compiler"
+echo "|"
+
+cd "$here/llvm-clang" || exit 1
+
+echo "| Entered `pwd`/"
+
+echo "|"
+echo "| Git submodule checkout llvm clang clang-tools-extra compiler-rt libcxx libcxxabi..."
+echo "|"
+
+if ! git submodule update --init \
+  llvm clang clang-tools-extra compiler-rt \
+  libcxx libcxxabi ;
+then
+  retv=$?
+  echo "| FAIL: Git submodule exited with status : $retv"
+  echo "+-"
+  exit $retv
+else
+  echo "| Done with Git submodule checkout, ok."
+  echo "+-"
+fi
+
+
+
+
 472276  2016-06-29 20:05:36  . environment-clang.sh
 
 

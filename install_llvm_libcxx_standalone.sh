@@ -15,12 +15,18 @@ echo "|"
 
   cd "$here/llvm-clang" || exit 1
 
-  localdir=${1:-"$(cd ../local && pwd)"}
+  localdir=${1:-"$(mkdir -p "$here/local" && cd "$here/local" && pwd)"}
 
 echo "| Entered `pwd`/"
 echo "| \$localdir = '$localdir'"
 echo "|"
 echo "| This script builds LLVM's libcxx _out of_ the LLVM tree."
+echo "|"
+echo "| See documentation at :"
+echo "|"
+echo "| http://libcxx.llvm.org/docs/BuildingLibcxx.html"
+echo "| http://libcxxabi.llvm.org/"
+echo "| http://stackoverflow.com/a/25840107"
 echo "|"
 echo "| It will perform 3 steps :"
 echo "|"
@@ -341,7 +347,7 @@ echo "|   \$LD_RUN_PATH     = $LD_RUN_PATH"
 echo "|   \$LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
 echo "|"
 echo "| Also note that LLVM's libc++ STL library headers went under"
-echo "| '$localdir/include/c++/v1/' and you will probably have to ajust"
+echo "| '$localdir/include/c++/v1/' and you will probably have to adjust"
 echo "| the CPLUS_INCLUDE_PATH environment variable so that Clang looks"
 echo "| for STL headers there _first_ (before the GCC (libstdc++) ones typically found"
 echo "| under something like '/usr/lib/gcc/x86_64-pc-linux-gnu/4.9.3/include/g++-v4/)'."
