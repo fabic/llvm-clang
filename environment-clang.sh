@@ -25,6 +25,8 @@ ClangBin=$(type -p clang)
 ClangCppBin=$(type -p clang)
 
 echo ${ClangBin} -- ${ClangBin#$localdir/bin/}
+echo "^^^ TODO ^^^"
+unset ClangBin ClangCppBin
 
 
 # Check/output Clang version
@@ -35,10 +37,12 @@ if ! ( clang --version | sed -e 's/^/    &/' ); then
     exit $retv
 fi
 
+
 # Clang LLVM ;-
 CC=clang
 CXX=clang++
 export CC CXX
+
 
 if [ -d "$here/local/include" ]; then
     pathprepend "$here/local/include" CPATH

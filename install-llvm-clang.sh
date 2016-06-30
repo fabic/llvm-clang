@@ -161,7 +161,7 @@ if true; then
     echo "|   - BUILD_SHARED_LIBS=ON                 (defaults to OFF)"
     echo "|   - LLVM_BUILD_LLVM_DYLIB=OFF            (defaults to OFF)"
     echo "|   - LLVM_TARGETS_TO_BUILD=\"host;X86\"   (defaults to 'all')"
-    echo "|   - CMAKE_CXX_FLAGS=\"-stdlib=libc++\"   (!!! BEWARE !!!)"
+    echo "|   - ~~CMAKE_CXX_FLAGS=\"-stdlib=libc++\"~~   (!!! BEWARE !!!)"
     echo "|"
     echo "| See http://llvm.org/docs/CMake.html"
     echo "| See http://www.linuxfromscratch.org/blfs/view/svn/general/llvm.html"
@@ -169,9 +169,10 @@ if true; then
     echo "+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~"
     echo
 
+          #-DCMAKE_CXX_FLAGS="-stdlib=libc++"  \
+
       time \
         cmake \
-          -DCMAKE_CXX_FLAGS="-stdlib=libc++"  \
           -DCMAKE_BUILD_TYPE=Release         \
           -DCMAKE_INSTALL_PREFIX="$localdir" \
           -DLLVM_ENABLE_FFI=OFF     \
