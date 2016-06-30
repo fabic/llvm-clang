@@ -26,6 +26,9 @@ then
     $here/check-clang-include-paths.sh |& sed -e 's/^/|    /'
     echo "|"
     echo "+---"
+    echo "| \$CC  = $CC   shall be $(type -p "$CC")   (found in \$PATH by \`type -p \"$CC\"\`)."
+    echo "| \$CXX = $CXX shall be $(type -p "$CXX") (found in \$PATH)."
+    echo "+---"
     echo
 
 fi
