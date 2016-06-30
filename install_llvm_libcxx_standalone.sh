@@ -8,6 +8,8 @@
 
 here=$(cd `dirname "$0"` && pwd)
 
+. "$here/functions.sh"
+
 echo "+--- $0"
 echo "|"
 
@@ -28,9 +30,22 @@ echo "|   2) build libcxxabi against that temporary libcxx build."
 echo "|   3) re-build libcxx against our fresh build of libcxxabi."
 echo "|      (and install the whole stuff, under '$localdir')"
 echo "|"
+echo "| FYI: Here's the value of sensitive environment variables :"
+echo "|"
+echo "|   \$CC  = $CC"
+echo "|   \$CXX = $CXX"
+echo "|"
+echo "|   \$CPATH = $CPATH"
+echo "|   \$CPLUS_INCLUDE_PATH = $CPLUS_INCLUDE_PATH"
+echo "|"
+echo "|   \$LD_RUN_PATH     = $LD_RUN_PATH"
+echo "|   \$LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+echo "|"
+echo "+-"
 
+echo
 read -p "Ok to proceed ? (Ctrl-C to abort)"
-
+echo
 
 echo "|"
 echo "| Git submodule checkout llvm, libcxx, libcxxabi..."
@@ -42,10 +57,10 @@ echo "|"
     echo "| FAIL: Git submodule exited with status : $retv"
     echo "+-"
     exit $retv
-  else
-    echo "| Done with Git submodule checkout, ok."
-    echo "+-"
   fi
+
+echo "| Done with Git submodule checkout, ok."
+echo "+-"
 
 
 ###
@@ -194,6 +209,26 @@ if true; then
         exit $retv
       fi
 
+    echo "|"
+    echo "| Install done (of libcxxabi under '$localdir')."
+    echo "|"
+    echo "| Updating a few environment variables, LD_RUN_PATH, LD_LIBRARY_PATH"
+    echo "| (this is not strictly required to have step #3 complete though)"
+    echo "|"
+
+      pathprepend "$localdir"/lib LD_RUN_PATH
+      pathprepend "$localdir"/lib LD_LIBRARY_PATH
+      export LD_RUN_PATH LD_LIBRARY_PATH
+
+    echo "|   \$LD_RUN_PATH     = $LD_RUN_PATH"
+    echo "|   \$LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+
+    echo "|"
+    echo "| FYI: Note that Ninja only installed the libc++abi.so library,"
+    echo "| FYI: but did probably skept the headers (which is expected,"
+    echo "| FYI: these will (shall) be installed as part of libcxx re-build"
+    echo "| FYI: that follows)."
+    echo "|"
     echo "| Step #2 finished build of libcxxabi against the temporary libcxx."
     echo "+-"
 
@@ -288,6 +323,9 @@ fi
 # ^ end of step #3.
 ##
 
+###
+## This is the end, output some information.
+#
 echo "|"
 echo "| Ok done, here's the output of \`ldd \"$localdir/lib/libc++.so.1\"\` :"
 
@@ -295,6 +333,28 @@ ldd "$localdir/lib/libc++.so.1" | \
   sed -e 's/^/|  &/'
 
 echo "| ^ Hopefully you would see that it linked against libc++abi.so.1"
+echo "|"
+echo "| Note that we _do have_ two environment variables that you will"
+echo "|      probably need :"
+echo "|"
+echo "|   \$LD_RUN_PATH     = $LD_RUN_PATH"
+echo "|   \$LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+echo "|"
+echo "| Also note that LLVM's libc++ STL library headers went under"
+echo "| '$localdir/include/c++/v1/' and you will probably have to ajust"
+echo "| the CPLUS_INCLUDE_PATH environment variable so that Clang looks"
+echo "| for STL headers there _first_ (before the GCC (libstdc++) ones typically found"
+echo "| under something like '/usr/lib/gcc/x86_64-pc-linux-gnu/4.9.3/include/g++-v4/)'."
+echo "|"
+
+
+# Clean up after ourselves...
+if true; then
+  echo "|"
+  echo "| Removind the temporary libcxx/build/ libcxxabi/build/ sub-directories."
+  rm -rf libcxx/build/ libcxxabi/build/
+fi
+
 echo "|"
 echo "+--- $0 : FINISHED, exit status: $retv"
 
