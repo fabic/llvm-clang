@@ -9,7 +9,7 @@ echo "|"
 
 
 # FHS-like/compliant local/ dir.
-localdir=${1:-"$(mkdir -p "$here/local" && cd "$here/local" && pwd)"}
+localdir=${1:-"$(cd "$here/local" && pwd)"}
 localdir=${localdir%/}
 
   # Ensure destination "install target" directory is an absolute path :

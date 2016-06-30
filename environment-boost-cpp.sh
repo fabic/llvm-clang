@@ -27,11 +27,25 @@ fi
 # Boost “ modular ” Git sources repository :
 boost_modular_dir="$here/misc/boost"
 
+
 # 1) try local/boost-1.61.0-clang/ install location
 #
 #    NOTE: first script arg. may be an absolute path.
 #
-BOOSTROOT=${1:-"$( find "$here/local" -maxdepth 1 -type d -name "boost-*-${CC}" )"}
+# Beware that it will search under any local*/ here
+# (hence searching for backup copies you happen to make sometimes).
+# ( ^ and you may not want this btw, fixme ? )
+BOOSTROOT=${1:-"$( find "$here/local"*/ -maxdepth 1 -type d -name "boost-*-${CC}" )"}
+
+  if [ "X${BOOSTROOT#/}" == "X${BOOSTROOT}" ]; then
+    echo "|"
+    echo "| ~> \$BOOSTROOT=\"$BOOSTROOT\" ain't an absolute path, "
+    echo "|    prefixing with current directory :"
+      BOOSTROOT="$(pwd)/$BOOSTROOT"
+    echo "|"
+    echo "|      \$BOOSTROOT = $BOOSTROOT"
+    echo "|"
+  fi
 
 echo -n "| Trying \$BOOSTROOT = $BOOSTROOT : "
 
