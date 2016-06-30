@@ -37,17 +37,20 @@ function show_some_sensitive_settings() {
   echo "|"
   echo "| FYI: Here's the value of sensitive environment variables :"
   echo "|"
-  echo "|   \$CC  = $CC"
-  echo "|   \$CXX = $CXX"
+  echo "|   \$CC  = $CC    (`type -p "$CC"`  )"
+  echo "|   \$CXX = $CXX  (`type -p "$CXX"`)"
   echo "|"
   echo "|   \$CFLAGS   = $CFLAGS"
   echo "|   \$CXXFLAGS = $CXXFLAGS"
+  echo "|   \$LDFLAGS  = $LDFLAGS"
   echo "|"
-  echo "|   \$CPATH = $CPATH"
+  echo "|   \$CPATH              = $CPATH"
+  echo "|   \$INCLUDE_PATH       = $INCLUDE_PATH"
   echo "|   \$CPLUS_INCLUDE_PATH = $CPLUS_INCLUDE_PATH"
   echo "|"
   echo "|   \$LD_RUN_PATH     = $LD_RUN_PATH"
   echo "|   \$LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+  echo "|   \$LIBRARY_PATH    = $LIBRARY_PATH"
   echo "|"
   echo "|   ^ please ensure that somehow... (TODO: talk!)"
   echo "|"
@@ -67,10 +70,11 @@ show_some_sensitive_settings
 
 
   # Ask/warn early about an eventually existing bootstrap/ directory.
-  if [ -d bootstrap ]; then
-    read -p "| REMOVE existing temporary `pwd`/bootstrap/ directory, Ok ?"
-    rm -rf bootstrap || exit 127
-  fi
+  # DON'T !
+  # if [ -d bootstrap ]; then
+  #   read -p "| REMOVE existing temporary `pwd`/bootstrap/ directory, Ok ?"
+  #   rm -rf bootstrap || exit 127
+  # fi
 
   # Ask/warn early about an eventually existing build/ directory.
   if [ -d "$builddir" ]; then

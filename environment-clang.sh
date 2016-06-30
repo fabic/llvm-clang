@@ -102,12 +102,75 @@ if true; then
 fi
 
 
+# Guess version (may be needed later)
+if true; then
+  echo "| Finding out which version it is :"
+  clang_version="$(clang --version | head -n1 | sed -re 's/^clang version (([0-9]\.?)*).*$/\1/')"
+  if [ "x$clang_version" == "x" ]; then
+    echo "| ~> Beware: couldn't determine the Clang version."
+    echo "|            (this isn't bad though)"
+  else
+    echo "| ~> Clang version: $clang_version"
+  fi
+fi
+
+
 # Clang LLVM ;-
 CC=clang
 CXX=clang++
 export CC CXX
 
+## Extraneous include & lib dir.
+if true && [ ! -z "$clang_version" ];
+then
+  echo "+-- Searching for one additionnal include/ and lib/ dir. under '$localdir/lib/clang/$clang_version/' :"
+  echo "|"
+  echo "| Doin' so, but this may _not_ be neither needed nor desired."
+  echo "| Trouble being that once built a bootstrap build of Clang,"
+  echo "| those come very last, way after the GCC and system includes."
+  echo "|"
 
+  extra_inc="$localdir/lib/clang/$clang_version/include"
+  if [ -d "$extra_inc" ];
+  then
+    echo "+-"
+    echo "| Ok, found the extraneous include dir. '$extra_inc'"
+    echo "| ~> Prepending it to CPATH & INCLUDE_PATH (not CPLUS_INCLUDE_PATH: these are C headers seemingly)."
+    pathprepend "$extra_inc" CPATH
+    pathprepend "$extra_inc" INCLUDE_PATH
+    export CPATH INCLUDE_PATH
+  fi
+
+  # FIXME: Linux specific sub-dir.
+  extra_lib="$localdir/lib/clang/$clang_version/lib/linux"
+  if [ -d "$extra_lib" ];
+  then
+    echo "+-"
+    echo "| Ok, found the extraneous library dir. '$extra_lib'"
+    echo "| ~> Prepending it to LD_RUN_PATH & LD_LIBRARY_PATH (just in case)..."
+    pathprepend "$extra_lib" LD_RUN_PATH
+    pathprepend "$extra_lib" LIBRARY_PATH
+    pathprepend "$extra_lib" LD_LIBRARY_PATH
+    export LD_RUN_PATH LD_LIBRARY_PATH LIBRARY_PATH
+  fi
+
+  # And finally the libc++ STL, prepended last, so that it comes first.
+  if [ -d "$localdir/include/c++/v1" ] && [ -f "$localdir/include/c++/v1/cxxabi.h" ]; then
+    echo "+"
+    echo "| ~> Hey! good, found $localdir/include/c++/v1 (LLVM/Clang libc++/abi STL implementation!)"
+    echo "|    ( which is what you're looking for quite probably, goin' down this long road and to such extents... )"
+    echo "|"
+    #CXXFLAGS="-std=c++1y -stdlib=libc++ $CXXFLAGS"
+    #CXXFLAGS="-g -Wall $CXXFLAGS"
+    pathprepend "$localdir/include/c++/v1" CPLUS_INCLUDE_PATH
+    export CXXFLAGS CPLUS_INCLUDE_PATH
+  fi
+
+  echo "+-- done (with the extraneous Clang include/ & lib/linux/ sub-dir."
+fi
+
+
+# Traditionnal /usr/local/include
 if [ -d "$localdir/include" ]; then
     pathprepend "$localdir/include" CPATH
     pathprepend "$localdir/include" CPLUS_INCLUDE_PATH
@@ -116,23 +179,15 @@ if [ -d "$localdir/include" ]; then
 fi
 
 
+# Traditionnal /usr/local/lib
+# TODO: lib64 check ?
 if [ -d "$localdir/lib" ]; then
     pathprepend "$localdir/lib" LD_RUN_PATH
     pathprepend "$localdir/lib" LIBRARY_PATH
     pathprepend "$localdir/lib" LD_LIBRARY_PATH
-    export LD_RUN_PATH LIBRARY_PATH
+    export LD_RUN_PATH LD_LIBRARY_PATH LIBRARY_PATH 
 fi
 
-
-if [ -d "$localdir/include/c++/v1" ] && [ -f "$localdir/include/c++/v1/cxxabi.h" ]; then
-    echo "|"
-    echo "| » Hey! good, found $localdir/include/c++/v1 (LLVM/Clang libc++/abi STL implementation)"
-    echo "|"
-    #CXXFLAGS="-std=c++1y -stdlib=libc++ $CXXFLAGS"
-    #CXXFLAGS="-g -Wall $CXXFLAGS"
-    pathprepend "$localdir/include/c++/v1" CPLUS_INCLUDE_PATH
-    export CXXFLAGS CPLUS_INCLUDE_PATH
-fi
 
 
 # Display environment for information
