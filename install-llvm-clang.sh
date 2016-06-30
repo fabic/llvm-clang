@@ -18,34 +18,46 @@ echo "|"
 echo "| Entered `pwd`/"
 echo "| \$localdir = '$localdir'"
 
-echo "|"
-echo "| FYI: Here's the value of sensitive environment variables :"
-echo "|"
-echo "|   \$CC  = $CC"
-echo "|   \$CXX = $CXX"
-echo "|"
-echo "|   \$CPATH = $CPATH"
-echo "|   \$CPLUS_INCLUDE_PATH = $CPLUS_INCLUDE_PATH"
-echo "|"
-echo "|   \$LD_RUN_PATH     = $LD_RUN_PATH"
-echo "|   \$LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
-echo "|"
-echo "|   ^ please ensure that somehow... (TODO: talk!)"
-echo "|"
-echo "| Note that you may [re-]source the shell script '$here/environment-clang.sh'"
-echo "| which may set things up correctly if you're lucky."
-echo "+-"
+###
+#
+function show_some_sensitive_settings() {
+  echo "|"
+  echo "| FYI: Here's the value of sensitive environment variables :"
+  echo "|"
+  echo "|   \$CC  = $CC"
+  echo "|   \$CXX = $CXX"
+  echo "|"
+  echo "|   \$CFLAGS   = $CFLAGS"
+  echo "|   \$CXXFLAGS = $CXXFLAGS"
+  echo "|"
+  echo "|   \$CPATH = $CPATH"
+  echo "|   \$CPLUS_INCLUDE_PATH = $CPLUS_INCLUDE_PATH"
+  echo "|"
+  echo "|   \$LD_RUN_PATH     = $LD_RUN_PATH"
+  echo "|   \$LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+  echo "|"
+  echo "|   ^ please ensure that somehow... (TODO: talk!)"
+  echo "|"
+  echo "| Note that you may [re-]source the shell script '$here/environment-clang.sh'"
+  echo "| which may set things up correctly if you're lucky."
+  echo "+-"
+}
+
+show_some_sensitive_settings
+
+# ^ env. var. details.
+##
 
 
   # Ask/warn early about an eventually existing bootstrap/ directory.
   if [ -d bootstrap ]; then
-    read -p "| REMOVING existing temporary `pwd`/bootstrap/ directory."
+    read -p "| REMOVE existing temporary `pwd`/bootstrap/ directory, Ok ?"
     rm -rf bootstrap || exit 127
   fi
 
   # Ask/warn early about an eventually existing build/ directory.
   if [ -d build ]; then
-    read -p "| REMOVING existing temporary `pwd`/build/ directory."
+    read -p "| REMOVE existing temporary `pwd`/build/ directory, Ok ?"
     rm -rf build || exit 127
   fi
 
@@ -84,7 +96,8 @@ echo
 
   retv=$?
   echo
-  if [ $retv -ne 0 ]; then
+  if [ $retv -ne 0 ];
+  then
     echo "| Ooops! something went wrong with the symlinking, exiting."
     exit $retv
   fi
@@ -93,7 +106,9 @@ echo
 ###
 ## Step #1 : Build a bootstrap version under bootstrap/
 
-if true; then
+if false; then
+  echo "TODO: have a bootstrap stage ?"
+  exit 127
   # TODO...
   # TODO...
   # TODO...
@@ -106,7 +121,7 @@ if true; then
   pushd .
 
     echo "+-"
-    echo "| Step #2 : Final build of LLVM/Clang."
+    echo "| About to build LLVM/Clang compiler !"
     echo "|"
     echo "| Entering temporary build/ directory."
 
@@ -127,6 +142,7 @@ if true; then
     echo "|   - BUILD_SHARED_LIBS=ON      (defaults to OFF)"
     echo "|   - LLVM_BUILD_LLVM_DYLIB=OFF (defaults to OFF)"
     echo "|   - LLVM_TARGETS_TO_BUILD=\"host;X86\"  (defaults to 'all')"
+    echo "|   - CMAKE_CXX_FLAGS=\"-stdlib=libc++\"   (!!! BEWARE !!!)"
     echo "|"
     echo "| See http://llvm.org/docs/CMake.html"
     echo "| See http://www.linuxfromscratch.org/blfs/view/svn/general/llvm.html"
@@ -136,6 +152,7 @@ if true; then
 
       time \
         cmake \
+          -DCMAKE_CXX_FLAGS="-stdlib=libc++"  \
           -DCMAKE_BUILD_TYPE=Release         \
           -DCMAKE_INSTALL_PREFIX="$localdir" \
           -DLLVM_ENABLE_FFI=OFF     \
@@ -145,13 +162,20 @@ if true; then
           -DLLVM_ENABLE_DOXYGEN=OFF \
           -DLLVM_ENABLE_SPHINX=OFF  \
           -G Ninja \
-          ..
+          ../llvm
 
       retv=$?
       if [ $retv -ne 0 ]; then
         echo "| CMake failed, exit status $retv"
         exit $retv
       fi
+
+    echo
+    echo "+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    echo "| CMake completed, please review the following stuff just in case"
+    echo "| (we didn't alter anything by the way, it's your settings!)"
+    echo "|"
+    show_some_sensitive_settings
 
     echo
     echo "+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
