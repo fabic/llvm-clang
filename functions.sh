@@ -44,6 +44,62 @@ pathpop() {
 ## ^ End of LFS-imported stuff.
 ###
 
+# Guess the number of processors we have from /proc/cpuinfo.
+function how_many_cpus() {
+  local let cpus=$( \
+    cat /proc/cpuinfo | \
+      grep -P '^processor\s*:\s*\d+' | \
+        wc -l )
+
+  echo $cpus
+
+  return $cpus
+}
+
+# Returns a value for ex. `make -jX` guessed from
+# the processor count + 1.
+#
+# 1st optional argument defaults to 1 :
+#   how much to add or remove (if negative).
+function max_number_of_jobs() {
+  local max_jobs=0
+  local cpus=`how_many_cpus`
+  local plus=${1:-1}
+
+  let max_jobs="$cpus + $plus"
+
+  if [ "0$max_jobs" -lt 1 ]; then
+      max_jobs=1
+  fi
+
+  echo $max_jobs
+
+  return $max_jobs
+}
+
+# Try to find a "good" value for a maximum system load average
+# (which is defined (probably) by the "current count of processes
+#  _wanting_ to run", i.e. that are RUNNABLE by the kernel scheduler).
+#
+# Default to the number of CPUs.
+# Optional arg. may be an integer to increase/decrease value.
+function max_load_level() {
+  local max_load=0
+  local cpus=`how_many_cpus`
+  local plus=${1:-0}
+
+  let max_load="$cpus + $plus"
+
+  if [ "0$max_load" -lt 1 ]; then
+      max_load=1
+  fi
+
+  echo $max_load
+
+  return $max_load
+}
+
+
 function fhs_path_setup_for() {
 	if [ $# -eq 0 ]; then
 		echo
