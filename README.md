@@ -54,6 +54,9 @@ Homepage | Github repository
     Minor alterations of Clang (`llvm-clang/clang/`) so that it defaults to __libc++/abi__
     instead of __libstdc++__ (so that we don't need to pass compiler flag `-stdlib=libc++`).
 
+    [Original work dates back 2014 (diff.)](https://github.com/fabic/clang/compare/b499f75...fabic_35)
+    &mdash; remains on branch [fabic_35](https://github.com/fabic/clang/commits/fabic_35)
+
 ### References, pointers
 
 * <http://clang.llvm.org/cxx_status.html>
