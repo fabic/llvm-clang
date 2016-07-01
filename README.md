@@ -174,7 +174,19 @@ _Dude, for your recollection you've made a few install Bash scripts for having s
 * then just source the __environment-clang.sh__ shell script : `source environment-clang.sh`
 * Run `./show-environment.sh` for information ;
 * Build something, ex. `clang++ -std=c++11 -lc++ test.cpp -o test`
-* Run `ldd test` to see which STL impl. it got linked against.
+* Run `ldd test` to see which STL impl. it got linked against :
+
+        $ ldd test
+                linux-vdso.so.1 (0x00007ffc99985000)
+        ~~ok~~> libc++.so.1     => /mnt/linda3/llvm-clang/llvm-clang/bootstrap/lib/libc++.so.1 (0x00007f28fa6fd000)
+        ~~ok~~> libc++abi.so.1  => /mnt/linda3/llvm-clang/llvm-clang/bootstrap/lib/libc++abi.so.1 (0x00007f28fa4b6000)
+                libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f28fa299000)
+                libm.so.6       => /lib64/libm.so.6 (0x00007f28f9f95000)
+                libgcc_s.so.1   => /usr/lib/gcc/x86_64-pc-linux-gnu/4.9.3/libgcc_s.so.1 (0x00007f28f9d7e000)
+                libc.so.6       => /lib64/libc.so.6 (0x00007f28f99ce000)
+                librt.so.1      => /lib64/librt.so.1 (0x00007f28f97c6000)
+                /lib64/ld-linux-x86-64.so.2 (0x00007f28fa9b9000)
+
 
 ### Getting started (w/ thinking w/ a few neurons)
 
