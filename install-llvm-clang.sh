@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # fabic/2016-06-30
 

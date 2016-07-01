@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Boost setup, loosely inspired by 'cpp-netlib/install-boost.sh'
 
@@ -151,7 +151,7 @@ echo "|"
 echo "| Ok, proceeding with the ./b2 “thing” (compilation & installation)..."
 echo "|"
 
-#--stagedir=. 
+#--stagedir=.
 #--build-dir=
 
 time \
