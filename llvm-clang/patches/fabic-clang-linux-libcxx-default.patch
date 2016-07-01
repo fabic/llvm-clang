@@ -1,0 +1,168 @@
+diff --git a/README.txt b/README.txt
+index 474c67c..207cdb3 100644
+--- a/README.txt
++++ b/README.txt
+@@ -1,4 +1,13 @@
+ //===----------------------------------------------------------------------===//
++// FORK OF LLVM Clang, by FabiC.net
++//===----------------------------------------------------------------------===//
++
++* FC.2014-09-24 :
++  Forked it from https://github.com/llvm-mirror/clang
++  Set 'master' to v3.5.0 + a couple of "personnal" commits.
++
++
++//===----------------------------------------------------------------------===//
+ // C Language Family Front-end
+ //===----------------------------------------------------------------------===//
+ 
+diff --git a/lib/Driver/ToolChain.cpp b/lib/Driver/ToolChain.cpp
+index 4f90d08..d8454af 100644
+--- a/lib/Driver/ToolChain.cpp
++++ b/lib/Driver/ToolChain.cpp
+@@ -317,7 +317,7 @@ ToolChain::CXXStdlibType ToolChain::GetCXXStdlibType(const ArgList &Args) const{
+       << A->getAsString(Args);
+   }
+ 
+-  return ToolChain::CST_Libstdcxx;
++  return ToolChain::CST_Libcxx;
+ }
+ 
+ /// \brief Utility function to add a system include directory to CC1 arguments.
+diff --git a/lib/Driver/ToolChains.cpp b/lib/Driver/ToolChains.cpp
+index b46f69d..3993a5e 100644
+--- a/lib/Driver/ToolChains.cpp
++++ b/lib/Driver/ToolChains.cpp
+@@ -3499,6 +3499,22 @@ void Linux::AddClangCXXStdlibIncludeArgs(const ArgList &DriverArgs,
+   }
+ }
+ 
++// FabiC //
++void Linux::AddCXXStdlibLibArgs(const ArgList &Args,
++                                 ArgStringList &CmdArgs) const {
++  switch (GetCXXStdlibType(Args)) {
++  case ToolChain::CST_Libcxx:
++    CmdArgs.push_back("-lc++");
++    CmdArgs.push_back("-lc++abi");
++    CmdArgs.push_back("-lpthread");
++    break;
++  case ToolChain::CST_Libstdcxx:
++    CmdArgs.push_back("-lstdc++");
++    break;
++  }
++}
++// ^^ FabiC ^^ //
++
+ bool Linux::isPIEDefault() const {
+   return getSanitizerArgs().hasZeroBaseShadow();
+ }
+diff --git a/lib/Driver/ToolChains.h b/lib/Driver/ToolChains.h
+index b5df866..851bad5 100644
+--- a/lib/Driver/ToolChains.h
++++ b/lib/Driver/ToolChains.h
+@@ -667,6 +667,10 @@ public:
+   void
+   AddClangCXXStdlibIncludeArgs(const llvm::opt::ArgList &DriverArgs,
+                                llvm::opt::ArgStringList &CC1Args) const override;
++  void
++  AddCXXStdlibLibArgs(const llvm::opt::ArgList &Args,
++                      llvm::opt::ArgStringList &CmdArgs) const override;
++  // ^^ FabiC ^^ //
+   bool isPIEDefault() const override;
+ 
+   std::string Linker;
+diff --git a/README.txt b/README.txt
+index ada9ebc..2f40df1 100644
+--- a/README.txt
++++ b/README.txt
+@@ -1,4 +1,24 @@
+ //===----------------------------------------------------------------------===//
++// FORK OF LLVM Clang, by FabiC.net
++//===----------------------------------------------------------------------===//
++
++* __FC.2014-09-24 :__
++  Forked it from https://github.com/llvm-mirror/clang
++  Set 'master' to v3.5.0 + a couple of "personnal" commits.
++
++* __FC.2016-07-01 :__
++  Years after, re-applying Clang patch for default `libc++` against
++  [`release_38`](https://github.com/llvm-mirror/clang/tree/release_38)
++
++* See <https://github.com/fabic/llvm-clang> for the playground project that
++  includes this one thing as a Git submodule.
++
++* See the __patch__ file
++  [`patches/fabic-clang-linux-libcxx-default.patch`](https://github.com/fabic/llvm-clang/blob/master/llvm-clang/patches/fabic-clang-linux-libcxx-default.patch)
++  for a diff of the few changes brought here to the code of Clang.
++  Apply with ex. `patch -Np1 -b -i ../patches/fabic-clang-linux-libcxx-default.patch`
++
++//===----------------------------------------------------------------------===//
+ // C Language Family Front-end
+ //===----------------------------------------------------------------------===//
+ 
+diff --git a/lib/Driver/ToolChain.cpp b/lib/Driver/ToolChain.cpp
+index cbbd485..4d533f3 100644
+--- a/lib/Driver/ToolChain.cpp
++++ b/lib/Driver/ToolChain.cpp
+@@ -544,7 +544,12 @@ ToolChain::CXXStdlibType ToolChain::GetCXXStdlibType(const ArgList &Args) const{
+       << A->getAsString(Args);
+   }
+ 
+-  return ToolChain::CST_Libstdcxx;
++  // FabiC / 2015 / 2016-07-01 (release 3.8) //
++  // ~> Set LLVM/Clang's libc++/abi as the default STL implementation.
++  return ToolChain::CST_Libcxx;
++  // ~> Orig. :
++  // return ToolChain::CST_Libstdcxx;
++  // ^^ FabiC ^^ //
+ }
+ 
+ /// \brief Utility function to add a system include directory to CC1 arguments.
+diff --git a/lib/Driver/ToolChains.cpp b/lib/Driver/ToolChains.cpp
+index 99c7b8e..0d70aed 100644
+--- a/lib/Driver/ToolChains.cpp
++++ b/lib/Driver/ToolChains.cpp
+@@ -4122,6 +4122,24 @@ void Linux::AddClangCXXStdlibIncludeArgs(const ArgList &DriverArgs,
+   }
+ }
+ 
++// FabiC / 2015 (release 3.6) / 2017-07-01 (release 3.8) //
++// See `lib/Driver/ToolChains.h` for the method decl.    //
++void Linux::AddCXXStdlibLibArgs(const ArgList &Args,
++                                ArgStringList &CmdArgs) const {
++  switch (GetCXXStdlibType(Args)) {
++  case ToolChain::CST_Libcxx:
++    CmdArgs.push_back("-lc++");
++    CmdArgs.push_back("-lc++abi");
++    CmdArgs.push_back("-lpthread");
++    break;
++  case ToolChain::CST_Libstdcxx:
++    CmdArgs.push_back("-lstdc++");
++    break;
++  }
++}
++// ^^ FabiC ^^ //
++
++
+ void Linux::AddCudaIncludeArgs(const ArgList &DriverArgs,
+                                ArgStringList &CC1Args) const {
+   if (DriverArgs.hasArg(options::OPT_nocudainc))
+diff --git a/lib/Driver/ToolChains.h b/lib/Driver/ToolChains.h
+index f940e58..f60d254 100644
+--- a/lib/Driver/ToolChains.h
++++ b/lib/Driver/ToolChains.h
+@@ -793,6 +793,14 @@ public:
+   void AddClangCXXStdlibIncludeArgs(
+       const llvm::opt::ArgList &DriverArgs,
+       llvm::opt::ArgStringList &CC1Args) const override;
++
++  // FabiC / 2015 (release 3.6) / 2017-07-01 (release 3.8) //
++  // See `lib/Driver/ToolChains.cpp` for the impl.         //
++  void
++  AddCXXStdlibLibArgs(const llvm::opt::ArgList &Args,
++                      llvm::opt::ArgStringList &CmdArgs) const override;
++  // ^^ FabiC ^^ //
++
+   void AddCudaIncludeArgs(const llvm::opt::ArgList &DriverArgs,
+                           llvm::opt::ArgStringList &CC1Args) const override;
+   bool isPIEDefault() const override;

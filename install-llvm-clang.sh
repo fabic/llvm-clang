@@ -217,7 +217,7 @@ if true; then
 
     max_jobs=`how_many_cpus 2`
     max_sys_load=`max_load_level`
-    keep_going=128
+    keep_going=1
 
     echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
     echo "| FYI: Running Ninja with :"
