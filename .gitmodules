@@ -1,113 +1,121 @@
+# .gitmodules
 [submodule "gnu-binutils"]
 	path = misc/binutils
-	url = git://sourceware.org/git/binutils-gdb.git
-[submodule "gnu-gcc"]
-	path = misc/gcc
-	url = git@github.com:gcc-mirror/gcc.git
-[submodule "gnu-glibc"]
-	path = misc/glibc
-	url = git://sourceware.org/git/glibc
-	branch = origin/release/2.20/master
+	url = http://sourceware.org/git/binutils-gdb.git
+# [submodule "gnu-gcc"]
+# 	path = misc/gcc
+# 	url = https://github.com/gcc-mirror/gcc.git
+# [submodule "gnu-glibc"]
+# 	path = misc/glibc
+# 	url = http://sourceware.org/git/glibc
+# 	branch = origin/release/2.20/master
 [submodule "llvm"]
 	path = llvm-clang/llvm
-	url = git@github.com:llvm-mirror/llvm.git
+	url = https://github.com/llvm-mirror/llvm.git
 [submodule "clang"]
 	path = llvm-clang/clang
 	# My fork :
-	url = git@github.com:fabic/clang.git
+	url = https://github.com/fabic/clang.git
 	# Upstream :
-	#url = git@github.com:llvm-mirror/clang.git
+	#url = https://github.com/llvm-mirror/clang.git
 [submodule "clang-tools-extra"]
 	path = llvm-clang/clang-tools-extra
-	url = git@github.com:llvm-mirror/clang-tools-extra.git
+	url = https://github.com/llvm-mirror/clang-tools-extra.git
 [submodule "libcxx"]
 	path = llvm-clang/libcxx
-	url = git@github.com:llvm-mirror/libcxx.git
+	url = https://github.com/llvm-mirror/libcxx.git
 [submodule "libcxxabi"]
 	path = llvm-clang/libcxxabi
-	url = git@github.com:llvm-mirror/libcxxabi.git
-[submodule "lldb"]
-	path = llvm-clang/lldb
-	url = git@github.com:fabic/lldb.git
-[submodule "lld"]
-	path = llvm-clang/lld
-	url = git@github.com:llvm-mirror/lld.git
+	url = https://github.com/llvm-mirror/libcxxabi.git
 [submodule "compiler-rt"]
 	path = llvm-clang/compiler-rt
-	url = git@github.com:llvm-mirror/compiler-rt.git
-[submodule "test-suite"]
-	path = llvm-clang/test-suite
-	url = git@github.com:llvm-mirror/test-suite.git
-[submodule "musl-libc"]
-	path = misc/musl-libc
-	url = git://git.musl-libc.org/musl
+	url = https://github.com/llvm-mirror/compiler-rt.git
+# [submodule "test-suite"]
+# 	path = llvm-clang/test-suite
+# 	url = https://github.com/llvm-mirror/test-suite.git
+# [submodule "lldb"]
+# 	path = llvm-clang/lldb
+# 	url = https://github.com/fabic/lldb.git
+# [submodule "lld"]
+# 	path = llvm-clang/lld
+# 	url = https://github.com/llvm-mirror/lld.git
+#
+# [submodule "musl-libc"]
+# 	path = misc/musl-libc
+# 	url = git://git.musl-libc.org/musl
 [submodule "libunwind"]
 	path = misc/libunwind
 	url = git://git.sv.gnu.org/libunwind.git
-# @link https://github.com/Andersbakken/rtags
-[submodule "andersbakken-rtags"]
-	path = misc/rtags
-	url = git@github.com:Andersbakken/rtags.git
-[submodule "loarabia-clang-tutorial"]
-	path = misc/clang-tutorial
-	url = git@github.com:loarabia/Clang-tutorial.git
-[submodule "cmake"]
-	path = misc/cmake
-	url = git://cmake.org/cmake.git
-	branch = release
-[submodule "boostcgi"]
-	path = misc/boostcgi
-	url = git@github.com:darrengarvey/cgi.git
-[submodule "odb_orm_compiler"]
-	path = misc/odb_orm/odb
-	url = git://scm.codesynthesis.com/odb/odb.git
-[submodule "odb_orm_libodb"]
-	path = misc/odb_orm/libodb
-	url = git://scm.codesynthesis.com/odb/libodb.git
-[submodule "odb_orm_libodb_mysql"]
-	path = misc/odb_orm/libodb-mysql
-	url = git://scm.codesynthesis.com/odb/libodb-mysql.git
-[submodule "symfony-std"]
-	path = php/symfony-std
-	url = git@github.com:symfony/symfony-standard.git
-[submodule "yaml-cpp"]
-	path = misc/yaml-cpp
-	url = git@github.com:jbeder/yaml-cpp.git
-[submodule "linux-kernel"]
-	path = misc/linux-kernel
-	#url = git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
-	#branch = linux-4.2.y
-	url = git@github.com:fabic/linux.git
-[submodule "xf86-video-nouveau"]
-	path = misc/xf86-video-nouveau
-	url = git://anongit.freedesktop.org/nouveau/xf86-video-nouveau
-[submodule "linice"]
-	path = misc/vturbine-linice
-	url = git@github.com:vTurbine/linice.git
-[submodule "linice-kdb"]
-	path = misc/linice-kdb
-	url = git://git.code.sf.net/p/linice/git
-[submodule "misc/harry_kernelcpp"]
-	path = misc/harry_kernelcpp
-	url = git@github.com:fabic/harry_kernelcpp.git
-[submodule "misc/veltzer_kcpp"]
-	path = misc/veltzer_kcpp
-	url = git@github.com:veltzer/kcpp.git
-[submodule "cpp-netlib"]
-	path = misc/cpp-netlib
-	#url = https://github.com/cpp-netlib/cpp-netlib
-	url = git@github.com:fabic/cpp-netlib.git
-	branch = master
-[submodule "boost"]
-	path = misc/boost
-	url = git@github.com:boostorg/boost.git
-	branch = master
-[submodule "libcsdbg"]
-	path = misc/libcsdbg
-	url = git@github.com:fabic/libcsdbg.git
-[submodule "ycmd"]
-	path = misc/valloric-ycmd
-	url = git@github.com:Valloric/ycmd.git
-[submodule "odb_orm_libcutl"]
-	path = misc/odb_orm/libcutl
-	url = http://scm.codesynthesis.com/libcutl/libcutl.git
+# # @link https://github.com/Andersbakken/rtags
+# [submodule "andersbakken-rtags"]
+# 	path = misc/rtags
+# 	url = https://github.com/Andersbakken/rtags.git
+# [submodule "loarabia-clang-tutorial"]
+# 	path = misc/clang-tutorial
+# 	url = https://github.com/loarabia/Clang-tutorial.git
+# [submodule "cmake"]
+# 	path = misc/cmake
+# 	url = git://cmake.org/cmake.git
+# 	branch = release
+#
+# [submodule "boostcgi"]
+# 	path = misc/boostcgi
+# 	url = https://github.com/darrengarvey/cgi.git
+#
+# [submodule "odb_orm_compiler"]
+# 	path = misc/odb_orm/odb
+# 	url = git://scm.codesynthesis.com/odb/odb.git
+# [submodule "odb_orm_libodb"]
+# 	path = misc/odb_orm/libodb
+# 	url = git://scm.codesynthesis.com/odb/libodb.git
+# [submodule "odb_orm_libodb_mysql"]
+# 	path = misc/odb_orm/libodb-mysql
+# 	url = git://scm.codesynthesis.com/odb/libodb-mysql.git
+# [submodule "odb_orm_libcutl"]
+# 	path = misc/odb_orm/libcutl
+# 	url = http://scm.codesynthesis.com/libcutl/libcutl.git
+#
+# [submodule "symfony-std"]
+# 	path = php/symfony-std
+# 	url = https://github.com/symfony/symfony-standard.git
+# [submodule "yaml-cpp"]
+# 	path = misc/yaml-cpp
+# 	url = https://github.com/jbeder/yaml-cpp.git
+# [submodule "linux-kernel"]
+# 	path = misc/linux-kernel
+# 	#url = git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+# 	#branch = linux-4.2.y
+# 	url = https://github.com/fabic/linux.git
+# [submodule "xf86-video-nouveau"]
+# 	path = misc/xf86-video-nouveau
+# 	url = git://anongit.freedesktop.org/nouveau/xf86-video-nouveau
+# [submodule "linice"]
+# 	path = misc/vturbine-linice
+# 	url = https://github.com/vTurbine/linice.git
+# [submodule "linice-kdb"]
+# 	path = misc/linice-kdb
+# 	url = git://git.code.sf.net/p/linice/git
+# [submodule "misc/harry_kernelcpp"]
+# 	path = misc/harry_kernelcpp
+# 	url = https://github.com/fabic/harry_kernelcpp.git
+# [submodule "misc/veltzer_kcpp"]
+# 	path = misc/veltzer_kcpp
+# 	url = https://github.com/veltzer/kcpp.git
+#
+# [submodule "cpp-netlib"]
+# 	path = misc/cpp-netlib
+# 	#url = https://github.com/cpp-netlib/cpp-netlib
+# 	url = https://github.com/fabic/cpp-netlib.git
+# 	branch = master
+#
+# [submodule "boost"]
+# 	path = misc/boost
+# 	url = https://github.com/boostorg/boost.git
+# 	branch = master
+#
+# [submodule "libcsdbg"]
+# 	path = misc/libcsdbg
+# 	url = https://github.com/fabic/libcsdbg.git
+# [submodule "ycmd"]
+# 	path = misc/valloric-ycmd
+# 	url = https://github.com/Valloric/ycmd.git
