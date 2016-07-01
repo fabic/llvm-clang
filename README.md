@@ -1,9 +1,14 @@
 # FabiC's LLVM/Clang & C++ playground
 
 _LLVM/Clang is "bundled up" here as Git submodules
-(under sub-directory `llvm-clang/`) for /me playing with._
+(under sub-directory `llvm-clang/`) for /me to play with._
 
 _And a few other projects likewise included as Git submodules, for rainy days wanderings..._
+
+_**Note for the casual wanderer landing here :** you may be interested in the
+  **“Getting started”** section which details how to build LLVM/Clang in a few steps
+  (+ enough time + some interest in doing so + some tea/coffee + and whichever
+  man page you'd like reading while waiting for the build to complete)._
 
 * **2015-11-11 :** WIP ; sorting things out ; didn't got far, lack of time/interest...
 * **2017-01-01 :**
@@ -13,13 +18,15 @@ _And a few other projects likewise included as Git submodules, for rainy days wa
       (Gentoo-based Sabayon 16.07) do _not_ support the `-flto` compiler arg. due
       to a missing library (linker plugin) at link time: `LLVMgold.so`
       _(hopefully this one thing will get built along the way)_.
-* <http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-3/>
-* Checked-out on disk usage is about 342 MB ;
-* Current LLVM/Clang version is **3.8.x**
-* In here included are :
+* ~~<http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-3/>~~
 
 
 ## Abstract, notes
+
+* Checked-out on disk usage of LLVM/Clang submodules weights about 360 MB ;
+* Current LLVM/Clang version is **3.8.x** (2016-07)
+
+In here included are as Git submodules :
 
 Homepage | Github repository
 ---------|------------------
@@ -38,8 +45,22 @@ Homepage | Github repository
   - [musl libc](http://www.musl-libc.org) @ [v1.1.9](http://git.musl-libc.org/cgit/musl/tree/?id=v1.1.4)
   - [libunwind](http://www.nongnu.org/libunwind/) @ [v1.1](http://git.savannah.gnu.org/gitweb/?p=libunwind.git;a=shortlog;h=refs/tags/v1.1)
   - [CMake](https://cmake.org/Wiki/CMake/Git) v3.3.2
+  - _and other stuff..._
+
 
 ### References, pointers
+
+* <http://clang.llvm.org/cxx_status.html>
+
+    Informational page about the C++ spec. implementation status.
+
+    ^ which mentions btw :
+    « [...] Clang's C++11 mode can be used with libc++ or with gcc's libstdc++,
+      __*but patches are needed*__ to make libstdc++-4.4 work with Clang in C++11 mode.
+      Patches are also needed to make libstdc++-4.6 and libstdc++-4.7 work with
+      Clang releases prior to version 3.2 in C++11 mode. ”
+
+    ^ which got me thinking that my OS-provided Clang is "hacked" in some way...
 
 * <http://llvm.org/docs/GettingStarted.html#requirements>
 
@@ -122,7 +143,7 @@ _Dude, for your recollection you've made a few install Bash scripts for having s
 
 * `install-boost-cpp.sh` : will build Boost C++ and install it under ex. `local/boost-1.xx.yy-clang/`
 
-* `install-cppnetlib.sh` : cpp-netlib &nbash; C++ Boost & Asio-based HTTP client+server impl.
+* `install-cppnetlib.sh` : cpp-netlib &ndash; C++ Boost & Asio-based HTTP client+server impl.
 
 * `install-libunwind.sh`
 
@@ -423,16 +444,18 @@ __NOTE:__ Binaries for this first “bootstrap” variant shall have been instal
     * playin' with `cpp-netlib` among other things ;
     * tryin' to re-learn to code in C++ ;
     * killing time, reading manuals and books ;
-    * had to rebuild LLVM/Clang (__release 3.8.1__) with my patch for it to default to `libc++/abi`
-      in hope of solving a situation where I can't get the `-flto` compiler flag to work
-      (missing `LLVMgold.so` linker plugin).
-    * _building takes way too long on this laptop, have to wait and wait, then fail
-      and re-try, and wait again..._
+    * had to rebuild LLVM/Clang (__release 3.8.1__) with my patch for it to
+      default to `libc++/abi` in hope of solving a situation where I can't get
+      the `-flto` compiler flag to work (missing `LLVMgold.so` linker plugin).
+    * _building takes way too long on this laptop, have to wait and wait,
+      then fail and re-try, and wait again..._
 * __2015-11-10 :__ Trying to replay the whole build-bootstrap-build procedure, seems ok.
-* __2015-11-09 :__ Blindly bumped dependencies from release 3.5 to 3.7 _(probably this doesn't build)._
+* __2015-11-09 :__ Blindly bumped dependencies from release 3.5 to 3.7
+  _(probably this doesn't build)._
 * __2014-09-24 :__ Replaced those Git-subtree-checked-out stuff with Git submodules.
-* __2014-09-16 :__ Tested a full project clone + building of Clang **ok**, but failed building against **musl-libc** despite my pa__tches.
-* __2__014-09-15 :__ Pushing "early-stage" version to Github.
+* __2014-09-16 :__ Tested a full project clone + building of Clang **ok**, but
+  failed building against **musl-libc** despite my patches.
+* __2014-09-15 :__ Pushing "early-stage" version to Github.
 * __2014-09-13 :__ Started this "project" under Git control so as to track my wanderings.
 
 
@@ -465,12 +488,12 @@ __NOTE:__ Binaries for this first “bootstrap” variant shall have been instal
 * `git submodule update --init misc/cmake/` (v3.3.2)
 * <http://www.linuxfromscratch.org/blfs/view/svn/general/cmake.html>
 
-    $ cd misc/cmake/
-    $ ./bootstrap --help
-    $ time \
-      ./bootstrap --prefix=$(cd ../../local/ && pwd) &&
-      gmake
-    # gmake install
+        $ cd misc/cmake/
+        $ ./bootstrap --help
+        $ time \
+          ./bootstrap --prefix=$(cd ../../local/ && pwd) &&
+          gmake
+        # gmake install
 
 
 ## Musl libc
