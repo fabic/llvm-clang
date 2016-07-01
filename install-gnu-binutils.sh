@@ -6,6 +6,7 @@ here=$(cd `dirname "$0"` && pwd)
 
 . "$here/functions.sh"
 
+
 # We do want to build this one thing with GCC.
 CC=gcc
 CXX=g++
@@ -30,6 +31,7 @@ echo "|  - http://llvm.org/docs/GoldPlugin.html"
 
   localdir=${1:-"$(mkdir -p "$here/local" && cd "$here/local" && pwd)"}
   builddir=${2:-"build"}
+  binutils_dir=${3:-misc/binutils}
 
   # Ensure destination "install target" directory is an absolute path :
   if [ "X${localdir#/}" == "X${localdir}" ]; then
@@ -65,22 +67,26 @@ echo "| NOTE that we'll _only_ be building the “ gold linker ”"
 echo "|      ( make targets: all-gold install-gold )"
 
 
-echo "|"
-echo "| Git submodule checkout misc/binutils/ :"
+if [ "x$binutils_dir" == "xmisc/binutils" ];
+then
+  echo "|"
+  echo "| Git submodule checkout misc/binutils/ :"
 
-  if ! git submodule update --init misc/binutils ;
-  then
-    retv=$?
-    echo "| FAIL: Git submodule exited with status : $retv"
-    echo "+-"
-    exit $retv
-  fi
+    if ! git submodule update --init misc/binutils ;
+    then
+      retv=$?
+      echo "| FAIL: Git submodule exited with status : $retv"
+      echo "+-"
+      exit $retv
+    fi
 
-echo "| Done with Git submodule checkout, ok."
-echo "+-"
+  echo "| Done with Git submodule checkout, ok."
+  echo "+-"
+else
+  echo "| \$binutils_dir = '$binutils_dir' != 'misc/binutils' ==> assuming it is not a git checked-out source tree."
+fi
 
-
-cd misc/binutils/ || exit 1
+cd "$binutils_dir" || exit 1
 
 echo "| Entered `pwd`/"
 echo "|"
@@ -99,7 +105,7 @@ echo "|   \$builddir = '$builddir'"
   fi
 
 
-echo "| Entering temporary the build sub-directory '$builddir'."
+echo "| Entering the temporary build sub-directory '$builddir'."
 
 if ! mkdir "$builddir" || ! cd "$builddir" ;
 then
