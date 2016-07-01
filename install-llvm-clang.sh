@@ -246,9 +246,9 @@ if true; then
 
     echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
     echo "| FYI: Running Ninja with :"
-    echo "|        -j$max_jobs      : max. simultaneous jobs,"
+    echo "|        -j$max_jobs  : max. simultaneous jobs,"
     echo "|    and -l$max_sys_load  : max. system load level."
-    echo "|    and -k$keep_going    : max. error count (keep going as far as possible)."
+    echo "|    and -k$keep_going  : max. error count (keep going as far as possible)."
     echo "+-"
     echo
 
