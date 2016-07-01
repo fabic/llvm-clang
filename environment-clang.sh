@@ -27,6 +27,7 @@ localdir=${localdir%/}
 if [ -d "$localdir/bin" ]; then
     echo "| Found directory '$localdir/bin' : prepending it to \$PATH. "
     pathprepend "$localdir/bin"
+    export PATH
 else
     echo "| FYI: No FHS-like '$localdir' directory, ok this is not a problem."
 fi
