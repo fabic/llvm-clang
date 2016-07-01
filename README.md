@@ -135,6 +135,12 @@ _Dude, for your recollection you've made a few install Bash scripts for having s
     All-in-one one-shot semi-automated Bash script that
     builds and installs LLVM/Clang (default under `local/`).
 
+    About ~2600 build targets, this will take a while, like > 1 hour on my workstation.
+
+    Note that `-DLLVM_TARGETS_TO_BUILD="host;X86"` is passed to CMake for we don't
+    do cross-compiling + this save about 1 thousand targets.
+
+
 * `install_llvm_clang_libcxx_n_abi_as_part_of_llvm.sh`
 
     Builds and install __libcxx && libcxxabi__ as part of LLVM ( `llvm-clang/llvm/projects` )
