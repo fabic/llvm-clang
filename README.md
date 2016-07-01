@@ -73,7 +73,7 @@ Homepage | Github repository
 
 * <http://www.linuxfromscratch.org/blfs/view/svn/general/llvm.html>
 
-    How to build LLVM/Clang from _Linux From Scratch_.
+    How to build LLVM/Clang from the _Beyond Linux From Scratch_ manual.
 
 * <http://stackoverflow.com/questions/25840088/how-to-build-libcxx-and-libcxxabi-by-clang-on-centos-7>
 
@@ -82,8 +82,8 @@ Homepage | Github repository
 
 * Other :
     * ~~<http://blog.fabic.net/diary/2014/09/13/llvm-clang-from-scratch>
-      [2nd take](http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-2)
-      [3rd take](http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-3)~~
+      &ndash; [2nd take](http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-2)
+      &ndash; [3rd take](http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-3)~~
 
         ^ was me tryin' to have an isolated Clang build, with `libunwind` for exception
         handling &ndash; _non-conclusive_.
@@ -100,17 +100,35 @@ Homepage | Github repository
 _Dude, for your recollection you've made a few install Bash scripts for having stuff built :_
 
 * `install-llvm-clang.sh`
-* `install_llvm_clang_libcxx_n_abi_as_part_of_llvm.sh` :
-  will build __libcxx && libcxxabi__ as part of LLVM ( `llvm-clang/llvm/projects` )
-  which is quite longer than the other possibility that follows
-* `install_llvm_libcxx_standalone.sh` : will have a rapid _out-of-tree_ build
-  of LLVM's __libcxx & libcxxabi__ built and installed under `local/`.
 
-Other install shell scripts :
+    All-in-one one-shot semi-automated Bash script that
+    builds and installs LLVM/Clang (default under `local/`).
+
+* `install_llvm_clang_libcxx_n_abi_as_part_of_llvm.sh`
+
+    Builds and install __libcxx && libcxxabi__ as part of LLVM ( `llvm-clang/llvm/projects` )
+    which is quite longer than an out-of-tree build.
+
+* `install_llvm_libcxx_standalone.sh`
+
+    Will have a rapid _out-of-tree_ 3-step build of LLVM's __libcxx & libcxxabi__
+    built and installed under `local/`.
+
+    3 steps to cope with a mutual dependency btw these two libraries:
+    **a)** _libcxx_ is built first, then **b)** _libcxxabi_ against it,
+    and finally **c)** _libcxx_ is re-built & installed.
+
+### Other install shell scripts :
 
 * `install-boost-cpp.sh` : will build Boost C++ and install it under ex. `local/boost-1.xx.yy-clang/`
-* `install-cppnetlib.sh` : “ Boost ” cpp-netlib 0.12 (C++ Boost & Asio-based HTTP client+server impl.)
+
+* `install-cppnetlib.sh` : cpp-netlib &nbash; C++ Boost & Asio-based HTTP client+server impl.
+
 * `install-libunwind.sh`
+
+    Low-level thing for stack unwinding ;
+    advertised here'n'there of being able replace the GCC impl. for exception handling.
+
 
 ### Getting started (w/o thinking)
 
