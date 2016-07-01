@@ -1,12 +1,19 @@
-# LLVM Clang bulk repo.
+# FabiC's LLVM/Clang & C++ playground
 
 _This actually **is** LLVM/Clang stuff bundled up here as Git submodules for /me playing with._
 
-_**2015-11-11** WIP sorting things out..._
+* **2015-11-11 :** WIP ; sorting things out ; didn't got far, lack of time/interest...
+* **2017-01-01 :**
+    * WIP ;
+    * back again to some C++ wanderings ;
+    * ended up needing to re-build Clang (__release 3.8.1__) for my current Linux
+      (Gentoo-based Sabayon 16.07) do _not_ support the `-flto` compiler arg. due
+      to a missing library (linker plugin) at link time: `LLVMgold.so`
+      _(hopefully this one thing will get built along the way)_.
 
 * <http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-3/>
 * Checked-out on disk usage is about 342 MB ;
-* Current LLVM/Clang version is **3.7.0**
+* Current LLVM/Clang version is **3.8.x**
 * In here included are :
 
 Homepage | Github repository
@@ -27,7 +34,78 @@ Homepage | Github repository
   - [libunwind](http://www.nongnu.org/libunwind/) @ [v1.1](http://git.savannah.gnu.org/gitweb/?p=libunwind.git;a=shortlog;h=refs/tags/v1.1)
   - [CMake](https://cmake.org/Wiki/CMake/Git) v3.3.2
 
-## Git submodules
+
+./install-llvm-clang.sh bootstrap bootstrap_build
+
+./install-llvm-clang.sh bootstrap2 bootstrap_build2
+
+./install-llvm-clang.sh
+
+## Getting started (quickly)
+
+_Dude, for your recollection you've made a few install Bash scripts for having stuff built :_
+
+* `install-llvm-clang.sh`
+* `install_llvm_clang_libcxx_n_abi_as_part_of_llvm.sh` :
+  will build __libcxx && libcxxabi__ as part of LLVM ( `llvm-clang/llvm/projects` )
+  which is quite longer than the other possibility that follows
+* `install_llvm_libcxx_standalone.sh` : will have a rapid _out-of-tree_ build
+  of LLVM's __libcxx & libcxxabi__ built and installed under `local/`.
+
+Other install shell scripts :
+
+* `install-boost-cpp.sh` : will build Boost C++ and install it under ex. `local/boost-1.xx.yy-clang/`
+* `install-cppnetlib.sh` : “ Boost ” cpp-netlib 0.12 (C++ Boost & Asio-based HTTP client+server impl.)
+* `install-libunwind.sh`
+
+### Getting started (w/o thinking)
+
+* Just run the `install-llvm-clang.sh` script, on lucky days you would get
+  an LLVM/Clang built'n'installed under `local/` ;
+* then just source the __environment-clang.sh__ shell script : `source environment-clang.sh`
+* Run `./show-environment.sh` for information ;
+* Build something, ex. `clang++ -std=c++11 -lc++ test.cpp -o test`
+* Run `ldd test` to see which STL impl. it got linked against.
+
+### Building LLVM/Clang compiler
+
+    # Optional: have a “ bootstrap ” installation under sub-dir. bootstrap/ :
+
+        ./install-llvm-clang.sh bootstrap bootstrap_build
+
+        source environment-clang.sh llvm-clang/bootstrap
+
+    # Optional: if you want to build a 2nd bootstrap :
+
+        ./install-llvm-clang.sh bootstrap2 bootstrap_build2
+
+        source environment-clang.sh llvm-clang/bootstrap2
+
+    # Have the final thing built under llvm-clang/build/ which will get
+    # installed under local/
+
+        ./install-llvm-clang.sh
+
+        source environment-clang.sh
+
+#### Install scripts arguments :
+
+    ./install-llvm-clang.sh [<target_install_local_dir>] [<temporary_build_dir>]
+
+    source environment-clang.sh [<whence_it_is_installed>]
+
+    # Default if run w/o arguments :
+
+        ./install-llvm-clang.sh local llvm-clang/build
+
+        source environment-clang.sh local
+
+
+## Details
+
+_**2016-07 :** the remainder here is old and needs review..._
+
+### Git submodules
 
     $ git submodule status
 
@@ -73,17 +151,17 @@ Homepage | Github repository
     origin  git://git.musl-libc.org/musl (fetch)
     origin  git@github.com:llvm-mirror/test-suite.git (fetch)
 
-### Checkout those submodules that are needed for building Clang
+#### Checkout those submodules that are needed for building Clang
 
     git submodule update --init clang clang-tools-extra compiler-rt libcxx libcxxabi llvm test-suite
 
-## Getting started
+### Getting started (manually)
 
-## Clone repos & submodules checkout
+#### Clone repos & submodules checkout
 
 ... _todo_ ...
 
-### Drop symlinks here'n'there
+#### Drop symlinks here'n'there
 
     [fabi@sabayon] ~/dev/llvm2 $
 
@@ -106,7 +184,7 @@ Homepage | Github repository
     ln -siv ../../lld  llvm/tools/
 
 
-### (_optional_) Source the `./environment.sh` helper script
+#### (_optional_) Source the `./environment-clang.sh` helper script
 
     [fabi@sabayon] ~/dev/llvm2 $ source environment.sh
 
@@ -122,15 +200,15 @@ Homepage | Github repository
     | unset CC    clang
     +-
 
-### (_optional_) Install our own copy of Linux headers under `local/include/`
+#### (_optional_) Install our own copy of Linux headers under `local/include/`
 
     mkdir -pv local/include &&
       cp -ruv misc/linux-headers/include/* local/include
 
 
-### Build
+#### Build
 
-#### (_optional_) Build a temporary “bootstrap” version
+##### (_optional_) Build a temporary “bootstrap” version
 
     [fabi@sabayon] ~/dev/llvm2 $ mkdir -pv build && cd build/
 
@@ -158,7 +236,7 @@ the output it produces.
 
 __NOTE:__ Binaries for this first “bootstrap” variant shall have been installed under `bootstrap/`.
 
-##### Update environment with the new bootstrap/ stuff
+###### Update environment with the new bootstrap/ stuff
 
   . environment.sh bootstrap
 
@@ -169,7 +247,7 @@ __NOTE:__ Binaries for this first “bootstrap” variant shall have been instal
   $ ldd ./a.out
 
 
-#### Build & install under `local/`
+##### Build & install under `local/`
 
     mkdir -pv build2/ &&
     cd build2/
@@ -185,16 +263,16 @@ __NOTE:__ Binaries for this first “bootstrap” variant shall have been instal
 
     ninja install
 
-##### Test
+###### Test
 
     $ clang++ -std=c++11 test.cpp
 
-    $ ./a.out 
+    $ ./a.out
     1: Hello dude!
     2: Hello dude!
     3: Hello dude!
 
-    $ ldd a.out 
+    $ ldd a.out
       linux-vdso.so.1 (0x00007fff11e26000)
       libc++.so.1     => /mnt/g/llvm-clang/local/lib/libc++.so.1 (0x00007fe189b40000)
       libc++abi.so.1  => /mnt/g/llvm-clang/local/lib/libc++abi.so.1 (0x00007fe1898ee000)
@@ -208,13 +286,13 @@ __NOTE:__ Binaries for this first “bootstrap” variant shall have been instal
 * __Ok,__ it linked against `libc++` & `libc++abi`.
 * _Oups! it linked against `libgcc_s.so.1` instead of `libunwind` (fixme)._
 
-##### `clang++ -E -x c++ - -v < /dev/null`
+###### `clang++ -E -x c++ - -v < /dev/null`
 
 * <http://stackoverflow.com/a/11946295>
 
         $ clang++ -E -x c++ - -v < /dev/null
 
-        clang version 3.7.0 
+        clang version 3.7.0
         Target: x86_64-unknown-linux-gnu
         Thread model: posix
 
@@ -258,14 +336,24 @@ __NOTE:__ Binaries for this first “bootstrap” variant shall have been instal
         # 1 "<stdin>" 2
 
 
+
 ## ChangeLog
 
-* 2015-11-10 : Trying to replay the whole build-bootstrap-build procedure, seems ok.
-* 2015-11-09 : Blindly bumped dependencies from release 3.5 to 3.7 _(probably this doesn't build)._
-* 2014-09-24 : Replaced those Git-subtree-checked-out stuff with Git submodules.
-* 2014-09-16 : Tested a full project clone + building of Clang **ok**, but failed building against **musl-libc** despite my patches.
-* 2014-09-15 : Pushing "early-stage" version to Github.
-* 2014-09-13 : Started this "project" under Git control so as to track my wanderings.
+* __2016-07-01 :__
+    * playin' with `cpp-netlib` among other things ;
+    * tryin' to re-learn to code in C++ ;
+    * killing time, reading manuals and books ;
+    * had to rebuild LLVM/Clang (__release 3.8.1__) with my patch for it to default to `libc++/abi`
+      in hope of solving a situation where I can't get the `-flto` compiler flag to work
+      (missing `LLVMgold.so` linker plugin).
+    * _building takes way too long on this laptop, have to wait and wait, then fail
+      and re-try, and wait again..._
+* __2015-11-10 :__ Trying to replay the whole build-bootstrap-build procedure, seems ok.
+* __2015-11-09 :__ Blindly bumped dependencies from release 3.5 to 3.7 _(probably this doesn't build)._
+* __2014-09-24 :__ Replaced those Git-subtree-checked-out stuff with Git submodules.
+* __2014-09-16 :__ Tested a full project clone + building of Clang **ok**, but failed building against **musl-libc** despite my pa__tches.
+* __2__014-09-15 :__ Pushing "early-stage" version to Github.
+* __2014-09-13 :__ Started this "project" under Git control so as to track my wanderings.
 
 
 
@@ -349,7 +437,7 @@ __NOTE:__ building it using the host Gcc compiler, for Clang outputs warnings ab
     $ make install
 
 
-    $ ls -l ../local/lib/ld-musl-x86_64.so.1 
+    $ ls -l ../local/lib/ld-musl-x86_64.so.1
     lrwxrwxrwx 1 fabi fabi 43 Nov 11 12:46 ../local/lib/ld-musl-x86_64.so.1 -> /home/fabi/dev/llvm-clang/local/lib/libc.so
 
 
@@ -400,7 +488,7 @@ __NOTE:__ building it using the host Gcc compiler, for Clang outputs warnings ab
 
     $ clang++ -std=c++11 -lunwind test.cpp
 
-    $ ldd a.out 
+    $ ldd a.out
             linux-vdso.so.1 (0x00007fff00b0a000)
             libunwind.so.8 => /home/fabi/dev/llvm-clang/local/lib/libunwind.so.8 (0x00007f09595a8000)
             libc++.so.1 => /home/fabi/dev/llvm-clang/local/lib/libc++.so.1 (0x00007f09592ed000)
@@ -416,4 +504,4 @@ __NOTE:__ building it using the host Gcc compiler, for Clang outputs warnings ab
 __NOTE :__ it somehow got linked against libunwind ; `libgcc_s` remains though, but I can't recall
 much stuff about how/why this happens.
 
-_EOF_
+_EOF ; updated 2017-07-01 (partial review)._
