@@ -39,6 +39,61 @@ Homepage | Github repository
   - [libunwind](http://www.nongnu.org/libunwind/) @ [v1.1](http://git.savannah.gnu.org/gitweb/?p=libunwind.git;a=shortlog;h=refs/tags/v1.1)
   - [CMake](https://cmake.org/Wiki/CMake/Git) v3.3.2
 
+### References, pointers
+
+* <http://llvm.org/docs/GettingStarted.html#requirements>
+
+    Requirements for building LLVM.
+    Must read.
+    Section _“Host C++ Toolchain, both Compiler and Standard Library”_
+    details known-to-fail stuff.
+    Section _“Getting a Modern Host C++ Toolchain”_ mentions how to build GNU/gcc.
+
+* <http://llvm.org/docs/CMake.html>
+
+    For the list of available CMake `-Dxxx` options while building LLVM & al.
+
+* <http://clang.llvm.org/get_started.html>
+
+    Official page for Clang. Briefly mentions how to build it.
+
+* <http://libcxx.llvm.org/docs/BuildingLibcxx.html>
+
+    __libc++ 3.9 documentation &ndash; Building libc++__
+
+    Also details CMake `-Dxxx` build options.
+
+
+* <http://llvm.org/docs/GoldPlugin.html>
+
+    __The LLVM gold plugin__
+
+    Link-Time-Optimization (LTO) requires that we have a Binutils that was configured
+    with `--enable-gold --enable-plugins` so that we may use the `-flto` compiler flag.
+
+* <http://www.linuxfromscratch.org/blfs/view/svn/general/llvm.html>
+
+    How to build LLVM/Clang from _Linux From Scratch_.
+
+* <http://stackoverflow.com/questions/25840088/how-to-build-libcxx-and-libcxxabi-by-clang-on-centos-7>
+
+    About how to build __libcxx & libcxxabi__ out-of-tree in 3 steps due to a cyclic
+    dependencies btw those two.
+
+* Other :
+    * ~~<http://blog.fabic.net/diary/2014/09/13/llvm-clang-from-scratch>
+      [2nd take](http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-2)
+      [3rd take](http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-3)~~
+
+        ^ was me tryin' to have an isolated Clang build, with `libunwind` for exception
+        handling &ndash; _non-conclusive_.
+
+    * ~~<http://blog.fabic.net/diary/2016/06/20/build-llvm-libcxx-and-abi>~~
+
+        ^ /me in need for LLVM's __libc++__ in hope of solving a problem with
+        __Boost.program_options__ failing at runtime with a pesky character encoding
+        issue &ndash; having my stuff built against __libcxx/abi__ (`-stdlib=libc++`)
+        solved the problem.
 
 ## Getting started (quickly)
 
@@ -66,28 +121,34 @@ Other install shell scripts :
 * Build something, ex. `clang++ -std=c++11 -lc++ test.cpp -o test`
 * Run `ldd test` to see which STL impl. it got linked against.
 
-### Building LLVM/Clang compiler
+### Getting started (w/ thinking w/ a few neurons)
 
-    # Optional: have a “ bootstrap ” installation under sub-dir. bootstrap/ :
+#### Building LLVM/Clang compiler
+
+##### [Optional] Have a bootstrap build
+
+_Have a “ bootstrap ” installation under sub-dir. bootstrap/ :_
 
         ./install-llvm-clang.sh bootstrap bootstrap_build
 
         source environment-clang.sh llvm-clang/bootstrap
 
-    # Optional: if you want to build a 2nd bootstrap :
+_You may want to build a 2nd bootstrap (but don't) :_
 
         ./install-llvm-clang.sh bootstrap2 bootstrap_build2
 
         source environment-clang.sh llvm-clang/bootstrap2
 
-    # Have the final thing built under llvm-clang/build/ which will get
-    # installed under local/
+##### [Final] Build and install under `local/`
+
+_Have the final thing built under llvm-clang/build/ which will get
+ installed under `local/` :_
 
         ./install-llvm-clang.sh
 
         source environment-clang.sh
 
-#### Install scripts arguments :
+##### [Note] Install scripts arguments :
 
     ./install-llvm-clang.sh [<target_install_local_dir>] [<temporary_build_dir>]
 
@@ -98,6 +159,8 @@ Other install shell scripts :
         ./install-llvm-clang.sh local llvm-clang/build
 
         source environment-clang.sh local
+
+__FYI:__ the `./install-llvm-clang.sh` do _not_ alter any environment variable.
 
 
 ## Details
