@@ -156,9 +156,34 @@ if true; then
         echo "|"
       fi
 
+    cmake_args=(
+      -DCMAKE_BUILD_TYPE=Release         \
+      -DCMAKE_INSTALL_PREFIX="$localdir" \
+      -DLLVM_ENABLE_FFI=OFF     \
+      -DBUILD_SHARED_LIBS=ON    \
+      -DLLVM_TARGETS_TO_BUILD="host;X86" \
+      -DLLVM_BUILD_DOCS=OFF     \
+      -DLLVM_ENABLE_DOXYGEN=OFF \
+      -DLLVM_ENABLE_SPHINX=OFF  \
+      -DLLVM_BINUTILS_INCDIR="$localdir/include" \
+      -G Ninja \
+      ../llvm \
+      )
+
+# todo: conditionnally enable building LLVMGold iff `local/include/plugin-api.h`
+#       exists in include path ? how?
+# todo: check if we do need to pass arg. DLLVM_BINUTILS_INCDIR=...
+
+#-DCMAKE_CXX_FLAGS="-stdlib=libc++"  \
+
+#-DLLVM_BINUTILS_INCDIR=/path/to/binutils/include
+# (The correct include path will contain the file plugin-api.h.)
+
     echo "+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo "|"
-    echo "| Running CMake..."
+    echo "| About to run CMake :"
+    echo "|"
+    echo "|   cmake ${cmake_args[@]}"
     echo "|"
     echo "| Note that we're passing the following -Dxxx CMake options :"
     echo "|   - LLVM_ENABLE_FFI=OFF                  (default)"
@@ -173,24 +198,24 @@ if true; then
     echo "+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~"
     echo
 
-          #-DCMAKE_CXX_FLAGS="-stdlib=libc++"  \
+
+      read -p "Ok to proceed ? (Ctrl-C to abort)"
+      echo
+
 
       time \
-        cmake \
-          -DCMAKE_BUILD_TYPE=Release         \
-          -DCMAKE_INSTALL_PREFIX="$localdir" \
-          -DLLVM_ENABLE_FFI=OFF     \
-          -DBUILD_SHARED_LIBS=ON    \
-          -DLLVM_TARGETS_TO_BUILD="host;X86" \
-          -DLLVM_BUILD_DOCS=OFF     \
-          -DLLVM_ENABLE_DOXYGEN=OFF \
-          -DLLVM_ENABLE_SPHINX=OFF  \
-          -G Ninja \
-          ../llvm
+        cmake "${cmake_args[@]}"
+
 
       retv=$?
       if [ $retv -ne 0 ]; then
         echo "| CMake failed, exit status $retv"
+        echo "|"
+        echo "| Command was :"
+        echo "|"
+        echo "|   \`cmake ${cmake_args[@]}\`"
+        echo "|"
+        echo "+-"
         exit $retv
       fi
 

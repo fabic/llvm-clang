@@ -102,6 +102,8 @@ Homepage | Github repository
     Link-Time-Optimization (LTO) requires that we have a Binutils that was configured
     with `--enable-gold --enable-plugins` so that we may use the `-flto` compiler flag.
 
+* <http://gcc.gnu.org/wiki/LinkTimeOptimization> : LTO @ GNU/GCC.
+
 * <http://www.linuxfromscratch.org/blfs/view/svn/general/llvm.html>
 
     How to build LLVM/Clang from the _Beyond Linux From Scratch_ manual.

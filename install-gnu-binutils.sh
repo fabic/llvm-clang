@@ -50,6 +50,7 @@ configure_args=(
         --enable-shared      \
         --disable-werror     \
         --enable-gold        \
+        --enable-ld          \
         --enable-plugins     \
   )
 
@@ -154,7 +155,7 @@ make_args=(
   -j$max_jobs \
   -l$max_sys_load
   #all
-  all-gold
+  #all-gold
   )
 
 echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
@@ -220,12 +221,13 @@ echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
 echo
 
 
-  # read -p "Ok to proceed ? (Ctrl-C to abort)"
+  read -p "Ok to proceed ? (Ctrl-C to abort)"
+  echo
 
 
   make \
     tooldir="$localdir" \
-      install-gold
+      install
 
       #todo: install target ?
 
