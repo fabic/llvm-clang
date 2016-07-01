@@ -4,19 +4,29 @@ here=$( cd `dirname "${BASH_SOURCE[0]}"` && pwd )
 
 . $here/functions.sh
 
-echo "+-- ${BASH_SOURCE[0]}"
+echo "+-- ${BASH_SOURCE[0]} $@"
+echo "|"
+echo "| Note that this script may take the path of a Boost installation as 1st arg."
+echo "|"
 
 
 # Check for CC & CXX :
-if [ -z "$CC" ]; then
-    echo "| ERROR: \$CC is not defined"
-    exit 127
-elif [ -z "$CXX" ]; then
-    echo "| ERROR: \$CXX is not defined"
-    exit 126
+if [ -z "$CC" ];
+then
+    echo "| ERROR: \$CC is not defined (we need this to select the appropriate Boost variant you built)."
+    echo "|        ^ for we're looking for Boost installed into ex. local/boost-1.xx.yy-clang/ if built with Clang++"
+    echo "|          or if built with GCC into ex. local/boost-1.xx.yy-gcc/"
+    echo "+-- ${BASH_SOURCE[0]} $@ [END]"
+    return 127
+elif [ -z "$CXX" ];
+then
+    echo "| ERROR: \$CXX is not defined."
+    echo "+-- ${BASH_SOURCE[0]} $@ [END]"
+    return 126
 else
     echo "| \$CC  = $CC"
     echo "| \$CXX = $CXX"
+    echo "+-"
 fi
 
 
@@ -28,7 +38,8 @@ fi
 boost_modular_dir="$here/misc/boost"
 
 
-# 1) try local/boost-1.61.0-clang/ install location
+# 1) try local/boost-1.xx.yy-$CC/ install location
+#    (if not provide as 1st command line arg.)
 #
 #    NOTE: first script arg. may be an absolute path.
 #
@@ -37,6 +48,7 @@ boost_modular_dir="$here/misc/boost"
 # ( ^ and you may not want this btw, fixme ? )
 BOOSTROOT=${1:-"$( find "$here/local"*/ -maxdepth 1 -type d -name "boost-*-${CC}" )"}
 
+  # Ensure absolute path
   if [ "X${BOOSTROOT#/}" == "X${BOOSTROOT}" ]; then
     echo "|"
     echo "| ~> \$BOOSTROOT=\"$BOOSTROOT\" ain't an absolute path, "
@@ -47,17 +59,37 @@ BOOSTROOT=${1:-"$( find "$here/local"*/ -maxdepth 1 -type d -name "boost-*-${CC}
     echo "|"
   fi
 
+
+echo "|"
+echo "|   Note that we're here searching for an \"adequate\" installation of"
+echo "|   Boost where we would find the include/boost/config.hpp dir."
+echo "|"
+echo "|   And we'll attempt falling back to '$boost_modular_dir'"
+echo "|   for a checked-out source tree of Boost “ modular ”"
+echo "|"
+
+
 echo -n "| Trying \$BOOSTROOT = $BOOSTROOT : "
 
-# 2) fallback to ~/boost-1.61.0-clang/
-if [ -d "$BOOSTROOT/include" ] && [ -d "$BOOSTROOT/lib" ]; then
+if [ -f "$BOOSTROOT/include/boost/config.hpp" ];
+then
+  echo "found."
+else # 2) try fallback to ~/boost-1.61.0-clang/ (i.e. right under $HOME)
+  echo "not found."
+
+  BOOSTROOT="$HOME/boost-*-${CC}"
+
+  echo -n "| Trying \$BOOSTROOT = $BOOSTROOT (fallback) : "
+
+  if [ -f "$BOOSTROOT/include/boost/config.hpp" ];
+  then
     echo "found."
-else
-    BOOSTROOT="$HOME/boost-*-${CC}"
+  else # 3) will entail fallback to the checked-out sources under misc/boost/
+    echo "not found (will try eventually fallback to the Boost “modular” sources if checked-out (under '$boost_modular_dir')."
+    BOOSTROOT="" 
+  fi
 fi
 
-# 3) will entail fallback to the checked-out sources under misc/boost/
-[ -d "$BOOSTROOT/include" ] && [ -d "$BOOSTROOT/lib" ] || BOOSTROOT="" 
 
 ##
 ## Found Boost installation
@@ -95,27 +127,33 @@ then
 
     #fhs_path_setup_for "$BOOSTROOT"
 
-## Failed search for boost installation
-##   => fallback to the eventually checked-out raw sources :
+## Failed search for boost installation (FALLBACK)
+##   => fallback to the eventually checked-out raw sources.
+##      (we reach this point iff BOOSTROOT="", see earlier)
 else
+    echo "+- ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !"
+    echo "|"
     echo "| OUPS! Couldn't find out where Boost C++ may be (\$BOOSTROOT)"
-    echo "|       Trying '$boost_modular_dir'..."
+    echo "|       Last resort fallback trying an eventually checked-out Boost modular source tree under '$boost_modular_dir'..."
+    echo "|"
 
     if [ -d "$boost_modular_dir/boost" ];
     then
-        echo "| Guessing checked-out version (\`git describe\`)"
+        echo "| ~> Guessing checked-out version (\`git describe\`)"
         # Note 'misc/boost/.git' may be a file instead of a directory in case it
         # is a Git submodule clone (hence the `test -e .git`).
         boost_cpp_version="$(cd "$boost_modular_dir" && test -e .git && git describe)"
 
         if [ -z "$boost_cpp_version" ]; then
-            echo "| Couldn't find Boost C++ library at '$boost_modular_dir', skipping"
+            echo "| ~~~> Couldn't find Boost C++ library at '$boost_modular_dir', skipping"
         else
-            echo "| Found Boost C++ “ modular ” repository checked-out at '$boost_modular_dir' (version: $boost_cpp_version)."
-
+            echo "| ~~~> Found Boost C++ “ modular ” repository checked-out at '$boost_modular_dir' (version: $boost_cpp_version)."
         fi
     else
-        echo "| No “ Boost C++ modular ” sources found at '$boost_modular_dir', exiting..."
+        echo "| ~~~> FAIL: No “ Boost C++ modular ” sources found at '$boost_modular_dir', exiting..."
+        echo "|"
+        echo "+-- ${BASH_SOURCE[0]} $@ [END]"
+        return 127
     fi
 
     BOOSTROOT="$boost_modular_dir"
@@ -131,6 +169,18 @@ else
     export BOOSTROOT BOOST_INCLUDE_DIRS CPLUS_INCLUDE_PATH
 fi
 
+
+# We blindly modified LD_*_PATH, just assert that lib/ exists.
+[ -d "$BOOSTROOT/lib" ] || echo "| WARNING: the \$BOOSTROOT/lib/ directory does not exist, FYI."
+
+
+echo "|"
+echo "| Note that we intently did _NOT_ add '$BOOST_INCLUDE_DIRS' to CPATH or CPLUS_INCLUDE_PATH"
+echo "| since you're probably using CMake for your stuff."
+echo "|"
+echo "+-- ${BASH_SOURCE[0]} $@ [END]"
+
+
 sh $here/show-environment.sh
 
-# vim: et sw=4 ts=4 ft=sh
+# vim: et sw=2 ts=2 ft=sh

@@ -90,13 +90,13 @@ if true; then
       if ! ( clang --version | sed -e 's/^/|      &/' ); then
         retv=$?
         echo "| ~~~> Oups! couldn't execute clang, exiting (retv=$retv)"
-        exit $retv
+        return $retv
       fi
     echo "| ~> Clang++ :"
       if ! ( clang++ --version | sed -e 's/^/|      &/' ); then
         retv=$?
         echo "| ~~~> Oups! couldn't execute clang++, exiting (retv=$retv)"
-        exit $retv
+        return $retv
       fi
   echo "+-"
 fi
