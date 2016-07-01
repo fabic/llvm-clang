@@ -52,13 +52,14 @@ Homepage | Github repository
 
 * <http://clang.llvm.org/cxx_status.html>
 
-    Informational page about the C++ spec. implementation status.
+    Informational page about the C++ spec. implementation status in Clang.
 
     ^ which mentions btw :
-    « [...] Clang's C++11 mode can be used with libc++ or with gcc's libstdc++,
-      __*but patches are needed*__ to make libstdc++-4.4 work with Clang in C++11 mode.
-      Patches are also needed to make libstdc++-4.6 and libstdc++-4.7 work with
-      Clang releases prior to version 3.2 in C++11 mode. ”
+
+        _« [...] Clang's C++11 mode can be used with libc++ or with gcc's libstdc++,
+          **but patches are needed** to make libstdc++-4.4 work with Clang in C++11 mode.
+          Patches are also needed to make libstdc++-4.6 and libstdc++-4.7 work with
+          Clang releases prior to version 3.2 in C++11 mode. »_
 
     ^ which got me thinking that my OS-provided Clang is "hacked" in some way...
 
