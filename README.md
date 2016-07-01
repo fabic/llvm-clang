@@ -157,6 +157,19 @@ _Dude, for your recollection you've made a few install Bash scripts for having s
 
 ### Other install shell scripts :
 
+* `install-gnu-binutils.sh`
+
+    As per <http://llvm.org/docs/GoldPlugin.html>, builds GNU/Binutils'
+    __gold linker__. Basically this amouts to doing :
+
+        ./configure --prefix=... \
+            --enable-shared --disable-werror \
+            --enable-gold --enable-plugins
+
+        make all-gold
+
+        make install-gold
+
 * `install-boost-cpp.sh` : will build Boost C++ and install it under ex. `local/boost-1.xx.yy-clang/`
 
 * `install-cppnetlib.sh` : cpp-netlib &ndash; C++ Boost & Asio-based HTTP client+server impl.

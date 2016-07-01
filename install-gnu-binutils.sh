@@ -6,6 +6,11 @@ here=$(cd `dirname "$0"` && pwd)
 
 . "$here/functions.sh"
 
+# We do want to build this one thing with GCC.
+CC=gcc
+CXX=g++
+
+
 echo "+--- $0"
 echo "|"
 echo "| This script builds and install GNU Binutils."
@@ -52,6 +57,8 @@ echo "|"
 echo "| We'll be building Binutils with the following ./configure arguments :"
 echo "|"
 echo "| ${configure_args[@]}"
+echo "|"
+echo "| NOTE that we did set here \$CC=$CC and \$CXX=$CXX to GNU/GCC."
 
 
 echo "|"
@@ -110,6 +117,10 @@ echo "|"
 echo "| ( output will be collected into file '$configure_log_filename' )"
 echo
 
+  echo
+  read -p "Ok to proceed ? (Ctrl-C to abort)"
+  echo
+
   #echo \
   time \
     ../configure \
@@ -131,6 +142,7 @@ echo
 #
 ## MAKE
 #
+# todo: regular 'all' target ?
 
 max_jobs=`how_many_cpus 2`
 max_sys_load=`max_load_level`
@@ -138,13 +150,14 @@ make_args=(
   tooldir="$localdir" \
   -j$max_jobs \
   -l$max_sys_load
+  #all
   all-gold
   )
 
 echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
 echo "| FYI: We'll be running \`make ${make_args[@]}\`"
 echo "|"
-echo "|      -j$max_jobs      : max. simultaneous jobs,"
+echo "|      -j$max_jobs  : max. simultaneous jobs,"
 echo "|      -l$max_sys_load  : max. system load level."
 echo "|"
 echo "| NOTE: “ all-gold ” target argument is from"
@@ -168,6 +181,9 @@ EOS
 echo "+-"
 echo
 
+  read -p "Ok to proceed ? (Ctrl-C to abort)"
+  echo
+
 
   #echo \
   time \
@@ -185,7 +201,7 @@ echo
     exit $retv
   else
     echo
-    echo "| Ok, make complete."
+    echo "| Ok, \`make ${make_args[@]}\` completed successfully."
   fi
 
 
@@ -200,16 +216,23 @@ echo "|"
 echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
 echo
 
+
+  # read -p "Ok to proceed ? (Ctrl-C to abort)"
+
+
   make \
     tooldir="$localdir" \
-      install
+      install-gold
+
+      #todo: install target ?
+
 
   retv=$?
   if [ $retv -ne 0 ]; then
     echo
     echo "+ ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !"
     echo "|"
-    echo "| FAIL: Ninja install failed with exit status $retv"
+    echo "| FAIL: make install failed with exit status $retv"
     echo "|"
     echo "+-"
     echo
