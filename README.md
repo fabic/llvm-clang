@@ -47,6 +47,12 @@ Homepage | Github repository
   - [CMake](https://cmake.org/Wiki/CMake/Git) v3.3.2
   - _and other stuff..._
 
+### Patches
+
+* [llvm-clang/patches/fabic-clang-linux-libcxx-default.patch](/llvm-clang/patches/fabic-clang-linux-libcxx-default.patch)
+
+    Minor alterations of Clang (`llvm-clang/clang/`) so that it defaults to __libc++/abi__
+    instead of __libstdc++__ (so that we don't need to pass compiler flag `-stdlib=libc++`).
 
 ### References, pointers
 
