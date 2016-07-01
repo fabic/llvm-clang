@@ -1,6 +1,9 @@
 # FabiC's LLVM/Clang & C++ playground
 
-_This actually **is** LLVM/Clang stuff bundled up here as Git submodules for /me playing with._
+_LLVM/Clang is "bundled up" here as Git submodules
+(under sub-directory `llvm-clang/`) for /me playing with._
+
+_And a few other projects likewise included as Git submodules, for rainy days wanderings..._
 
 * **2015-11-11 :** WIP ; sorting things out ; didn't got far, lack of time/interest...
 * **2017-01-01 :**
@@ -10,11 +13,13 @@ _This actually **is** LLVM/Clang stuff bundled up here as Git submodules for /me
       (Gentoo-based Sabayon 16.07) do _not_ support the `-flto` compiler arg. due
       to a missing library (linker plugin) at link time: `LLVMgold.so`
       _(hopefully this one thing will get built along the way)_.
-
 * <http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-3/>
 * Checked-out on disk usage is about 342 MB ;
 * Current LLVM/Clang version is **3.8.x**
 * In here included are :
+
+
+## Abstract, notes
 
 Homepage | Github repository
 ---------|------------------
@@ -34,12 +39,6 @@ Homepage | Github repository
   - [libunwind](http://www.nongnu.org/libunwind/) @ [v1.1](http://git.savannah.gnu.org/gitweb/?p=libunwind.git;a=shortlog;h=refs/tags/v1.1)
   - [CMake](https://cmake.org/Wiki/CMake/Git) v3.3.2
 
-
-./install-llvm-clang.sh bootstrap bootstrap_build
-
-./install-llvm-clang.sh bootstrap2 bootstrap_build2
-
-./install-llvm-clang.sh
 
 ## Getting started (quickly)
 
@@ -238,13 +237,13 @@ __NOTE:__ Binaries for this first “bootstrap” variant shall have been instal
 
 ###### Update environment with the new bootstrap/ stuff
 
-  . environment.sh bootstrap
+    . environment.sh bootstrap
 
-  $ which clang && which clang++
-  $ clang --version && clang++ --version
-  $ clang++ -std=c++11 test.cpp
-  $ ./a.out
-  $ ldd ./a.out
+    $ which clang && which clang++
+    $ clang --version && clang++ --version
+    $ clang++ -std=c++11 test.cpp
+    $ ./a.out
+    $ ldd ./a.out
 
 
 ##### Build & install under `local/`
@@ -446,6 +445,8 @@ __NOTE:__ building it using the host Gcc compiler, for Clang outputs warnings ab
 * It first failed to build with against Musl libc (error from the "coredump" thing), hence passing `--disable-coredump`.
 * Then it turns out it has a dependency over a `liblzma` so we're passing `--disable-minidebuginfo`.
 * Ended up _not_ building against Musl libc (I recall I had to patch Clang code last year to get it build anyway).
+
+### Build'n'install libunwind
 
     $ autoreconf -i
 
