@@ -31,7 +31,7 @@ In here included are as Git submodules :
 Homepage | Github repository
 ---------|------------------
 [llvm](http://llvm.org/)                  | [GH: llvm](https://github.com/llvm-mirror/llvm)
-[clang](http://clang.llvm.org/)           | [GH: clang](https://github.com/llvm-mirror/clang) [GH: fabic/clang (fork)](https://github.com/fabic/clang)
+[clang](http://clang.llvm.org/)           | [GH: clang](https://github.com/llvm-mirror/clang) &mdash; [GH: fabic/clang __(fork)__](https://github.com/fabic/clang)
 [clang-tools-extra]()                     | [GH: clang-tools-extra](https://github.com/llvm-mirror/clang-tools-extra)
 [compiler-rt](http://compiler-rt.llvm.org/) | [GH: compiler-rt](https://github.com/llvm-mirror/compiler-rt)
 [libcxx](http://libcxx.llvm.org/)         | [GH: libcxx](https://github.com/llvm-mirror/libcxx)
