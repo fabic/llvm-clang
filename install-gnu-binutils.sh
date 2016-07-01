@@ -59,6 +59,9 @@ echo "|"
 echo "| ${configure_args[@]}"
 echo "|"
 echo "| NOTE that we did set here \$CC=$CC and \$CXX=$CXX to GNU/GCC."
+echo "|"
+echo "| NOTE that we'll _only_ be building the “ gold linker ”"
+echo "|      ( make targets: all-gold install-gold )"
 
 
 echo "|"
