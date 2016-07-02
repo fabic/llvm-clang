@@ -46,18 +46,26 @@ boost_modular_dir="$here/misc/boost"
 # Beware that it will search under any local*/ here
 # (hence searching for backup copies you happen to make sometimes).
 # ( ^ and you may not want this btw, fixme ? )
-BOOSTROOT=${1:-"$( find "$here/local"*/ -maxdepth 1 -type d -name "boost-*-${CC}" )"}
+BOOSTROOT=${1:-""}
 
-  # Ensure absolute path
-  if [ "X${BOOSTROOT#/}" == "X${BOOSTROOT}" ]; then
+
+# 2) No arg. => search for Boost installations under local/ like
+#    'boost-1.61.0-clang'
+if [ -z "$BOOSTROOT" ];
+then
+  candidates=( $( find "$here/local"*/ -maxdepth 1 -type d -name "boost-*-${CC}" | sort -V ) )
+
+  if [ ${#candidates[@]} -gt 0 ];
+  then
+    echo "| Found the following Boost installations :"
+    echo "| ${candidates[@]}"
     echo "|"
-    echo "| ~> \$BOOSTROOT=\"$BOOSTROOT\" ain't an absolute path, "
-    echo "|    prefixing with current directory :"
-      BOOSTROOT="$(pwd)/$BOOSTROOT"
-    echo "|"
-    echo "|      \$BOOSTROOT = $BOOSTROOT"
-    echo "|"
+    BOOSTROOT="${candidates[0]}"
+    echo "| Using the first one: $BOOSTROOT"
   fi
+
+  unset candidates
+fi
 
 
 echo "|"
@@ -70,6 +78,7 @@ echo "|"
 
 
 echo -n "| Trying \$BOOSTROOT = $BOOSTROOT : "
+
 
 if [ -f "$BOOSTROOT/include/boost/config.hpp" ];
 then
@@ -88,6 +97,19 @@ else # 2) try fallback to ~/boost-1.61.0-clang/ (i.e. right under $HOME)
     echo "not found (will try eventually fallback to the Boost “modular” sources if checked-out (under '$boost_modular_dir')."
     BOOSTROOT="" 
   fi
+fi
+
+
+# Ensure we have an absolute path
+# ( prepend curr. dir. if not )
+if [ "X${BOOSTROOT#/}" == "X${BOOSTROOT}" ]; then
+  echo "|"
+  echo "| ~> \$BOOSTROOT=\"$BOOSTROOT\" ain't an absolute path, "
+  echo "|    prefixing with current directory :"
+    BOOSTROOT="$(pwd)/$BOOSTROOT"
+  echo "|"
+  echo "|      \$BOOSTROOT = $BOOSTROOT"
+  echo "|"
 fi
 
 

@@ -122,7 +122,7 @@ CXX=clang++
 export CC CXX
 
 ## Extraneous include & lib dir.
-if true && [ ! -z "$clang_version" ];
+if false && [ ! -z "$clang_version" ];
 then
   echo "+-- Searching for one additionnal include/ and lib/ dir. under '$localdir/lib/clang/$clang_version/' :"
   echo "|"
@@ -174,8 +174,8 @@ fi
 # Traditionnal /usr/local/include
 if [ -d "$localdir/include" ]; then
     pathprepend "$localdir/include" CPATH
-    pathprepend "$localdir/include" CPLUS_INCLUDE_PATH
-    pathprepend "$localdir/include" INCLUDE_PATH
+    #pathprepend "$localdir/include" CPLUS_INCLUDE_PATH
+    #pathprepend "$localdir/include" INCLUDE_PATH
     export CPATH CPLUS_INCLUDE_PATH
 fi
 
@@ -184,7 +184,7 @@ fi
 # TODO: lib64 check ?
 if [ -d "$localdir/lib" ]; then
     pathprepend "$localdir/lib" LD_RUN_PATH
-    pathprepend "$localdir/lib" LIBRARY_PATH
+    #pathprepend "$localdir/lib" LIBRARY_PATH
     pathprepend "$localdir/lib" LD_LIBRARY_PATH
     export LD_RUN_PATH LD_LIBRARY_PATH LIBRARY_PATH 
 fi

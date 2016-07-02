@@ -7,7 +7,7 @@ here=$( cd `dirname "$0"` && pwd )
 echo "+-- $0"
 
 #
-##
+## No arg. => build boost modular ???
 #
 if [ $# -eq 0 ];
 then
@@ -39,7 +39,7 @@ then
     echo "| Git work-tree status :"
     git status | sed -e 's/^/|  &/'
 #
-##
+## Arg. “ any ” searches for untar-ed sources under misc/boost_X_YY_ZZ/
 #
 elif [ "x$1" == "xany" ]; then
     boost_versions=( $(ls -1d misc/boost_?_??_* | sort -r ) )
