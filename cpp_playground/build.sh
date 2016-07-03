@@ -11,12 +11,41 @@ echo "+-- $0"
 echo "| We're here at: `pwd` (rel.: $here)"
 echo "|"
 
-if [ $# -ge 1 ]; then
-    echo "| Ok, additional arguments provided will be for Ninja :"
+cmake_binary=$( type -p cmake )
+cmake_generator="Unix Makefiles"
+
+# One first special arg. may be the CMake -G <generator> :
+if [ $# -gt 0 ];
+then
+    case "$1" in
+    "make")  cmake_generator="Unix Makefiles" ; shift ;;
+    "ninja") cmake_generator="Ninja"          ; shift ;;
+    *)
+        ;;
+    esac
+
+    echo "| Ok, CMake generator -G $cmake_generator"
+fi
+
+cmake_extra_args=( "$@" )
+
+if [ ${#cmake_extra_args[@]} -gt 0 ]; then
+    echo "| Additional provided arguments will be for CMake :"
     echo "|"
-    echo "|   $@"
+    echo "|   ${cmake_extra_args[@]}"
     echo "|"
 fi
+
+cmake_args=(
+  -G "$cmake_generator"
+  -DCMAKE_BUILD_TYPE=Debug
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  -Wdev
+  --warn-uninitialized
+  --clean-first
+  "${cmake_extra_args[@]}"
+  ..
+)
 
 # Remove build/ subdir. only if no command line
 # arguments were provided (i.e. targets) :
@@ -27,7 +56,7 @@ fi
 
 if [ ! -d build ]; then
     echo "| Creating build/ sub-directory."
-    mkdir -v build ||
+    mkdir build ||
       exit 126
 fi
 
@@ -36,39 +65,76 @@ if ! cd build/ ; then
     exit 125
 fi
 
-echo "|"
 echo "| Running CMake..."
 echo "|"
+echo "|   $cmake_binary \\"
+echo "|     ${cmake_args[@]}"
+echo "|"
+echo "|   » CMAKE_EXPORT_COMPILE_COMMANDS=ON"
+echo "|     ^ so that we get a 'compilation_commands.json' file"
+echo "|       See http://clang.llvm.org/docs/HowToSetupToolingForLLVM.html"
+echo "|     ^ for us to play with Clang Tooling abilities (which needs to build"
+echo "|        a “compilation database”)."
+echo
 
-cmake -G Ninja \
-  -DCMAKE_BUILD_TYPE=Debug \
-  -Wdev --warn-uninitialized --clean-first ..
+"$cmake_binary" \
+  "${cmake_args[@]}"
 
 retv=$?
 if [ $retv -gt 0 ]; then
-    echo "|"
+    echo
     echo "| CMake failed, exit status: $retv"
-    echo "|"
+    echo "+-"
     exit 125
 fi
 
-echo "|"
-echo "| Running Ninja..."
-echo "|"
 
-#time make
-time ninja -v "$@"
+if [ "$cmake_generator" == "Ninja" ];
+then
+  echo
+  echo "+- Running Ninja..."
+  echo "|"
 
-retv=$?
-if [ $retv -gt 0 ]; then
-    echo "|"
-    echo "| make failed, exit status: $retv"
-    echo "|"
-    exit 125
+  time ninja -v
+
+  retv=$?
+  if [ $retv -gt 0 ]; then
+      echo
+      echo "| Ninja failed, exit status: $retv"
+      echo "+"
+      exit 125
+  fi
+
+  echo
+  echo "| Ninja finished, ok"
+  echo "+-"
+elif [ "$cmake_generator" == "Unix Makefiles" ];
+then
+  echo
+  echo "+- Running make..."
+  echo "|"
+
+  time \
+    make
+
+  retv=$?
+  if [ $retv -gt 0 ]; then
+      echo
+      echo "| make failed, exit status: $retv"
+      echo "+"
+      exit 125
+  fi
+
+  echo
+  echo "| make completed, ok"
+  echo "+-"
+else
+  echo "|"
+  echo "+- $0: ERROR: unknown \"generator\" \$cmake_generator='$cmake_generator'"
+  exit 3
 fi
 
-echo "|"
-echo "| Ninja finished, ok"
+
 echo "|"
 echo "| List of executable files under '$here/build/' :"
 echo "|"
@@ -82,9 +148,7 @@ echo &&
       sed -e 's@^@|    &@'
 
 echo "|"
-echo "| FINISHED, exit status: $retv"
-echo "|"
-echo "+-- $0"
+echo "+-- $0 : FINISHED, exit status: $retv"
 echo
 
 exit $retv

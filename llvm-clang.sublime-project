@@ -1,39 +1,48 @@
 {
-	// We do not want ST to alter lines we didn't modify.
-	"trim_trailing_white_space_on_save": false,
 	"folders":
 	[
 		{
-			"path": "llvm-clang/clang"
-			//, "follow_symlinks": true
-		},
-		{
-			"path": "llvm-clang/clang-tools-extra"
-		},
-		{
-			"path": "llvm-clang/compiler-rt"
-		},
-		{
-			"path": "llvm-clang/libcxx"
-		},
-		{
-			"path": "llvm-clang/libcxxabi"
-		},
-		{
-			"path": "llvm-clang/lld"
-		},
-		{
-			"path": "llvm-clang/lldb"
-		},
-		{
-			"path": "llvm-clang/llvm"
-			//, "follow_symlinks": true
-		},
-		{
-			"path": "llvm-clang/patches"
-		},
-		{
-			"path": "llvm-clang/test-suite"
+			"path": "."
 		}
-	]
+		// {
+		// 	"path": "llvm-clang/clang"
+		// },
+		// {
+		// 	"path": "llvm-clang/clang-tools-extra"
+		// },
+		// {
+		// 	"path": "llvm-clang/compiler-rt"
+		// },
+		// {
+		// 	"path": "llvm-clang/libcxx"
+		// },
+		// {
+		// 	"path": "llvm-clang/libcxxabi"
+		// },
+		// {
+		// 	"path": "llvm-clang/lld"
+		// },
+		// {
+		// 	"path": "llvm-clang/lldb"
+		// },
+		// {
+		// 	"path": "llvm-clang/llvm"
+		// },
+		// {
+		// 	"path": "llvm-clang/patches"
+		// },
+		// {
+		// 	"path": "llvm-clang/test-suite"
+		// }
+	],
+	// Will be excluded from indexing.
+	"binary_file_patterns":
+	[
+		"bootstrap**/**",
+		"local**/**",
+		"misc/**",
+		"php/**",
+		"tmp/**",
+	],
+	"trim_trailing_white_space_on_save": false
 }

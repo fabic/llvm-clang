@@ -8,31 +8,76 @@ cmake_minimum_required(VERSION 3.3)
 
 project(FabicCppPlayground)
 
-# This will cause -I. and similar/redondant directives like -I../symfony/..
-# to be emitted.
-# set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 set (FabicCppPlayground_VERSION_MAJOR 0)
 set (FabicCppPlayground_VERSION_MINOR 1)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++ -Wall -pedantic")
+
+# This will cause -I. and similar/redondant directiveslike -I../symfony/..
+# to be emitted.
+# set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++ -Wall -pedantic")
+add_compile_options(
+  -std=c++1z
+  -stdlib=libc++
+  -Wall
+  -pedantic
+  -fPIC
+  )
+
+# See Boost.DLL about symbol shadowing problem w/ Linux.
+# add_compile_options(
+#   -fvisibility=hidden
+# )
 
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
+# add_compile_options( -flto )
 # ^ requires LLVMgold.so, missing on my Sabayon system (Clang 3.8).
 #   http://clang.llvm.org/docs/LTOVisibility.html
 
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
+add_compile_options(
+  -O0
+  -ggdb
+    # So as to get better/meaninful stack traces in error messages :
+    -fno-omit-frame-pointer
+    # and disable tail call elimination
+    -fno-optimize-sibling-calls
+  )
 # ^ implies -g
 
-#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address  -fsanitize=undefined -fsanitize=dataflow -fsanitize=cfi -flto -fsanitize=safe-stack")
-# ^ -fsanitize=memory -fsanitize=thread :
-# “ It is not possible to combine more than one of the -fsanitize=address, -fsanitize=thread, and -fsanitize=memory checkers in the same program. ”
-# http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation
+add_compile_options(
+  # -fsanitize=address     # http://clang.llvm.org/docs/AddressSanitizer.html
+  # ^ -fsanitize=memory
+  # ^ -fsanitize=thread
+  #   “ It is not possible to combine more than one of the
+  #     -fsanitize=address, -fsanitize=thread, and -fsanitize=memory
+  #     checkers in the same program. ”
+  #     http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation
+  # -fsanitize=undefined   # http://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
+  # -fsanitize=dataflow    # http://clang.llvm.org/docs/DataFlowSanitizer.html
+  #-fsanitize=cfi -flto  # http://clang.llvm.org/docs/ControlFlowIntegrity.html (requries -flto)
+  # -fsanitize=safe-stack  # http://clang.llvm.org/docs/SafeStack.html
+  )
 
 # -fwhole-program-vtables
 
 add_compile_options(
-  -fvisibility=hidden
+#-fvisibility-inlines-hidden
+#-Wwrite-strings
+#-Wcast-qual
+-Wmissing-field-initializers
+-Wcovered-switch-default
+-Wnon-virtual-dtor
+-Wdelete-non-virtual-dtor
+-Woverloaded-virtual
+-fcolor-diagnostics
+#-ffunction-sections
+#-fdata-sections
+#-fno-common
+#-Wno-nested-anon-types
+# -Wl,-allow-shlib-undefined
 )
 
 ###
@@ -89,6 +134,8 @@ add_compile_options(
 
 
 add_subdirectory(symfony)
+
+add_subdirectory(clang-check)
 
 
 #include_directories(../misc/boost)
