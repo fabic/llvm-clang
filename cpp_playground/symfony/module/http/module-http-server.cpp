@@ -58,24 +58,27 @@ namespace fabic {
         );
 
         // Declare a STARTER functor :
+#if 0
         http_server_service->set_starter_function(
             [](server_service_t::reference serv) -> bool {
               logtrace << "YEAH! that's service `http.server` factory FUNCTOR bein' invoqued !"
                           " (which is also remarkable)." ;
 
-              http_server_ptr_t server_ = serv.get_instance();
+              logwarn << " » Not instanciating the cpp-netlib server (impl. stalled)";
+              //http_server_ptr_t server_ = serv.get_instance();
 
-              server_->run();
+              logwarn << " » Not starting the cpp-netlib server (impl. stalled)";
+              //server_->run();
 
               return false;
             }
         );
+#endif
 
          //http_server_service->requires<SomeClassB>("world");
 
          container->register_service( http_server_service );
       }
-
 
       void
       http_server::operator()(

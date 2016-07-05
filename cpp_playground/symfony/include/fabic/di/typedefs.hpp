@@ -61,6 +61,11 @@ namespace fabic {
     struct service_already_exists_exception : base_exception {};
     struct service_down_cast_failed : base_exception {};
 
+    struct no_defined_factory_functor : base_exception {};
+    struct service_already_constructed : base_exception {};
+    struct service_has_no_instance : base_exception {};
+    // ^ i.e. has not been constructed yet most probably.
+
   } // di ns.
 } // fabic ns.
 

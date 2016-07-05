@@ -34,9 +34,8 @@ namespace fabic {
       typedef bool starter_function_prototype(reference service);
       typedef std::function<starter_function_prototype> starter_function_t;
 
-      class no_defined_factory_functor : std::exception {}; // todo: refactor ex. out of here.
 
-    private:
+    protected:
       type_info           type;
       dependencies_map    dependencies;
       factory_function_t  factory;
@@ -71,7 +70,14 @@ namespace fabic {
 
       virtual ~definition() {}
 
-      virtual const type_info& get_type_info() const { return this->type; }
+      /**
+       * todo: what to do with this type thing ?
+       */
+      virtual const type_info&
+        get_type_info() const override
+      {
+        return this->type;
+      }
 
       /**
        * Declare (add) a dependency over a given service that has type “ Over ”.
@@ -112,48 +118,58 @@ namespace fabic {
         return *this;
       }
 
-      virtual dependencies_map_cref get_dependencies_map() const {
+      /**
+       * @return the list of (base_dependencies*).
+       */
+      virtual dependencies_map_cref get_dependencies_map() const override
+      {
         return this->dependencies;
       }
 
+      ///
       reference
       set_factory_function(factory_function_t functor) {
         this->factory = functor;
         return *this;
       }
 
+      ///
       reference
       set_starter_function(starter_function_t functor) {
         this->starter_function = functor;
         return *this;
       }
 
-      virtual void construct() throw(std::exception) {
+      ///
+      virtual void construct() throw(base_exception) override {
         if (this->has_instance())
-          throw new std::exception();
+          BOOST_THROW_EXCEPTION( service_already_constructed() );
         else if (this->factory == nullptr)
-          throw new no_defined_factory_functor();
+          BOOST_THROW_EXCEPTION( no_defined_factory_functor() );
         this->instance = this->factory(this->dependencies);
       }
 
-      virtual bool has_instance() const {
+      ///
+      virtual bool has_instance() const override {
         return this->instance != nullptr;
       }
 
-      PointerT get_instance() {
+      ///
+      virtual PointerT get_instance() {
         if (!this->has_instance())
-          throw new std::exception();
+          BOOST_THROW_EXCEPTION( service_has_no_instance() );
         return this->instance;
       }
 
       /**
        * @return true if this service has a starter functor.
        */
-      virtual bool is_startable() const {
+      virtual bool is_startable() const override {
         return this->starter_function != nullptr;
       }
 
-      virtual bool start() {
+      ///
+      virtual bool start() override {
         if (! this->is_startable() )
           throw new std::exception(); // todo: throw specific ex. here.
         return this->starter_function( *this );

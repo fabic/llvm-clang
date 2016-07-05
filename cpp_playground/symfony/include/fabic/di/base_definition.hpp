@@ -18,6 +18,10 @@ namespace fabic {
 
     /**
      * Base abstract class for “ service definitions ”.
+     *
+     * todo: see http://stackoverflow.com/questions/16082785/use-of-enable-shared-from-this-with-multiple-inheritance
+     *       for usage of enable_shared_from_this<> in context on inheritance
+     *       and up/down-casting issues wrt. preserving "the same shared ptr group".
      */
     class FABIC_SYMBOL_EXPORT base_definition
         : public std::enable_shared_from_this<base_definition>

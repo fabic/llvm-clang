@@ -123,19 +123,21 @@ namespace fabic {
            << "    - address : " << " [" << fabic::util::address_of(base) << "]" << std::endl
            << "    - type:     " << base->get_type_info().pretty_name() << std::endl;
 
-//        auto deps = base->get_dependencies_map();
-//
-//        logdebug << "    - dependencies :" << std::endl;
-//
-//        for (const auto &tuple : deps) {
-//          base_dependency_declaration &dep = *tuple.second;
-//          logdebug << "        - " << dep.get_service_id()
-//             << " as " << dep.get_service_type().name()
-//             << " [" << fabic::util::address_of(dep) << "]"
-//             << std::endl;
-//        }
-//
-//        logdebug << std::endl;
+       auto deps = base->get_dependencies_map();
+
+       if (! deps.empty() ) {
+         logdebug << "    - dependencies :";
+
+         for (const auto &tuple : deps) {
+           base_dependency_declaration &dep = *tuple.second;
+           logdebug << "        - " << dep.get_service_id()
+              << " as " << dep.get_service_type().name()
+              << " [" << fabic::util::address_of(dep) << "]";
+         }
+        }
+        else {
+         logdebug << "    - dependencies : NONE.";
+        }
       }
 
       return *this;

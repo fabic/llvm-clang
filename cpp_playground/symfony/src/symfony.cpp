@@ -6,8 +6,9 @@
 #include <iostream>
 #include <boost/program_options.hpp>
 
-#include "fabic/di/container.hpp"
-#include "fabic/di/dll/dll_service_provider.hpp"
+# include "fabic/di/container.hpp"
+# include "fabic/di/dll/dll_service_provider.hpp"
+# include "fabic/module/asio/IoService.hpp"
 
 namespace fabic {
   namespace symfony {
@@ -43,9 +44,87 @@ namespace fabic {
 
       cnt->debugDumpContainer();
 
-      //auto huh = cnt->get_service<server>("http.server");
+      // auto huh = cnt->get_service<server>("http.server");
+
+
+      if (true) {
+        logdebug << "MAIN(): Registering system signals async. handler.";
+
+        using module::asio::IoService;
+
+        auto ios_ = cnt->get_service<IoService>("boost.asio.io_service");
+
+        // http://www.boost.org/doc/libs/1_61_0/doc/html/boost_asio/overview/signals.html
+        // http://www.boost.org/doc/libs/1_61_0/doc/html/boost_asio/example/cpp11/http/server/server.cpp
+        boost::asio::signal_set signals_( *ios_ );
+
+        signals_.add(SIGINT);
+        signals_.add(SIGTERM);
+
+        #ifdef SIGQUIT
+          signals_.add(SIGQUIT);
+        #endif
+
+        signals_.async_wait(
+            [](const boost::system::error_code& error, int signal_number)
+              -> void
+            {
+              if (error)
+                logerror << "MAIN sys. signals handler closure{}: error != false";
+              loginfo << "MAIN sys. signals handler closure{}: closure{}: Caught signal!" ;
+            }
+          );
+      }
+
 
       cnt->start_startable_services();
+
+
+      if (true) {
+        logdebug << "MAIN(): About to IoService::run()...";
+
+        using module::asio::IoService;
+
+        auto ios_ = cnt->get_service<IoService>("boost.asio.io_service");
+
+        if (true) {
+          // This thing actually prevents Boost's io_service from returning
+          // if it has nothing else to do, allegedly -_-
+          // http://www.boost.org/doc/libs/1_61_0/doc/html/boost_asio/reference/io_service.html#boost_asio.reference.io_service.stopping_the_io_service_from_running_out_of_work
+          boost::asio::io_service::work
+            work_( *ios_ );
+          logtrace << "MAIN(): got the boost::asio::io_service::work thing set-up, probably.";
+        }
+
+        if (true) {
+          // std::chrono::seconds secs(5);
+          boost::posix_time::seconds secs(5);
+
+          boost::asio::deadline_timer
+            timer_(*ios_, secs);
+
+            timer_.wait();
+
+          timer_.async_wait(
+              [](const boost::system::error_code& error)
+                -> void
+              {
+                if (error)
+                  logerror << "MAIN deadline_timer handler closure{}: some error occured it appears.";
+                loginfo << "MAIN deadline_timer handler closure{}: fired!" ;
+              }
+            );
+
+          logtrace << "MAIN(): got an async. deadline_timer set-up";
+        }
+
+        ios_->run();
+
+        logdebug << "MAIN(): IoService::run() finished.";
+      }
+
+
+      logdebug << "MAIN(): END!" ;
 
       return 0;
     }
