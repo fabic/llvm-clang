@@ -165,8 +165,9 @@ namespace fabic {
     /**
      * Interface for life-cycle aware services.
      */
-    class startable_service {
+    class startable_service_intf {
     public:
+      virtual ~startable_service_intf() { }
       virtual bool start() =0;
       virtual bool stop() =0;
     };
@@ -176,8 +177,10 @@ namespace fabic {
      * Base abstract class for services that manage a thread
      * (multiple threads too ?)
      */
-    class threaded_service : public startable_service {
-
+    class threaded_service_intf : public startable_service_intf {
+    public:
+      virtual ~threaded_service_intf() { }
+      // TODO: virtual std::list<std::thread> get_threads() =0;
     };
 
   } // di ns.

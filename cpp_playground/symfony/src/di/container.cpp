@@ -43,12 +43,12 @@ namespace fabic {
 
     service_container::service_ptr_t
       service_container::service_map::find(string id)
-        throw(service_container::service_not_found_exception)
+        throw(service_not_found_exception)
     {
       auto it = this->services_.find(id);
 
       if (it == this->services_.end())
-        throw new service_not_found_exception();
+        BOOST_THROW_EXCEPTION( service_not_found_exception() );
 
       auto service = it->second;
 

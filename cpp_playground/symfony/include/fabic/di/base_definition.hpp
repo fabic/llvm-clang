@@ -14,19 +14,21 @@ namespace fabic {
     using std::string;
     using std::map;
     using std::pair;
+    using std::shared_ptr;
 
     /**
      * Base abstract class for “ service definitions ”.
      */
     class FABIC_SYMBOL_EXPORT base_definition
-        : public std::enable_shared_from_this<base_definition> {
+        : public std::enable_shared_from_this<base_definition>
+    {
     private:
         // Prevent client codes from having implicit copies.
         base_definition(const base_definition&) = delete;
         base_definition& operator=(const base_definition&) = delete;
 
     public:
-        typedef std::shared_ptr<base_definition> pointer;
+        typedef shared_ptr<base_definition> pointer;
         typedef map<string, base_dependency_declaration *> dependencies_map;
         typedef typename boost::call_traits<dependencies_map>::reference dependencies_map_ref;
         typedef typename boost::call_traits<dependencies_map>::const_reference dependencies_map_cref;

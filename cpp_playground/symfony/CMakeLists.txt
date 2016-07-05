@@ -84,6 +84,7 @@ include_directories(module/include)
     src/di/dll_service_provider.cpp
     src/hacks/hack_cxa_throw_exception.cpp
     module/http/module-http-server.cpp
+    module/asio/module-boost-asio.cpp
   )
 
   # For Boost.DLL which recommends this flag

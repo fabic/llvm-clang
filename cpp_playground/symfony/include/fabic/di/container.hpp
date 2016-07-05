@@ -43,9 +43,6 @@ namespace fabic {
       typedef typename boost::call_traits<service_container>::reference  reference;
       typedef std::shared_ptr<base_definition>                           service_ptr_t;
 
-      // TODO: move ex. decl. out of this class.
-      class service_not_found_exception : std::exception {};
-      class service_already_exists_exception : std::exception {};
 
       /**
        * Wrapper around the std::map<>.
@@ -54,7 +51,7 @@ namespace fabic {
        */
       class service_map {
       public:
-        typedef map<string, service_container::service_ptr_t>       map_t;
+        typedef map<string, base_service_definition_shared_ptr_t>   map_t;
         typedef typename boost::call_traits<map_t>::reference       map_ref;
         typedef typename boost::call_traits<service_map>::reference reference;
       private:
@@ -74,13 +71,28 @@ namespace fabic {
          * @return self
          */
         template<typename T, class PointerT = std::shared_ptr<T>>
-        reference insert(std::shared_ptr<definition<T, PointerT>> service)
-        throw(service_already_exists_exception) {
+          reference insert(std::shared_ptr<definition<T, PointerT>> service)
+            throw(service_already_exists_exception)
+        {
           auto pair = this->services_.insert(std::make_pair(service->id(), service));
 
           bool success = pair.second == true;
           if (!success)
-            throw new service_already_exists_exception();
+            BOOST_THROW_EXCEPTION( service_already_exists_exception() );
+
+          //auto it = pair.first;
+
+          return *this;
+        };
+
+        reference add(base_definition::pointer service)
+            throw(service_already_exists_exception)
+        {
+          auto pair = this->services_.insert(std::make_pair(service->id(), service));
+
+          bool success = pair.second == true;
+          if (!success)
+            BOOST_THROW_EXCEPTION( service_already_exists_exception() );
 
           //auto it = pair.first;
 
@@ -154,7 +166,8 @@ namespace fabic {
           return concrete->get_instance();
         }
         else {
-          throw new std::exception();
+          BOOST_THROW_EXCEPTION( service_down_cast_failed() );
+
           // TODO: ^ have a custom ex. type like service exists but cast failed.
         }
       }

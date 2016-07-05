@@ -5,9 +5,11 @@
 #ifndef FABICCPPPLAYGROUND_TYPEDEFS_HPP
 #define FABICCPPPLAYGROUND_TYPEDEFS_HPP
 
+#include <exception>
 #include <memory>
 #include <boost/config.hpp>
 #include <boost/call_traits.hpp>
+#include <boost/throw_exception.hpp>
 
 #include "fabic/logging.hpp"
 #include "fabic/object.hpp"
@@ -15,28 +17,49 @@
 namespace fabic {
   namespace di {
 
+    using std::shared_ptr;
+
     // Forward decl.
     class service_container;
+
+    /**
+     * The actual service container instance is managed through a shared pointer.
+     */
+    typedef shared_ptr<service_container> container_shared_ptr_t;
 
     // Forward decl.
     template<class T, class PointerT>
     class definition;
 
     /**
-     * The actual service container instance is managed through a shared pointer.
+     * Type of the _service definition_ of containers.
      */
-    typedef std::shared_ptr<service_container> container_shared_ptr_t;
-
-
-    /**
-     * Type of the _service definition_ for containers.
-     */
-    typedef definition<service_container, container_shared_ptr_t> container_service_definition_t;
+    typedef definition<service_container, container_shared_ptr_t>
+      container_service_definition_t;
 
     /**
      * The shared pointer type to the _service definition_ ``of service container instances``.
      */
-    typedef std::shared_ptr <container_service_definition_t> container_service_definition_ptr_t;
+    typedef shared_ptr< container_service_definition_t >
+      container_service_definition_ptr_t;
+
+    // For
+    class base_definition;
+    typedef shared_ptr< base_definition >
+      base_service_definition_shared_ptr_t;
+
+    //
+    // EXCEPTIONS
+    //
+
+    struct base_exception
+      : virtual boost::exception,
+        virtual std::exception
+    { };
+
+    struct service_not_found_exception      : base_exception {};
+    struct service_already_exists_exception : base_exception {};
+    struct service_down_cast_failed : base_exception {};
 
   } // di ns.
 } // fabic ns.

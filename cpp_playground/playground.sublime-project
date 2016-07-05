@@ -5,22 +5,16 @@
 			"path": "."
 		},
 		{
+			"path": "../local/boost-1.61.0-clang"
+		},
+		{
 			"path": "../local/include"
 		},
 		{
 			"path": "/usr/local/include"
 		},
-		// {
-		// 	"path": "/usr/include"
-		// },
 		{
 			"path": "../misc/cpp-netlib"
-		},
-		{
-			"path": "../misc/boost_1_61_0"
-		},
-		{
-			"path": "../misc/valloric-ycmd"
 		}
 	]
 }

@@ -41,6 +41,32 @@ clang++  \
       -lLLVMX86Disassembler  \
       -lLLVMOption  \
       -lLLVMSupport  \
+      -lLLVMAnalysis \
+      -lLLVMAsmPrinter \
+      -lLLVMBitReader \
+      -lLLVMBitWriter \
+      -lLLVMCodeGen \
+      -lLLVMCore \
+      -lLLVMInstCombine \
+      -lLLVMInstrumentation \
+      -lLLVMMC \
+      -lLLVMMCDisassembler \
+      -lLLVMMCParser \
+      -lLLVMObject \
+      -lLLVMOption \
+      -lLLVMProfileData \
+      -lLLVMScalarOpts \
+      -lLLVMSelectionDAG \
+      -lLLVMSupport \
+      -lLLVMTarget \
+      -lLLVMTransformUtils \
+      -lLLVMX86AsmParser  \
+      -lLLVMX86AsmPrinter  \
+      -lLLVMX86CodeGen  \
+      -lLLVMX86Desc  \
+      -lLLVMX86Disassembler  \
+      -lLLVMX86Info  \
+      -lLLVMX86Utils \
       -lclangAST  \
       -lclangBasic  \
       -lclangDriver  \
@@ -48,6 +74,7 @@ clang++  \
       -lclangRewriteFrontend  \
       -lclangStaticAnalyzerFrontend  \
       -lclangTooling  \
+      -lclangToolingCore  \
         -o clang-check  \
           ClangCheck.cpp
 

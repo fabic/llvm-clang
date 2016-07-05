@@ -135,7 +135,7 @@ add_compile_options(
 
 add_subdirectory(symfony)
 
-add_subdirectory(clang-check)
+# add_subdirectory(clang-check)
 
 
 #include_directories(../misc/boost)
