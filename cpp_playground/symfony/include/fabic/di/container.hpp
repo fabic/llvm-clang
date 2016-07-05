@@ -109,11 +109,6 @@ namespace fabic {
        */
       reference
         register_service(base_definition_shared_ptr_t service);
-      // template<typename T, class PointerT = shared_ptr<T>>
-      // reference register_service(shared_ptr<definition<T, PointerT>> service) {
-      //   this->services_.insert(service);
-      //   return *this;
-      // };
 
       /**
        * Fetches a service by its identifier.

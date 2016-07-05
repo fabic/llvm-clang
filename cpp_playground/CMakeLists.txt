@@ -18,6 +18,10 @@ set (FabicCppPlayground_VERSION_MINOR 1)
 
 
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++ -Wall -pedantic")
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
+
+
 add_compile_options(
   -std=c++1z
   -stdlib=libc++
@@ -26,17 +30,22 @@ add_compile_options(
   -fPIC
   )
 
-# See Boost.DLL about symbol shadowing problem w/ Linux.
-# add_compile_options(
-#   -fvisibility=hidden
-# )
+add_compile_options(
+  -fcolor-diagnostics
+  -fdiagnostics-show-category=name
+  -fdiagnostics-show-template-tree
+  #   ^ http://clang.llvm.org/docs/UsersManual.html#formatting-of-diagnostics
+  # -fvisibility=hidden
+  #   ^ http://clang.llvm.org/docs/LTOVisibility.html
+  #     See Boost.DLL about symbol shadowing problem w/ Linux.
+  # -fwhole-program-vtables
+  #   ^ http://clang.llvm.org/docs/UsersManual.html#cmdoption-fwhole-program-vtables
+)
 
-#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
 # add_compile_options( -flto )
 # ^ requires LLVMgold.so, missing on my Sabayon system (Clang 3.8).
 #   http://clang.llvm.org/docs/LTOVisibility.html
 
-#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 add_compile_options(
   -O0
   -ggdb
@@ -61,23 +70,22 @@ add_compile_options(
   # -fsanitize=safe-stack  # http://clang.llvm.org/docs/SafeStack.html
   )
 
-# -fwhole-program-vtables
-
 add_compile_options(
-#-fvisibility-inlines-hidden
-#-Wwrite-strings
-#-Wcast-qual
--Wmissing-field-initializers
--Wcovered-switch-default
--Wnon-virtual-dtor
--Wdelete-non-virtual-dtor
--Woverloaded-virtual
--fcolor-diagnostics
-#-ffunction-sections
-#-fdata-sections
-#-fno-common
-#-Wno-nested-anon-types
-# -Wl,-allow-shlib-undefined
+  # -fvisibility-inlines-hidden
+  # -Wwrite-strings
+  # -Wcast-qual
+  -Wmissing-field-initializers
+  # -Wcovered-switch-default
+  #   ^ we get too many warnings from external headers.
+  -Wnon-virtual-dtor
+  -Wdelete-non-virtual-dtor
+  -Woverloaded-virtual
+  -fcolor-diagnostics
+  # -ffunction-sections
+  # -fdata-sections
+  # -fno-common
+  # -Wno-nested-anon-types
+  # -Wl,-allow-shlib-undefined
 )
 
 ###
