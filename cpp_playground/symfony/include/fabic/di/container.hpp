@@ -21,6 +21,8 @@ namespace fabic {
     using std::string;
     using std::map;
     using std::pair;
+    using std::make_pair;
+    using std::shared_ptr;
 
     using fabic::object;
 
@@ -39,9 +41,9 @@ namespace fabic {
         : public std::enable_shared_from_this<service_container>
     {
     public:
-      typedef std::shared_ptr<service_container>                         pointer;
+      typedef shared_ptr<service_container>                         pointer;
       typedef typename boost::call_traits<service_container>::reference  reference;
-      typedef std::shared_ptr<base_definition>                           service_ptr_t;
+      typedef shared_ptr<base_definition>                           service_ptr_t;
 
 
       /**
@@ -51,7 +53,7 @@ namespace fabic {
        */
       class service_map {
       public:
-        typedef map<string, base_service_definition_shared_ptr_t>   map_t;
+        typedef map<string, base_definition_shared_ptr_t>           map_t;
         typedef typename boost::call_traits<map_t>::reference       map_ref;
         typedef typename boost::call_traits<service_map>::reference reference;
       private:
@@ -64,42 +66,13 @@ namespace fabic {
         explicit service_map() {}
         map_ref get_map_impl() { return this->services_; }
 
-        /**
-         * Add a service to the map.
-         *
-         * @param service
-         * @return self
-         */
-        template<typename T, class PointerT = std::shared_ptr<T>>
-          reference insert(std::shared_ptr<definition<T, PointerT>> service)
-            throw(service_already_exists_exception)
-        {
-          auto pair = this->services_.insert(std::make_pair(service->id(), service));
+        service_ptr_t
+          find(string id)
+            throw(service_not_found_exception);
 
-          bool success = pair.second == true;
-          if (!success)
-            BOOST_THROW_EXCEPTION( service_already_exists_exception() );
-
-          //auto it = pair.first;
-
-          return *this;
-        };
-
-        reference add(base_definition::pointer service)
-            throw(service_already_exists_exception)
-        {
-          auto pair = this->services_.insert(std::make_pair(service->id(), service));
-
-          bool success = pair.second == true;
-          if (!success)
-            BOOST_THROW_EXCEPTION( service_already_exists_exception() );
-
-          //auto it = pair.first;
-
-          return *this;
-        };
-
-        service_ptr_t find(string id) throw(service_not_found_exception);
+        reference
+          insert(base_definition::pointer service)
+            throw(service_already_exists_exception);
       };
 
     private:
@@ -134,11 +107,13 @@ namespace fabic {
        * @param service
        * @return
        */
-      template<typename T, class PointerT = std::shared_ptr<T>>
-      reference register_service(std::shared_ptr<definition<T, PointerT>> service) {
-        this->services_.insert(service);
-        return *this;
-      };
+      reference
+        register_service(base_definition_shared_ptr_t service);
+      // template<typename T, class PointerT = shared_ptr<T>>
+      // reference register_service(shared_ptr<definition<T, PointerT>> service) {
+      //   this->services_.insert(service);
+      //   return *this;
+      // };
 
       /**
        * Fetches a service by its identifier.
@@ -146,7 +121,7 @@ namespace fabic {
        * @param id
        * @return a pointer to the actual thing (typically a shared_ptr<T>).
        */
-      template<typename T, class PointerT = std::shared_ptr<T>>
+      template<typename T, class PointerT = shared_ptr<T>>
       PointerT get_service(string id) {
         logtrace << "service_container::get_service('" << id << "') :"
               " about to resolve dependencies...";
@@ -157,7 +132,7 @@ namespace fabic {
                  << ", got a " << serv->get_service_definition_type_name()
                  << ", address: " << fabic::util::address_of(serv);
 
-        //typedef std::shared_ptr<definition<T, PointerT>> concrete_ptr_t;
+        //typedef shared_ptr<definition<T, PointerT>> concrete_ptr_t;
 
         auto concrete = std::dynamic_pointer_cast<definition<T, PointerT>>(serv);
 

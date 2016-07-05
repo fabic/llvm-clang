@@ -46,7 +46,7 @@ namespace fabic {
     // For
     class base_definition;
     typedef shared_ptr< base_definition >
-      base_service_definition_shared_ptr_t;
+      base_definition_shared_ptr_t;
 
     //
     // EXCEPTIONS

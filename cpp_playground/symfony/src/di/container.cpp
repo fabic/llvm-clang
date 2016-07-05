@@ -41,6 +41,16 @@ namespace fabic {
     }
 
 
+    service_container::reference
+      service_container::register_service(
+          base_definition_shared_ptr_t service
+        )
+    {
+      this->services_.insert(service);
+      return *this;
+    };
+
+
     service_container::service_ptr_t
       service_container::service_map::find(string id)
         throw(service_not_found_exception)
@@ -54,6 +64,30 @@ namespace fabic {
 
       return service;
     }
+
+
+    service_container::service_map::reference
+      service_container::service_map::insert(
+          base_definition::pointer service
+        )
+          throw(service_already_exists_exception)
+    {
+      auto pair = this->services_.insert(
+          make_pair(
+            service->id(),
+            service
+          )
+        );
+
+      bool success = pair.second;
+      if (!success) {
+        //auto it = pair.first;
+        // TODO: ^ forward sthg along w/ the exception.
+        BOOST_THROW_EXCEPTION( service_already_exists_exception() );
+      }
+
+      return *this;
+    };
 
 
 //       service_container& service_container::loadFromYamlFile(string filename) {
