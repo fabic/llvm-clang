@@ -25,9 +25,11 @@ set (FabicCppPlayground_VERSION_MINOR 1)
 add_compile_options(
   -std=c++1z
   -stdlib=libc++
+  -fPIC
   -Wall
   -pedantic
-  -fPIC
+  # -Weverything
+  #   ^ http://clang.llvm.org/docs/UsersManual.html#enabling-all-diagnostics
   )
 
 add_compile_options(
