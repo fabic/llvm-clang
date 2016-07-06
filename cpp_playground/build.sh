@@ -14,6 +14,10 @@ echo "|"
 cmake_binary=$( type -p cmake )
 cmake_generator="Unix Makefiles"
 
+cmake_extra_args=( )
+make_extra_args=( )
+
+
 # One first special arg. may be the CMake -G <generator> :
 if [ $# -gt 0 ];
 then
@@ -24,17 +28,45 @@ then
         ;;
     esac
 
+    # Extra. arguments for CMake
+    while [ $# -gt 0 ];
+    do
+      arg="$1"
+      shift
+
+      cmake_extra_args=( "${cmake_extra_args[@]}" "$arg" )
+
+      [ "$arg" == "--" ] && break
+    done
+
+    # Extra. arguments for make/ninja.
+    while [ $# -gt 0 ];
+    do
+      arg="$1"
+      shift
+
+      make_extra_args=( "${make_extra_args[@]}" "$arg" )
+
+      [ "$arg" == "--" ] && break
+    done
+
     echo "| Ok, CMake generator -G $cmake_generator"
 fi
 
-cmake_extra_args=( "$@" )
 
-if [ ${#cmake_extra_args[@]} -gt 0 ]; then
-    echo "| Additional provided arguments will be for CMake :"
+  if [ ${#cmake_extra_args[@]} -gt 0 ]; then
+    echo "| Additional CMake arguments :"
     echo "|"
     echo "|   ${cmake_extra_args[@]}"
     echo "|"
-fi
+  fi
+
+  if [ ${#make_extra_args[@]} -gt 0 ]; then
+    echo "| Additional $cmake_generator arguments :"
+    echo "|"
+    echo "|   ${make_extra_args[@]}"
+    echo "|"
+  fi
 
 cmake_args=(
   -G "$cmake_generator"
@@ -46,6 +78,10 @@ cmake_args=(
   "${cmake_extra_args[@]}"
   ..
 )
+
+make_args=(
+    "${make_extra_args[@]}"
+  )
 
 # Remove build/ subdir. only if no command line
 # arguments were provided (i.e. targets) :
@@ -95,7 +131,9 @@ then
   echo "+- Running Ninja..."
   echo "|"
 
-  time ninja -v
+  time \
+    ninja \
+      "${make_extra_args[@]}"
 
   retv=$?
   if [ $retv -gt 0 ]; then
@@ -115,7 +153,8 @@ then
   echo "|"
 
   time \
-    make
+    make \
+      "${make_extra_args[@]}"
 
   retv=$?
   if [ $retv -gt 0 ]; then

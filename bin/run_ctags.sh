@@ -4,14 +4,34 @@
 #
 # @link https://www.chromium.org/developers/sublime-text#TOC-Preferences
 
+args=(
+    --languages=C,C++,Asm
+    -R -f .tags
+    --exclude=build --exclude=.git --exclude=.svn --exclude=tmp --exclude=out
+    "$@"
+  )
+
+echo "+-- $0"
+echo "|"
+echo "| Running Ctags :"
+echo "|"
+echo "|   ctags ${args[@]}"
+echo
+
 time \
-  ctags --languages=C,C++,Asm -R -f .tags \
-    --exclude=build --exclude=.git --exclude=.svn \
-    --exclude=tmp --exclude=out
+  ctags \
+    "${args[@]}"
+
+retv=$?
 
 echo
-echo ".tags file :"
-echo
+echo "| Ctags exited with status: $retv"
+echo "|"
+echo "| .tags file :"
+echo "|"
 
-ls -l .tags
+ls -lh .tags | sed -e 's/^/|  &/'
 
+echo "+-- $0 : END."
+
+exit $retv
