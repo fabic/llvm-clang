@@ -111,3 +111,9 @@
 [submodule "odb_orm_libcutl"]
 	path = misc/odb_orm/libcutl
 	url = http://scm.codesynthesis.com/libcutl/libcutl.git
+[submodule "gtkmm-doc"]
+	path = misc/gtkmm-documentation
+	url = https://git.gnome.org/browse/gtkmm-documentation
+[submodule "qt5"]
+	path = misc/qt5
+	url = http://code.qt.io/qt/qt5.git

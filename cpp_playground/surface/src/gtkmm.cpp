@@ -1,6 +1,8 @@
 /** surface/src/main.cpp
  *
  * FabiC.2016-07-06
+ *
+ * http://www.lucidarme.me/?p=4339
  */
 
 #include <iostream>

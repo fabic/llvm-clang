@@ -98,3 +98,42 @@ include_directories(include)
 
 # ^ Surface / Xlib
 ###
+
+
+
+## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# BINARY: build/surface/xcb
+
+  # /usr/share/apps/cmake/modules/FindX11.cmake
+  pkg_check_modules(XCB xcb)
+
+  if (XCB_FOUND)
+    add_executable(
+      x11-xcb
+      src/xcb.cpp
+      ../symfony/src/hacks/hack_cxa_throw_exception.cpp
+    )
+
+    target_compile_options(
+      x11-xcb
+      PUBLIC
+      # ...
+      )
+
+    target_include_directories(
+      x11-xcb
+      PUBLIC
+      ${XCB_INCLUDE_DIRS}
+      )
+
+    target_link_libraries(
+      x11-xcb
+      ${Boost_LIBRARIES}
+      ${XCB_LIBRARIES}
+      unwind dl # for hack_cxa_throw_exception.cpp
+      pthread
+      )
+  endif (XCB_FOUND)
+
+# ^ Surface / Xlib
+###
