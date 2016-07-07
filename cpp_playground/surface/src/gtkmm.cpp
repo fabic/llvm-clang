@@ -57,7 +57,7 @@ void HelloWorld::on_button_clicked()
 /**
  * MAIN !
  */
-int main(int argc, const char *argv[])
+int main(int argc, char *argv[])
 {
   auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
 
