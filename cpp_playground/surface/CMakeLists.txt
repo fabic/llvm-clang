@@ -6,6 +6,9 @@ project(Surface)
 
 include_directories(include)
 
+# FIXME
+include_directories(../symfony/include)
+
 ## GTKmm & al. CMake setup howto.
 #   https://wiki.gnome.org/Projects/gtkmm/UsingCMake
 #
@@ -104,36 +107,65 @@ include_directories(include)
 ## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # BINARY: build/surface/xcb
 
-  # /usr/share/apps/cmake/modules/FindX11.cmake
   pkg_check_modules(XCB xcb)
 
   if (XCB_FOUND)
+
+    ## xcb1
     add_executable(
-      x11-xcb
-      src/xcb.cpp
+      xcb1
+      src/xcb1.cpp
       ../symfony/src/hacks/hack_cxa_throw_exception.cpp
     )
 
     target_compile_options(
-      x11-xcb
+      xcb1
       PUBLIC
       # ...
       )
 
     target_include_directories(
-      x11-xcb
+      xcb1
       PUBLIC
       ${XCB_INCLUDE_DIRS}
       )
 
     target_link_libraries(
-      x11-xcb
+      xcb1
       ${Boost_LIBRARIES}
       ${XCB_LIBRARIES}
       unwind dl # for hack_cxa_throw_exception.cpp
       pthread
       )
+
+    ## XCB+
+    add_executable(
+      xcb+
+      src/xcb+.cpp
+      ../symfony/src/hacks/hack_cxa_throw_exception.cpp
+    )
+
+    target_compile_options(
+      xcb+
+      PUBLIC
+      # ...
+      )
+
+    target_include_directories(
+      xcb+
+      PUBLIC
+      ${XCB_INCLUDE_DIRS}
+      )
+
+    target_link_libraries(
+      xcb+
+      ${Boost_LIBRARIES}
+      ${XCB_LIBRARIES}
+      unwind dl # for hack_cxa_throw_exception.cpp
+      pthread
+      )
+
   endif (XCB_FOUND)
 
-# ^ Surface / Xlib
+# ^ Surface / Xcb1
 ###
