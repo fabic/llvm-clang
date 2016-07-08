@@ -35,11 +35,11 @@ int main(int argc, const char *argv[])
 
   auto xcb_ = std::make_shared< Xcb >();
 
-  auto win1 = Window::createRootedWindow(xcb_);
+  auto win1 = Window::createSimpleWindow(xcb_);
 
-  // win1->map();
+  win1->map();
 
-  // xcb_->flush();
+  xcb_->flush();
 
   {
     cout << "sizeof..." << endl
@@ -66,6 +66,8 @@ int main(int argc, const char *argv[])
          << bit_index<uint32_t>(8, 16|8|4|2|1) << endl
          ;
   }
+
+  pause();
 
   return 0;
 }

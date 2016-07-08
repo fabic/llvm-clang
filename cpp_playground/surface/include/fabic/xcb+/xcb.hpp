@@ -265,7 +265,7 @@ namespace xcb {
      * @param screenNbr The X screen number; default value -1 means the screen
      *                  we got upon connecting (see `connect()`, `this->screenNumber`).
      */
-    xcb_screen_t&
+    screen_ref_t&
       getScreenInfo(int screenNbr = -1)
     {
       screenNbr = screenNbr > -1 ?

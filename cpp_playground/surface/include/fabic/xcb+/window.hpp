@@ -16,6 +16,8 @@ class Window
 public:
   typedef Window& self;
 
+  static constexpr uint16_t default_window_width  = 640;
+  static constexpr uint16_t default_window_height = 480;
 
 // Prevent inadvertent copies.
 private:
@@ -43,6 +45,52 @@ public:
 
   xcb_window_t getXid() {
     return this->windowXid;
+  }
+
+  /**
+   * @brief Makes a window visible
+   *
+   *    xcb_void_cookie_t
+   *    xcb_map_window (xcb_connection_t *c,
+   *                    xcb_window_t      window);
+   *
+   * @param c The connection
+   * @param window The window to make visible.
+   * @return A cookie
+   *
+   * Maps the specified window. This means making the window visible (as long as its
+   * parent is visible).
+   *
+   * This MapWindow request will be translated to a MapRequest request if a window
+   * manager is running. The window manager then decides to either map the window or
+   * not. Set the override-redirect window attribute to true if you want to bypass
+   * this mechanism.
+   *
+   * If the window manager decides to map the window (or if no window manager is
+   * running), a MapNotify event is generated.
+   *
+   * If the window becomes viewable and no earlier contents for it are remembered,
+   * the X server tiles the window with its background. If the window's background
+   * is undefined, the existing screen contents are not altered, and the X server
+   * generates zero or more Expose events.
+   *
+   * If the window type is InputOutput, an Expose event will be generated when the
+   * window becomes visible. The normal response to an Expose event should be to
+   * repaint the window.
+   *
+   */
+  self
+    map()
+  {
+    xcb_void_cookie_t _cookie =
+      xcb_map_window(
+          this->xcb_->getXcbConnectionPtr(),
+          this->getXid()
+        );
+
+      Xcb::assert_void_cookie( _cookie );
+
+    return *this;
   }
 
   /**
@@ -106,8 +154,8 @@ public:
         // ^ replaces those two :
         // uint32_t          valueMask  = 0,
         // const uint32_t *  valueList  = nullptr
-        uint16_t          width  = 320,
-        uint16_t          height = 240,
+        uint16_t          width  = default_window_width,
+        uint16_t          height = default_window_height,
         int16_t           x      = 0,
         int16_t           y      = 0,
         uint16_t          borderWidth = 10,
@@ -116,11 +164,6 @@ public:
       )
   {
     auto wid = xcb_->generate_xid();
-
-    // constexpr uint32_t flags = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
-      // | XCB_EVENT_MASK_EXPOSURE
-      // | XCB_EVENT_MASK_KEY_PRESS
-      // | XCB_EVENT_MASK_BUTTON_PRESS ;
 
     uint32_t value_mask = 0;
     uint32_t * value_list = nullptr;
@@ -159,12 +202,14 @@ public:
   /**
    *
    */
+  template<uint32_t AttributesBitmask>
   static
   window_shared_ptr
     createRootedWindow(
         xcb_shared_ptr    xcb_,
-        uint16_t          width  = 320,
-        uint16_t          height = 240
+        MaskValues<AttributesBitmask> attributes,
+        uint16_t          width  = default_window_width,
+        uint16_t          height = default_window_height
       )
   {
     auto root = xcb_->getRootWindow();
@@ -172,7 +217,7 @@ public:
     auto win = Window::create(
       xcb_,
       root,
-      MaskValues<0>(),
+      attributes,
       width, height
       );
 
@@ -180,50 +225,40 @@ public:
   }
 
   /**
-   * @brief Makes a window visible
-   *
-   *    xcb_void_cookie_t
-   *    xcb_map_window (xcb_connection_t *c,
-   *                    xcb_window_t      window);
-   *
-   * @param c The connection
-   * @param window The window to make visible.
-   * @return A cookie
-   *
-   * Maps the specified window. This means making the window visible (as long as its
-   * parent is visible).
-   *
-   * This MapWindow request will be translated to a MapRequest request if a window
-   * manager is running. The window manager then decides to either map the window or
-   * not. Set the override-redirect window attribute to true if you want to bypass
-   * this mechanism.
-   *
-   * If the window manager decides to map the window (or if no window manager is
-   * running), a MapNotify event is generated.
-   *
-   * If the window becomes viewable and no earlier contents for it are remembered,
-   * the X server tiles the window with its background. If the window's background
-   * is undefined, the existing screen contents are not altered, and the X server
-   * generates zero or more Expose events.
-   *
-   * If the window type is InputOutput, an Expose event will be generated when the
-   * window becomes visible. The normal response to an Expose event should be to
-   * repaint the window.
    *
    */
-  self
-    map()
+  static window_shared_ptr
+    createSimpleWindow(
+        xcb_shared_ptr    xcb_,
+        uint16_t          width  = default_window_width,
+        uint16_t          height = default_window_height
+      )
   {
-    xcb_void_cookie_t _cookie =
-      xcb_map_window(
-          this->xcb_->getXcbConnectionPtr(),
-          this->getXid()
-        );
+    auto screen = xcb_->getScreenInfo();
 
-      Xcb::assert_void_cookie( _cookie );
+    constexpr uint32_t bitmask =
+        XCB_CW_BACK_PIXEL
+      | XCB_CW_BORDER_PIXEL
+      | XCB_CW_EVENT_MASK;
 
-    return *this;
+    MaskValues<bitmask> attributes;
+
+    attributes[ XCB_CW_EVENT_MASK ] =
+        XCB_EVENT_MASK_EXPOSURE
+      | XCB_EVENT_MASK_KEY_PRESS
+      | XCB_EVENT_MASK_BUTTON_PRESS ;
+
+    attributes[ XCB_CW_BACK_PIXEL ] = screen.black_pixel;
+    attributes[ XCB_CW_BORDER_PIXEL ] = screen.white_pixel;
+
+    auto win = Window::createRootedWindow(
+        xcb_,
+        attributes
+      );
+
+    return win;
   }
+
 
 };
 

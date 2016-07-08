@@ -48,6 +48,12 @@ namespace xcb {
   class Window;
   typedef std::shared_ptr< Window > window_shared_ptr; // fixme: _t suffix ?
 
+  /**
+   * Reference to an `xcb_screen_t` for enforcing correct auto type
+   * deduction, ex. `auto scr = Xcb::getScreenInfo();`
+   * (`scr` variable _is_ an alias, not an implicit copy on your stack).
+   */
+  typedef xcb_screen_t& screen_ref_t;
 
   typedef map<xcb_window_t, window_shared_ptr> windows_map_t;
 
