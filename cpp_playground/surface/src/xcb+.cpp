@@ -19,9 +19,7 @@
  * https://developer.gnome.org/pango/unstable/
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <iostream>
 
 # include "fabic/xcb+/xcb+.hpp"
 
@@ -30,6 +28,8 @@
  */
 int main(int argc, const char *argv[])
 {
+  using std::cout;
+  using std::endl;
   using fabic::xcb::Xcb;
   using fabic::xcb::Window;
 
@@ -40,6 +40,18 @@ int main(int argc, const char *argv[])
   win1->map();
 
   xcb_->flush();
+
+  {
+    using fabic::util::popcount;
+
+    cout << sizeof(int) << endl
+         << sizeof(short int) << endl
+         << sizeof(short) << endl
+         ;
+    cout << popcount(128 | 32 | 8 | 2) << endl
+         << popcount(128 | 32 | 16 | 8 | 2 | 1) << endl
+         ;
+  }
 
 pause();
   return 0;

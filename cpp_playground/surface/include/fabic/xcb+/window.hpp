@@ -2,6 +2,7 @@
 #define FABIC_XCB_WINDOW_H
 
 #include "fabic/xcb+/xcb.hpp"
+#include "fabic/xcb+/mask_values.hpp"
 
 namespace fabic {
 namespace xcb {
@@ -113,6 +114,16 @@ public:
   {
     auto wid = xcb_->generate_xid();
 
+    constexpr uint32_t flags = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
+      // | XCB_EVENT_MASK_EXPOSURE
+      // | XCB_EVENT_MASK_KEY_PRESS
+      // | XCB_EVENT_MASK_BUTTON_PRESS ;
+
+    if (valueMask == 0) {
+      MaskValues<xcb_cw_t, flags> m;
+
+      //valueMask = m.getBitmask();
+    }
 
     // See definition at `/usr/include/xcb/xproto.h:5564`
     // https://www.x.org/releases/X11R7.7/doc/libxcb/tutorial/index.html#helloworld

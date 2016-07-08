@@ -8,7 +8,7 @@
 			"path": "/media/g/home/fabi/dev/llvm/local/boost-1.61.0-clang/include/boost"
 		},
 		{
-			"path": "/usr/local/include"
+			"path": "../local/include"
 		},
 		{
 			"path": "/media/g/home/fabi/dev/llvm/misc/cpp-netlib/boost"
