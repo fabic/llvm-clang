@@ -96,33 +96,39 @@ public:
    *
    * The created window will initially use the same cursor as its parent.
    */
+  template<uint32_t AttributesBitmask>
   static
   window_shared_ptr
     create(
         xcb_shared_ptr    xcb_,
         window_shared_ptr parentWindow,
+        MaskValues<AttributesBitmask> attributes,
+        // ^ replaces those two :
+        // uint32_t          valueMask  = 0,
+        // const uint32_t *  valueList  = nullptr
         uint16_t          width  = 320,
         uint16_t          height = 240,
         int16_t           x      = 0,
         int16_t           y      = 0,
         uint16_t          borderWidth = 10,
         uint16_t          windowClass = XCB_WINDOW_CLASS_INPUT_OUTPUT,
-        xcb_visualid_t    visualXid   = XCB_COPY_FROM_PARENT,
-        uint32_t          valueMask  = 0,
-        const uint32_t *  valueList  = nullptr
+        xcb_visualid_t    visualXid   = XCB_COPY_FROM_PARENT
       )
   {
     auto wid = xcb_->generate_xid();
 
-    constexpr uint32_t flags = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
+    // constexpr uint32_t flags = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
       // | XCB_EVENT_MASK_EXPOSURE
       // | XCB_EVENT_MASK_KEY_PRESS
       // | XCB_EVENT_MASK_BUTTON_PRESS ;
 
-    if (valueMask == 0) {
-      MaskValues<xcb_cw_t, flags> m;
+    uint32_t value_mask = 0;
+    uint32_t * value_list = nullptr;
 
-      //valueMask = m.getBitmask();
+    if (attributes.size() > 0)
+    {
+      value_mask = attributes.bitmask();
+      value_list = attributes.data();
     }
 
     // See definition at `/usr/include/xcb/xproto.h:5564`
@@ -139,8 +145,8 @@ public:
           borderWidth,                 // uint16_t         border_width
           windowClass,                 // uint16_t         _class
           visualXid,                   // xcb_visualid_t   visual
-          valueMask,                   // uint32_t         value_mask
-          valueList                    // const uint32_t   *value_list
+          value_mask,                  // uint32_t         value_mask
+          value_list                   // const uint32_t   *value_list
         );
 
       auto win = make_shared< Window >(xcb_, wid);
@@ -166,6 +172,7 @@ public:
     auto win = Window::create(
       xcb_,
       root,
+      MaskValues<0>(),
       width, height
       );
 
