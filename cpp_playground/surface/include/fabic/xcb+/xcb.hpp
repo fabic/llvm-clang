@@ -22,6 +22,12 @@ namespace xcb {
    *       typedef struct {
    *           unsigned int sequence;  // < Sequence number
    *       } xcb_void_cookie_t;
+   *
+   * @link https://www.x.org/releases/X11R7.7/doc/index.html
+   * @link https://www.x.org/wiki/guide/client-ecosystem/
+   * @link https://www.x.org/wiki/guide/xlib-and-xcb/
+   * @link https://www.x.org/releases/X11R7.7/doc/libxcb/tutorial/index.html
+   * @link http://rosettacode.org/wiki/Window_creation/X11#XCB
    */
   class Xcb
     : public std::enable_shared_from_this< Xcb >
@@ -341,7 +347,7 @@ namespace xcb {
 
 
     /**
-     *
+     * Enter the event loop.
      */
     virtual void
       run()

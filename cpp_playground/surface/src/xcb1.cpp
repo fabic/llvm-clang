@@ -12,7 +12,7 @@
  *
  * https://cairographics.org/manual/index.html
  * https://cairographics.org/manual/cairo-XCB-Surfaces.html
- *https://www.cairographics.org/examples/
+ * https://www.cairographics.org/examples/
  *
  * https://xcb.freedesktop.org/PublicApi/
  *
