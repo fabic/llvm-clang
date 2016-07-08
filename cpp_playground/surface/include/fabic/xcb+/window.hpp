@@ -25,22 +25,16 @@ protected:
   Xcb& xcb;
 
   xcb_window_t      windowXid;
-  xcb_void_cookie_t windowCookie;
 
 public:
   explicit Window(Xcb& xcb)
-    : xcb(xcb)
-    // , windowCookie()
+    : xcb( xcb )
+    , windowXid( 0 )
   { }
 
   /**
-   * Note: the `xcb_void_cookie_t` obscur type is defined as :
-   *
-   *     typedef struct {
-   *         unsigned int sequence;  // < Sequence number
-   *     } xcb_void_cookie_t;
    */
-  Window(Xcb& xcb, xcb_window_t xid, xcb_void_cookie_t cookie = {0})
+  Window(Xcb& xcb, xcb_window_t xid)
     : xcb(xcb)
     , windowXid(xid)
   { }
@@ -123,7 +117,7 @@ public:
     // See definition at `/usr/include/xcb/xproto.h:5564`
     // https://www.x.org/releases/X11R7.7/doc/libxcb/tutorial/index.html#helloworld
     // http://rosettacode.org/wiki/Window_creation/X11#XCB
-    xcb_void_cookie_t cookie =
+    xcb_void_cookie_t _cookie =
       xcb_create_window(
           &xcb.getConnection(),        // xcb_connection_t *c
           XCB_COPY_FROM_PARENT,        // uint8_t          depth
@@ -138,7 +132,9 @@ public:
           valueList                    // const uint32_t   *value_list
         );
 
-      auto win = make_shared< Window >(xcb, wid, cookie);
+      auto win = make_shared< Window >(xcb, wid);
+
+      Xcb::assert_void_cookie( _cookie );
 
       return win;
   }
@@ -149,17 +145,66 @@ public:
   static
   window_shared_ptr
     createRootedWindow(
-        Xcb&              xcb
+        Xcb&              xcb,
+        uint16_t          width  = 320,
+        uint16_t          height = 240
       )
   {
     auto root = xcb.getRootWindow();
 
     auto win = Window::create(
       xcb,
-      root
+      root,
+      width, height
       );
 
     return win;
+  }
+
+  /**
+   * @brief Makes a window visible
+   *
+   *    xcb_void_cookie_t
+   *    xcb_map_window (xcb_connection_t *c,
+   *                    xcb_window_t      window);
+   *
+   * @param c The connection
+   * @param window The window to make visible.
+   * @return A cookie
+   *
+   * Maps the specified window. This means making the window visible (as long as its
+   * parent is visible).
+   *
+   * This MapWindow request will be translated to a MapRequest request if a window
+   * manager is running. The window manager then decides to either map the window or
+   * not. Set the override-redirect window attribute to true if you want to bypass
+   * this mechanism.
+   *
+   * If the window manager decides to map the window (or if no window manager is
+   * running), a MapNotify event is generated.
+   *
+   * If the window becomes viewable and no earlier contents for it are remembered,
+   * the X server tiles the window with its background. If the window's background
+   * is undefined, the existing screen contents are not altered, and the X server
+   * generates zero or more Expose events.
+   *
+   * If the window type is InputOutput, an Expose event will be generated when the
+   * window becomes visible. The normal response to an Expose event should be to
+   * repaint the window.
+   *
+   */
+  self
+    map_window()
+  {
+    xcb_void_cookie_t _cookie =
+      xcb_map_window(
+          &this->xcb.getConnection(),
+          this->getXid()
+        );
+
+      Xcb::assert_void_cookie( _cookie );
+
+    return *this;
   }
 
 };

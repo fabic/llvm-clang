@@ -15,6 +15,13 @@ namespace xcb {
 
   /**
    * Entry point, manages an XCB connection, keeps track of Window-s, etc...
+   *
+   * Note: the `xcb_void_cookie_t` obscur type pervasively used as XCB's
+   *       functions return value is defined as :
+   *
+   *       typedef struct {
+   *           unsigned int sequence;  // < Sequence number
+   *       } xcb_void_cookie_t;
    */
   class Xcb
   {
@@ -282,6 +289,23 @@ namespace xcb {
       return this->rootWindow;
     }
 
+    /**
+     * FIXME: can't tell if it's ok to check for the bundled `sequence`
+     *        member of that void/obscur type, most probably not.
+     *
+     * But this static has the side-effect that we do check for XCB's functions
+     * return values (at least does it prevents compiler warnings for unused
+     * variables where we do retrieve the cookie "for code readability".)
+     *
+     * We'll supposed the cookie thing contains a protocol message sequence
+     * number or something like that.
+     */
+    static
+    void
+      assert_void_cookie(xcb_void_cookie_t cookie)
+    {
+      assert( cookie.sequence > 0 );
+    }
   };
 
 } // xcb ns.
