@@ -117,3 +117,9 @@
 [submodule "qt5"]
 	path = misc/qt5
 	url = http://code.qt.io/qt/qt5.git
+[submodule "freetype2"]
+	path = misc/freetype2
+	url = http://git.savannah.gnu.org/r/freetype/freetype2.git
+[submodule "freetype2-demos"]
+	path = misc/freetype2-demos
+	url = http://git.sv.nongnu.org/r/freetype/freetype2-demos.git
