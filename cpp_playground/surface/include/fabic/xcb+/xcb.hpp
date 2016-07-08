@@ -6,8 +6,10 @@
 namespace fabic {
 namespace xcb {
 
+  using std::make_shared;
   using std::shared_ptr;
-  using std::map;
+  using std::make_pair;
+  using std::pair;
 
 
 
@@ -54,7 +56,10 @@ namespace xcb {
   private:
     xcb_connection_t *connection_ = nullptr;
     int screenNumber = -1;
-    map<window_xid_t, window_shared_ptr> windows;
+
+    window_shared_ptr rootWindow = nullptr;
+
+    windows_map_t windows;
 
   // Prevent inadvertent copies.
   protected:
@@ -159,6 +164,21 @@ namespace xcb {
       return *this;
     }
 
+    /**
+     * @brief Allocates an XID for a new object.
+     *        `uint32_t xcb_generate_id(xcb_connection_t *c)`
+     *
+     * @param c: The connection.
+     *
+     * @return A newly allocated XID.
+     *
+     * Allocates an XID for a new object. Typically used just prior to
+     * various object creation functions, such as `xcb_create_window()`.
+     */
+    xid_t generate_xid()
+    {
+      return xcb_generate_id( this->connection_ );
+    }
 
     /**
      * @brief Test whether the connection has shut down due to a fatal error.
@@ -206,7 +226,7 @@ namespace xcb {
      * @param screenNbr The X screen number; default value -1 means the screen
      *                  we got upon connecting (see `connect()`, `this->screenNumber`).
      */
-    const xcb_screen_t *
+    xcb_screen_t&
       getScreenInfo(int screenNbr = -1)
     {
       screenNbr = screenNbr > -1 ?
@@ -227,7 +247,39 @@ namespace xcb {
 
       assert( screen != nullptr );
 
-      return screen;
+      return *screen;
+    }
+
+    /**
+     *
+     */
+    window_shared_ptr
+      getRootWindow()
+    {
+      if (this->rootWindow != nullptr)
+        return this->rootWindow;
+
+      xcb_screen_t& screen = this->getScreenInfo();
+      xcb_window_t rootXid = screen.root;
+
+      pair<windows_map_t::iterator, bool> retv =
+        this->windows.emplace(
+            make_pair(rootXid, make_shared< Window >(*this, rootXid))
+          );
+
+      bool failed = retv.second == false;
+
+      if (failed) {
+        throw base_exception();
+      }
+
+      auto inserted_it = retv.first;
+
+      window_shared_ptr win = inserted_it->second;
+
+      this->rootWindow = win;
+
+      return this->rootWindow;
     }
 
   };

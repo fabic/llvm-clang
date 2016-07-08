@@ -5,6 +5,8 @@
 #include <exception>
 #include <map>
 #include <memory>
+#include <type_traits>
+
 #include <xcb/xcb.h>
 
 # include "fabic/logging.hpp"
@@ -13,6 +15,8 @@
 namespace fabic {
 namespace xcb {
 
+  using std::map;
+
   /**
    * @see Xcb::generate_id().
    */
@@ -20,11 +24,29 @@ namespace xcb {
 
   /**
    * Convenience typedef for readability.
+   * EDIT: useless: XCB has a typedef `xcb_window_t`, we'll use theirs.
    */
   typedef xid_t window_xid_t;
 
+  /**
+   * It turns out XCB's `xcb_window_t` is a `typedef uint32_t xcb_window_t;`
+   * _and_ `xcb_create_window(..., xcb_window_t wid, xcb_window_t parent, ...)`
+   * expects us to generate the `wid` argument by means of `xcb_generate_id()`
+   * which returns a bare `uint32_t` value.
+   */
+  static_assert(
+      std::is_same<xcb_window_t, window_xid_t>::value
+    );
+
+  static_assert(
+      std::is_same<xcb_visualid_t, xid_t>::value
+    );
+
   class Window;
   typedef std::shared_ptr< Window > window_shared_ptr;
+
+
+  typedef map<xcb_window_t, window_shared_ptr> windows_map_t;
 
 } // xcb ns.
 } // fabic ns.

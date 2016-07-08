@@ -10,7 +10,7 @@ namespace xcb {
  *
  */
 class Window
-  : std::enable_shared_from_this<Window>
+  : public std::enable_shared_from_this<Window>
 {
 public:
   typedef Window& self;
@@ -24,16 +24,32 @@ private:
 protected:
   Xcb& xcb;
 
-  xcb_window_t      windowId;
+  xcb_window_t      windowXid;
   xcb_void_cookie_t windowCookie;
 
 public:
-  Window(Xcb& xcb)
+  explicit Window(Xcb& xcb)
     : xcb(xcb)
     // , windowCookie()
   { }
 
+  /**
+   * Note: the `xcb_void_cookie_t` obscur type is defined as :
+   *
+   *     typedef struct {
+   *         unsigned int sequence;  // < Sequence number
+   *     } xcb_void_cookie_t;
+   */
+  Window(Xcb& xcb, xcb_window_t xid, xcb_void_cookie_t cookie = {0})
+    : xcb(xcb)
+    , windowXid(xid)
+  { }
+
   virtual ~Window() { }
+
+  xcb_window_t getXid() {
+    return this->windowXid;
+  }
 
   /**
    *
@@ -86,24 +102,64 @@ public:
    *
    * The created window will initially use the same cursor as its parent.
    */
-  self
-  create(
-    Window&  parentWindow,
-    uint16_t width  = 320,
-    uint16_t height = 240,
-    int16_t  x      = 0,
-    int16_t  y      = 0,
-    uint16_t borderWidth = 10,
-    uint16_t windowClass = XCB_WINDOW_CLASS_INPUT_OUTPUT,
-    uint32_t         value_mask = 0,
-    const uint32_t * value_list = nullptr)
+  static
+  window_shared_ptr
+    create(
+        Xcb&              xcb,
+        window_shared_ptr parentWindow,
+        uint16_t          width  = 320,
+        uint16_t          height = 240,
+        int16_t           x      = 0,
+        int16_t           y      = 0,
+        uint16_t          borderWidth = 10,
+        uint16_t          windowClass = XCB_WINDOW_CLASS_INPUT_OUTPUT,
+        xcb_visualid_t    visualXid   = XCB_COPY_FROM_PARENT,
+        uint32_t          valueMask  = 0,
+        const uint32_t *  valueList  = nullptr
+      )
   {
+    auto wid = xcb.generate_xid();
+
+    // See definition at `/usr/include/xcb/xproto.h:5564`
+    // https://www.x.org/releases/X11R7.7/doc/libxcb/tutorial/index.html#helloworld
+    // http://rosettacode.org/wiki/Window_creation/X11#XCB
+    xcb_void_cookie_t cookie =
+      xcb_create_window(
+          &xcb.getConnection(),        // xcb_connection_t *c
+          XCB_COPY_FROM_PARENT,        // uint8_t          depth
+          wid,                         // xcb_window_t     wid
+          parentWindow->getXid(),      // xcb_window_t     parent
+          x, y,                        // coordinates (int16_t x, int16_t y)
+          width, height,               // dimensions  (int16_t w, int16_t h)
+          borderWidth,                 // uint16_t         border_width
+          windowClass,                 // uint16_t         _class
+          visualXid,                   // xcb_visualid_t   visual
+          valueMask,                   // uint32_t         value_mask
+          valueList                    // const uint32_t   *value_list
+        );
+
+      auto win = make_shared< Window >(xcb, wid, cookie);
+
+      return win;
   }
 
-  self
-  createRootedWindow()
+  /**
+   *
+   */
+  static
+  window_shared_ptr
+    createRootedWindow(
+        Xcb&              xcb
+      )
   {
-    return *this;
+    auto root = xcb.getRootWindow();
+
+    auto win = Window::create(
+      xcb,
+      root
+      );
+
+    return win;
   }
 
 };
