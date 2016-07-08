@@ -24,6 +24,7 @@ namespace xcb {
    *       } xcb_void_cookie_t;
    */
   class Xcb
+    : public std::enable_shared_from_this< Xcb >
   {
   public:
     typedef Xcb& self;
@@ -102,6 +103,18 @@ namespace xcb {
         throw base_exception();
 
       return *this->connection_;
+    }
+
+    /**
+     * @throws
+     */
+    xcb_connection_t *
+      getXcbConnectionPtr()
+    {
+      if (this->connection_ == nullptr)
+        throw base_exception();
+
+      return this->connection_;
     }
 
     /**
@@ -220,6 +233,25 @@ namespace xcb {
       return static_cast<ConnectionError>(retv);
     }
 
+    /**
+     * @brief Forces any buffered output to be written to the server.
+     *        `int xcb_flush(xcb_connection_t *c);`
+     * @param c: The connection to the X server.
+     * @return > @c 0 on success, <= @c 0 otherwise.
+     *
+     * Forces any buffered output to be written to the server. Blocks
+     * until the write is complete.
+     */
+    int flush()
+    {
+      int status = xcb_flush( this->connection_ );
+
+      if (status <= 0)
+        throw base_exception();
+
+      return status;
+    }
+
   protected:
     /// Helper that throws an exception if something has gone wrong
     /// with the connection.
@@ -271,7 +303,7 @@ namespace xcb {
 
       pair<windows_map_t::iterator, bool> retv =
         this->windows.emplace(
-            make_pair(rootXid, make_shared< Window >(*this, rootXid))
+            make_pair(rootXid, make_shared< Window >(this->shared_from_this(), rootXid))
           );
 
       bool failed = retv.second == false;

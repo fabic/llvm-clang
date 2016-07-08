@@ -31,8 +31,16 @@
 int main(int argc, const char *argv[])
 {
   using fabic::xcb::Xcb;
+  using fabic::xcb::Window;
 
-  Xcb xcb;
+  auto xcb_ = std::make_shared< Xcb >();
 
+  auto win1 = Window::createRootedWindow(xcb_);
+
+  win1->map();
+
+  xcb_->flush();
+
+pause();
   return 0;
 }

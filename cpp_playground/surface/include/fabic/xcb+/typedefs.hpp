@@ -42,8 +42,11 @@ namespace xcb {
       std::is_same<xcb_visualid_t, xid_t>::value
     );
 
+  class Xcb;
+  typedef std::shared_ptr< Xcb > xcb_shared_ptr;
+
   class Window;
-  typedef std::shared_ptr< Window > window_shared_ptr;
+  typedef std::shared_ptr< Window > window_shared_ptr; // fixme: _t suffix ?
 
 
   typedef map<xcb_window_t, window_shared_ptr> windows_map_t;

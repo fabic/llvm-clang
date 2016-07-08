@@ -22,20 +22,19 @@ private:
   Window& operator=(const Window &) = delete;
 
 protected:
-  Xcb& xcb;
-
-  xcb_window_t      windowXid;
+  xcb_shared_ptr xcb_;
+  xcb_window_t   windowXid;
 
 public:
-  explicit Window(Xcb& xcb)
-    : xcb( xcb )
-    , windowXid( 0 )
+  explicit Window(xcb_shared_ptr xcb_)
+    : xcb_( xcb_ )
+    , windowXid( 0 ) // fixme: 0 ?
   { }
 
   /**
    */
-  Window(Xcb& xcb, xcb_window_t xid)
-    : xcb(xcb)
+  Window(xcb_shared_ptr xcb_, xcb_window_t xid)
+    : xcb_( xcb_ )
     , windowXid(xid)
   { }
 
@@ -99,7 +98,7 @@ public:
   static
   window_shared_ptr
     create(
-        Xcb&              xcb,
+        xcb_shared_ptr    xcb_,
         window_shared_ptr parentWindow,
         uint16_t          width  = 320,
         uint16_t          height = 240,
@@ -112,14 +111,15 @@ public:
         const uint32_t *  valueList  = nullptr
       )
   {
-    auto wid = xcb.generate_xid();
+    auto wid = xcb_->generate_xid();
+
 
     // See definition at `/usr/include/xcb/xproto.h:5564`
     // https://www.x.org/releases/X11R7.7/doc/libxcb/tutorial/index.html#helloworld
     // http://rosettacode.org/wiki/Window_creation/X11#XCB
     xcb_void_cookie_t _cookie =
       xcb_create_window(
-          &xcb.getConnection(),        // xcb_connection_t *c
+          xcb_->getXcbConnectionPtr(),  // xcb_connection_t *c
           XCB_COPY_FROM_PARENT,        // uint8_t          depth
           wid,                         // xcb_window_t     wid
           parentWindow->getXid(),      // xcb_window_t     parent
@@ -132,7 +132,7 @@ public:
           valueList                    // const uint32_t   *value_list
         );
 
-      auto win = make_shared< Window >(xcb, wid);
+      auto win = make_shared< Window >(xcb_, wid);
 
       Xcb::assert_void_cookie( _cookie );
 
@@ -145,15 +145,15 @@ public:
   static
   window_shared_ptr
     createRootedWindow(
-        Xcb&              xcb,
+        xcb_shared_ptr    xcb_,
         uint16_t          width  = 320,
         uint16_t          height = 240
       )
   {
-    auto root = xcb.getRootWindow();
+    auto root = xcb_->getRootWindow();
 
     auto win = Window::create(
-      xcb,
+      xcb_,
       root,
       width, height
       );
@@ -194,11 +194,11 @@ public:
    *
    */
   self
-    map_window()
+    map()
   {
     xcb_void_cookie_t _cookie =
       xcb_map_window(
-          &this->xcb.getConnection(),
+          this->xcb_->getXcbConnectionPtr(),
           this->getXid()
         );
 
