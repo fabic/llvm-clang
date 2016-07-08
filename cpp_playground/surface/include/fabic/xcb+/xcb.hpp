@@ -338,6 +338,48 @@ namespace xcb {
     {
       assert( cookie.sequence > 0 );
     }
+
+
+    /**
+     *
+     */
+    virtual void
+      run()
+    {
+      logdebug << "Xcb::run() : begin.";
+
+      this->flush();
+
+      xcb_generic_event_t * event;
+
+      while (nullptr != (event = xcb_wait_for_event( this->connection_ )))
+      {
+        // todo: What is this masking agaisnt ~0x80 about ?
+        auto e = event->response_type & ~0x80; // uint8_t btw.
+
+        switch (e) {
+          case XCB_EXPOSE: {
+            logtrace << "Xcb::run(): EXPOSE !";
+            break;
+          }
+
+          case XCB_KEY_PRESS: {
+            logtrace << "Xcb::run(): KEY PRESSED !";
+            break;
+          }
+
+          // Unknown event type, ignore it.
+          default: {
+            logtrace << "Xcb::run(): Event " << e << " is unknown to us.";
+            break;
+          }
+        }
+
+        free( event );
+      } // end of iteration waiting for events.
+
+      logdebug << "Xcb::run() : end.";
+    }
   };
 
 } // xcb ns.

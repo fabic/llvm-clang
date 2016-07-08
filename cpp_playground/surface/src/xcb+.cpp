@@ -67,7 +67,7 @@ int main(int argc, const char *argv[])
          ;
   }
 
-  pause();
+  xcb_->run();
 
   return 0;
 }
