@@ -23,18 +23,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-# include "fabic/xcb+/xcb.hpp"
+# include "fabic/xcb+/xcb+.hpp"
 
 /**
  * MAIN !
  */
 int main(int argc, const char *argv[])
 {
-  using fabic::Xcb;
+  using fabic::xcb::Xcb;
 
   Xcb xcb;
-
-  xcb.connect();
 
   return 0;
 }

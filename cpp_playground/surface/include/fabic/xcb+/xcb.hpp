@@ -1,12 +1,19 @@
+#ifndef FABIC_XCB_H
+#define FABIC_XCB_H
 
-#include <cassert>
-#include <exception>
-#include <xcb/xcb.h>
-
-#include "fabic/logging.hpp"
+#include "fabic/xcb+/typedefs.hpp"
 
 namespace fabic {
+namespace xcb {
 
+  using std::shared_ptr;
+  using std::map;
+
+
+
+  /**
+   * Entry point, manages an XCB connection, keeps track of Window-s, etc...
+   */
   class Xcb
   {
   public:
@@ -47,6 +54,7 @@ namespace fabic {
   private:
     xcb_connection_t *connection_ = nullptr;
     int screenNumber = -1;
+    map<window_xid_t, window_shared_ptr> windows;
 
   // Prevent inadvertent copies.
   protected:
@@ -55,6 +63,9 @@ namespace fabic {
 
   public:
 
+    /**
+     * Constructor, automatically connects (to the default display/screen).
+     */
     Xcb() {
       this->connect();
     }
@@ -68,6 +79,11 @@ namespace fabic {
         this->disconnect();
     }
 
+    /**
+     * @return a reference (not a pointer).
+     *
+     * @throws
+     */
     xcb_connection_t& getConnection()
     {
       if (this->connection_ == nullptr)
@@ -77,12 +93,15 @@ namespace fabic {
     }
 
     /**
-     * xcb_connect(const char *displayname, int *screenp)
-     *
      * @brief Connects to the X server.
+     *        `xcb_connect(const char *displayname, int *screenp)`
+     *
      * @param displayname: The name of the display.
-     * @param screenp: A pointer to a preferred screen number.
-     * @return A newly allocated xcb_connection_t structure.
+     * @param screenp:     A pointer to a preferred screen number.
+     *
+     * @return A newly allocated `xcb_connection_t` structure.
+     *
+     * @throws
      *
      * Connects to the X server specified by @p displayname. If @p
      * displayname is @c NULL, uses the value of the DISPLAY environment
@@ -91,8 +110,10 @@ namespace fabic {
      * screen; otherwise the screen will be set to 0.
      *
      * Always returns a non-NULL pointer to a xcb_connection_t, even on failure.
-     * Callers need to use xcb_connection_has_error() to check for failure.
-     * When finished, use xcb_disconnect() to close the connection and free
+     *
+     * Callers need to use `xcb_connection_has_error()` to check for failure.
+     *
+     * When finished, use `xcb_disconnect()` to close the connection and free
      * the structure.
      */
     self connect(const char *displayName = nullptr)
@@ -114,15 +135,15 @@ namespace fabic {
 
 
     /**
-     * xcb_disconnect();
-     *
      * @brief Closes the connection.
+     *        `xcb_disconnect()`
+     *
      * @param c: The connection.
      *
      * Closes the file descriptor and frees all memory associated with the
      * connection @c c. If @p c is @c NULL, nothing is done.
      */
-    void disconnect()
+    self disconnect()
     {
       logtrace << "Xcb: Disconnecting from server...";
 
@@ -134,21 +155,26 @@ namespace fabic {
       logtrace << "Xcb: Disconnected.";
 
       this->connection_ = nullptr;
+
+      return *this;
     }
 
 
     /**
-     * xcb_connection_has_error(xcb_connection_t *c);
-     *
      * @brief Test whether the connection has shut down due to a fatal error.
+     *        `xcb_connection_has_error(xcb_connection_t *c)`
+     *
      * @param c: The connection.
+     *
      * @return > 0 if the connection is in an error state; 0 otherwise.
      *
-     * Some errors that occur in the context of an xcb_connection_t
-     * are unrecoverable. When such an error occurs, the
-     * connection is shut down and further operations on the
-     * xcb_connection_t have no effect, but memory will not be freed until
-     * xcb_disconnect() is called on the xcb_connection_t.
+     * @throws
+     *
+     * Some errors that occur in the context of an `xcb_connection_t` are
+     * unrecoverable. When such an error occurs, the connection is shut down
+     * and further operations on the `xcb_connection_t` have no effect, but
+     * memory will not be freed until `xcb_disconnect()` is called on the
+     * `xcb_connection_t`.
      *
      * @return XCB_CONN_ERROR, because of socket errors, pipe errors or other stream errors.
      * @return XCB_CONN_CLOSED_EXT_NOTSUPPORTED, when extension not supported.
@@ -168,6 +194,8 @@ namespace fabic {
     }
 
   protected:
+    /// Helper that throws an exception if something has gone wrong
+    /// with the connection.
     void throw_if_connection_in_error() {
       if (this->connection_has_error() != ConnectionError::CONN_OK)
         throw xcb_connection_in_error_condition();
@@ -175,7 +203,8 @@ namespace fabic {
 
   public:
     /**
-     *
+     * @param screenNbr The X screen number; default value -1 means the screen
+     *                  we got upon connecting (see `connect()`, `this->screenNumber`).
      */
     const xcb_screen_t *
       getScreenInfo(int screenNbr = -1)
@@ -187,6 +216,7 @@ namespace fabic {
         xcb_setup_roots_iterator(
             xcb_get_setup( this->connection_ )
           );
+      // todo: ^ see if we may have error conditions with these 2 xcb_... functions.
 
       while( iter.rem > 0 && screenNbr > 0) {
         xcb_screen_next( &iter );
@@ -195,70 +225,14 @@ namespace fabic {
 
       xcb_screen_t * screen = iter.data;
 
+      assert( screen != nullptr );
+
       return screen;
     }
 
+  };
 
-    /**
-     * @brief Creates a window
-     *
-     * @param c The connection
-     * @param depth Specifies the new window's depth (TODO: what unit?).
-     *
-     * The special value `XCB_COPY_FROM_PARENT` means the depth is taken from the
-     * \a parent window.
-     *
-     * @param wid The ID with which you will refer to the new window, created by
-     * `xcb_generate_id`.
-     *
-     * @param parent The parent window of the new window.
-     * @param x The X coordinate of the new window.
-     * @param y The Y coordinate of the new window.
-     * @param width The width of the new window.
-     * @param height The height of the new window.
-     * @param border_width TODO:
-     * \n
-     * Must be zero if the `class` is `InputOnly` or a `xcb_match_error_t` occurs.
-     * @param _class A bitmask of #xcb_window_class_t values.
-     * @param _class \n
-     * @param visual Specifies the id for the new window's visual.
-     * \n
-     * The special value `XCB_COPY_FROM_PARENT` means the visual is taken from the
-     * \a parent window.
-     * @param value_mask A bitmask of #xcb_cw_t values.
-     * @return A cookie
-     *
-     * Creates an unmapped window as child of the specified \a parent window. A
-     * CreateNotify event will be generated. The new window is placed on top in the
-     * stacking order with respect to siblings.
-     *
-     * The coordinate system has the X axis horizontal and the Y axis vertical with
-     * the origin [0, 0] at the upper-left corner. Coordinates are integral, in terms
-     * of pixels, and coincide with pixel centers. Each window and pixmap has its own
-     * coordinate system. For a window, the origin is inside the border at the inside,
-     * upper-left corner.
-     *
-     * The created window is not yet displayed (mapped), call `xcb_map_window` to
-     * display it.
-     *
-     * The created window will initially use the same cursor as its parent.
-     */
-    xcb_void_cookie_t
-    create_window (uint8_t           depth = XCB_COPY_FROM_PARENT,
-                       xcb_window_t      wid,
-                       xcb_window_t      parent,
-                       int16_t           x,
-                       int16_t           y,
-                       uint16_t          width,
-                       uint16_t          height,
-                       uint16_t          border_width,
-                       uint16_t          _class,
-                       xcb_visualid_t    visual,
-                       uint32_t          value_mask,
-                       const uint32_t   *value_list)
-    {
-    }
-      };
-    }
-
+} // xcb ns.
 } // fabic ns.
+
+#endif // FABIC_XCB_H

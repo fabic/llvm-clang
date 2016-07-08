@@ -106,8 +106,12 @@ include_directories(../symfony/include)
 
 ## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # BINARY: build/surface/xcb
+#
+# https://www.freetype.org/freetype2/docs/documentation.html
+# http://linuxfromscratch.org/blfs/view/svn/general/freetype2.html
 
   pkg_check_modules(XCB xcb)
+  pkg_check_modules(FT2 freetype2)
 
   if (XCB_FOUND)
 
