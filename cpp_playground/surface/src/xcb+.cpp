@@ -37,22 +37,35 @@ int main(int argc, const char *argv[])
 
   auto win1 = Window::createRootedWindow(xcb_);
 
-  win1->map();
+  // win1->map();
 
-  xcb_->flush();
+  // xcb_->flush();
 
   {
-    using fabic::util::popcount;
-
-    cout << sizeof(int) << endl
+    cout << "sizeof..." << endl
+         << sizeof(int) << endl
          << sizeof(short int) << endl
          << sizeof(short) << endl
          ;
-    cout << popcount(128 | 32 | 8 | 2) << endl
+
+    using fabic::util::popcount;
+
+    cout << "popcount..." << endl
+         << popcount<int>(128 | 32 | 8 | 2) << endl
          << popcount(128 | 32 | 16 | 8 | 2 | 1) << endl
+         ;
+
+    using fabic::util::bit_index;
+
+    cout << "bit_index..." << endl
+         << bit_index<uint32_t>(8, 8|4|2|1) << endl
+         << bit_index<uint32_t>(8, 8|4|2) << endl
+         << bit_index<uint32_t>(8, 8|4) << endl
+         << bit_index<uint32_t>(8, 8) << endl
+         << bit_index<uint32_t>(8, 32|16|8|4|2|1) << endl
+         << bit_index<uint32_t>(8, 16|8|4|2|1) << endl
          ;
   }
 
-pause();
   return 0;
 }

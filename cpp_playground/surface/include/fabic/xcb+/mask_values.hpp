@@ -10,13 +10,14 @@
 namespace fabic {
 namespace xcb {
 
+  using fabic::util::is_power_of_two;
   using fabic::util::popcount;
   using std::array;
 
   template<
       class EnumType,
       uint32_t Bitmask = 0,
-      uint32_t Size = popcount(Bitmask)
+      uint32_t Size = popcount<uint32_t>(Bitmask)
     >
     class MaskValues
     {
@@ -27,6 +28,15 @@ namespace xcb {
       MaskValues() { }
 
       uint32_t getBitmask() { return this->bitmask; }
+
+      uint32_t operator[](uint32_t bit)
+      {
+        // assert( is_power_of_two(bit) );
+        // assert( (bit & this->bitmask) != 0 ); // bit must be set.
+        // uint32_t bit_index = popcount<uint32_t>(
+        //     bit ^ (~(bit-1) & this->bitmask
+        //   );
+      }
     };
 
 } // xcb ns
