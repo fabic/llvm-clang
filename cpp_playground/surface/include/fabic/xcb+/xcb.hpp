@@ -6,13 +6,6 @@
 namespace fabic {
 namespace xcb {
 
-  using std::make_shared;
-  using std::shared_ptr;
-  using std::make_pair;
-  using std::pair;
-
-
-
   /**
    * Entry point, manages an XCB connection, keeps track of Window-s, etc...
    *
@@ -85,43 +78,24 @@ namespace xcb {
     /**
      * Constructor, automatically connects (to the default display/screen).
      */
-    Xcb() {
-      this->connect();
-    }
+    Xcb();
 
     /**
      * Desctructor, disconnects if needs be.
      */
-    virtual ~Xcb()
-    {
-      if (this->connection_ != nullptr)
-        this->disconnect();
-    }
+    virtual ~Xcb();
 
     /**
      * @return a reference (not a pointer).
      *
      * @throws
      */
-    xcb_connection_t& getConnection()
-    {
-      if (this->connection_ == nullptr)
-        throw base_exception();
-
-      return *this->connection_;
-    }
+    xcb_connection_t& getConnection();
 
     /**
      * @throws
      */
-    xcb_connection_t *
-      getXcbConnectionPtr()
-    {
-      if (this->connection_ == nullptr)
-        throw base_exception();
-
-      return this->connection_;
-    }
+    xcb_connection_t * getXcbConnectionPtr();
 
     /**
      * @brief Connects to the X server.
@@ -147,22 +121,7 @@ namespace xcb {
      * When finished, use `xcb_disconnect()` to close the connection and free
      * the structure.
      */
-    self connect(const char *displayName = nullptr)
-    {
-      logtrace << "Xcb: Connecting to "
-               << (displayName ? displayName : "default display.");
-
-      if (this->connection_ != nullptr)
-        throw base_exception();
-
-      this->connection_ = xcb_connect(displayName, &this->screenNumber);
-
-      this->throw_if_connection_in_error();
-
-      logtrace << "Xcb: connected (probably).";
-
-      return *this;
-    }
+    self connect(const char *displayName = nullptr);
 
 
     /**
@@ -174,21 +133,7 @@ namespace xcb {
      * Closes the file descriptor and frees all memory associated with the
      * connection @c c. If @p c is @c NULL, nothing is done.
      */
-    self disconnect()
-    {
-      logtrace << "Xcb: Disconnecting from server...";
-
-      if (this->connection_ == nullptr)
-        throw base_exception();
-
-      xcb_disconnect(this->connection_);
-
-      logtrace << "Xcb: Disconnected.";
-
-      this->connection_ = nullptr;
-
-      return *this;
-    }
+    self disconnect();
 
     /**
      * @brief Allocates an XID for a new object.
@@ -201,10 +146,7 @@ namespace xcb {
      * Allocates an XID for a new object. Typically used just prior to
      * various object creation functions, such as `xcb_create_window()`.
      */
-    xid_t generate_xid()
-    {
-      return xcb_generate_id( this->connection_ );
-    }
+    xid_t generate_xid();
 
     /**
      * @brief Test whether the connection has shut down due to a fatal error.
@@ -229,16 +171,14 @@ namespace xcb {
      * @return XCB_CONN_CLOSED_PARSE_ERR, error during parsing display string.
      * @return XCB_CONN_CLOSED_INVALID_SCREEN, because the server does not have a screen matching the display.
      */
-    ConnectionError connection_has_error()
-    {
-      int retv = xcb_connection_has_error(this->connection_);
+    ConnectionError connection_has_error();
 
-      if (retv > static_cast<int>(ConnectionError::_LAST_ENUM_SENTINEL))
-        throw unexpected_return_value_from_xcb();
+  protected:
+    /// Helper that throws an exception if something has gone wrong
+    /// with the connection.
+    void throw_if_connection_in_error();
 
-      return static_cast<ConnectionError>(retv);
-    }
-
+  public:
     /**
      * @brief Forces any buffered output to be written to the server.
      *        `int xcb_flush(xcb_connection_t *c);`
@@ -248,84 +188,18 @@ namespace xcb {
      * Forces any buffered output to be written to the server. Blocks
      * until the write is complete.
      */
-    int flush()
-    {
-      int status = xcb_flush( this->connection_ );
+    int flush();
 
-      if (status <= 0)
-        throw base_exception();
-
-      return status;
-    }
-
-  protected:
-    /// Helper that throws an exception if something has gone wrong
-    /// with the connection.
-    void throw_if_connection_in_error() {
-      if (this->connection_has_error() != ConnectionError::CONN_OK)
-        throw xcb_connection_in_error_condition();
-    }
-
-  public:
     /**
      * @param screenNbr The X screen number; default value -1 means the screen
      *                  we got upon connecting (see `connect()`, `this->screenNumber`).
      */
-    screen_ref_t&
-      getScreenInfo(int screenNbr = -1)
-    {
-      screenNbr = screenNbr > -1 ?
-        screenNbr : this->screenNumber;
-
-      xcb_screen_iterator_t iter =
-        xcb_setup_roots_iterator(
-            xcb_get_setup( this->connection_ )
-          );
-      // todo: ^ see if we may have error conditions with these 2 xcb_... functions.
-
-      while( iter.rem > 0 && screenNbr > 0) {
-        xcb_screen_next( &iter );
-        screenNbr--;
-      }
-
-      xcb_screen_t * screen = iter.data;
-
-      assert( screen != nullptr );
-
-      return *screen;
-    }
+    screen_ref_t& getScreenInfo(int screenNbr = -1);
 
     /**
      *
      */
-    window_shared_ptr
-      getRootWindow()
-    {
-      if (this->rootWindow != nullptr)
-        return this->rootWindow;
-
-      xcb_screen_t& screen = this->getScreenInfo();
-      xcb_window_t rootXid = screen.root;
-
-      pair<windows_map_t::iterator, bool> retv =
-        this->windows.emplace(
-            make_pair(rootXid, make_shared< Window >(this->shared_from_this(), rootXid))
-          );
-
-      bool failed = retv.second == false;
-
-      if (failed) {
-        throw base_exception();
-      }
-
-      auto inserted_it = retv.first;
-
-      window_shared_ptr win = inserted_it->second;
-
-      this->rootWindow = win;
-
-      return this->rootWindow;
-    }
+    window_shared_ptr getRootWindow();
 
     /**
      * FIXME: can't tell if it's ok to check for the bundled `sequence`
@@ -338,64 +212,12 @@ namespace xcb {
      * We'll supposed the cookie thing contains a protocol message sequence
      * number or something like that.
      */
-    static
-    void
-      assert_void_cookie(xcb_void_cookie_t cookie)
-    {
-      assert( cookie.sequence > 0 );
-    }
-
+    static void assert_void_cookie(xcb_void_cookie_t cookie);
 
     /**
      * Enter the event loop.
      */
-    virtual void
-      run()
-    {
-      logdebug << "Xcb::run() : begin.";
-
-      this->flush();
-
-      xcb_generic_event_t * event;
-
-      while (nullptr != (event = xcb_wait_for_event( this->connection_ )))
-      {
-        // todo: What is this masking agaisnt ~0x80 about ?
-        auto e = event->response_type & ~0x80; // uint8_t btw.
-
-        switch (e) {
-          case XCB_EXPOSE: {
-            logtrace << "Xcb::run(): EXPOSE !";
-            xcb_expose_event_t *ev = (xcb_expose_event_t *) event;
-            break;
-          }
-
-          case XCB_BUTTON_PRESS: {
-            /* Handle the ButtonPress event type */
-            xcb_button_press_event_t *ev = (xcb_button_press_event_t *) event;
-
-            /* ... */
-
-            break;
-          }
-
-          case XCB_KEY_PRESS: {
-            logtrace << "Xcb::run(): KEY PRESSED !";
-            break;
-          }
-
-          // Unknown event type, ignore it.
-          default: {
-            logtrace << "Xcb::run(): Event " << e << " is unknown to us.";
-            break;
-          }
-        }
-
-        free( event );
-      } // end of iteration waiting for events.
-
-      logdebug << "Xcb::run() : end.";
-    }
+    virtual self run();
   };
 
 } // xcb ns.

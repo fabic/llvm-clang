@@ -129,3 +129,6 @@
 [submodule "cairomm"]
 	path = misc/cairomm
 	url = https://anongit.freedesktop.org/git/cairomm.git
+[submodule "ninja"]
+	path = misc/ninja
+	url = https://github.com/ninja-build/ninja.git

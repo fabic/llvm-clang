@@ -164,7 +164,6 @@ echo
 #
 ## MAKE
 #
-# todo: regular 'all' target ?
 
 max_jobs=`how_many_cpus 2`
 max_sys_load=`max_load_level`

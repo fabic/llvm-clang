@@ -14,16 +14,16 @@
 			"path": "/media/g/home/fabi/dev/llvm/misc/cpp-netlib/boost"
 		},
 		{
-			"path": "/usr/include/cairomm-1.0"
-		},
-		{
 			"path": "/usr/include/xcb"
 		},
 		{
-			"path": "/usr/include/cairo"
+			"path": "/usr/include/X11"
 		},
 		{
-			"path": "/usr/include/X11"
+			"path": "/media/g/home/fabi/dev/llvm/misc/cairo"
+		},
+		{
+			"path": "/media/g/home/fabi/dev/llvm/misc/cairomm"
 		},
 		{
 			"path": "/usr/include/glibmm-2.4"
@@ -36,9 +36,6 @@
 		},
 		{
 			"path": "/usr/include/pangomm-1.4"
-		},
-		{
-			"path": "/media/g/home/fabi/dev/llvm/misc/cairo"
 		}
 	]
 }

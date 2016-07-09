@@ -45,8 +45,12 @@ namespace xcb {
   class Xcb;
   typedef std::shared_ptr< Xcb > xcb_shared_ptr;
 
+  typedef Xcb& Xcb_ref_t;
+
   class Window;
   typedef std::shared_ptr< Window > window_shared_ptr; // fixme: _t suffix ?
+
+  typedef Window& Window_ref_t;
 
   /**
    * Reference to an `xcb_screen_t` for enforcing correct auto type
