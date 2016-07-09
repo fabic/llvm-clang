@@ -185,6 +185,75 @@ window_shared_ptr
 }
 
 
+inline
+window_shared_ptr
+  Xcb::createWindowSimple(
+      window_shared_ptr parentWindow,
+      uint16_t          width,
+      uint16_t          height
+    )
+{
+  if (parentWindow == nullptr)
+    parentWindow = this->getRootWindow();
+
+  auto screen = this->getScreenInfo();
+
+  constexpr uint32_t bitmask =
+      XCB_CW_BACK_PIXEL
+    | XCB_CW_BORDER_PIXEL
+    | XCB_CW_EVENT_MASK;
+
+  MaskValues<bitmask> attributes;
+
+  attributes[ XCB_CW_EVENT_MASK ] =
+      XCB_EVENT_MASK_EXPOSURE
+    | XCB_EVENT_MASK_ENTER_WINDOW | XCB_EVENT_MASK_LEAVE_WINDOW
+    | XCB_EVENT_MASK_KEY_PRESS    | XCB_EVENT_MASK_KEY_RELEASE
+    | XCB_EVENT_MASK_BUTTON_PRESS | XCB_EVENT_MASK_BUTTON_RELEASE
+    | XCB_EVENT_MASK_POINTER_MOTION
+    ;
+
+  attributes[ XCB_CW_BACK_PIXEL ]   = screen.black_pixel;
+  attributes[ XCB_CW_BORDER_PIXEL ] = screen.white_pixel;
+
+  uint32_t value_mask  = attributes.bitmask();
+  uint32_t* value_list = attributes.data();
+
+  auto wid = this->generate_xid();
+
+  uint16_t       borderWidth = 10;
+  uint16_t       windowClass = XCB_WINDOW_CLASS_INPUT_OUTPUT;
+  xcb_visualid_t visualXid   = XCB_COPY_FROM_PARENT;
+
+  // See definition at `/usr/include/xcb/xproto.h:5564`
+  // https://www.x.org/releases/X11R7.7/doc/libxcb/tutorial/index.html#helloworld
+  // http://rosettacode.org/wiki/Window_creation/X11#XCB
+  xcb_void_cookie_t _cookie =
+    xcb_create_window(
+        this->getXcbConnectionPtr(),  // xcb_connection_t *c
+        XCB_COPY_FROM_PARENT,        // uint8_t          depth
+        wid,                         // xcb_window_t     wid
+        parentWindow->getXid(),      // xcb_window_t     parent
+        0, 0,                        // coordinates (int16_t x, int16_t y)
+        width, height,               // dimensions  (int16_t w, int16_t h)
+        borderWidth,                 // uint16_t         border_width
+        windowClass,                 // uint16_t         _class
+        visualXid,                   // xcb_visualid_t   visual
+        value_mask,                  // uint32_t         value_mask
+        value_list                   // const uint32_t   *value_list
+      );
+
+    auto win = make_shared< Window >(
+      this->shared_from_this(),
+      wid
+      );
+
+    Xcb::assert_void_cookie( _cookie );
+
+  return win;
+}
+
+
 // static btw.
 inline
 void

@@ -2,6 +2,8 @@
 #define FABIC_XCB_H
 
 #include "fabic/xcb+/typedefs.hpp"
+#include "fabic/xcb+/mask_values.hpp"
+#include "fabic/xcb+/window.hpp"
 
 namespace fabic {
 namespace xcb {
@@ -218,6 +220,17 @@ namespace xcb {
      * Enter the event loop.
      */
     virtual self run();
+
+    /**
+     * Create a default-configured window.
+     */
+    window_shared_ptr
+      createWindowSimple(
+          window_shared_ptr parentWindow = nullptr,
+          uint16_t          width  = Window::default_window_width,
+          uint16_t          height = Window::default_window_height
+        );
+
   };
 
 } // xcb ns.

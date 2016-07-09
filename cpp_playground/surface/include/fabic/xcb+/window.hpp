@@ -2,7 +2,6 @@
 #define FABIC_XCB_WINDOW_H
 
 #include "fabic/xcb+/xcb.hpp"
-#include "fabic/xcb+/mask_values.hpp"
 
 namespace fabic {
 namespace xcb {
@@ -148,7 +147,7 @@ public:
    *
    */
   template<uint32_t AttributesBitmask>
-  inline static
+  static
   window_shared_ptr
     createRootedWindow(
         xcb_shared_ptr    xcb_,

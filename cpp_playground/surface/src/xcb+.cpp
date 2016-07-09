@@ -35,7 +35,9 @@ int main(int argc, const char *argv[])
 
   auto xcb_ = std::make_shared< Xcb >();
 
-  auto win1 = Window::createSimpleWindow(xcb_);
+  //auto win1 = Window::createSimpleWindow(xcb_);
+
+  auto win1 = xcb_->createWindowSimple();
 
   win1->map();
 
