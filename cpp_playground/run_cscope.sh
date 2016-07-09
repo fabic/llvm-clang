@@ -4,24 +4,25 @@ here=$( cd `dirname "$0"` && pwd )
 
 cd "$here" || exit 1
 
+localdir=$(cd ../local && pwd)
+
 echo "+-- $0"
 echo "| In $here"
 echo "|"
 
-
 locations=(
     "$here" \
-    /usr/include/cairo
-    /usr/include/cairomm-1.0
+	"$localdir/include"
+    #/usr/include/cairo
+    #/usr/include/cairomm-1.0
     /usr/include/glibmm-2.4
     /usr/include/gdkmm-3.0
     /usr/include/gtkmm-3.0
     /usr/include/pangomm-1.4
     /usr/include/X11
     /usr/include/xcb
+    "$localdir/boost-1.61.0-clang/include/boost/"
     $(cd ../misc/cpp-netlib/boost/ && pwd)
-    $(cd ../local/include/ && pwd)
-    $(cd ../local/boost-1.61.0-clang/include/boost/ && pwd)
   )
 
 

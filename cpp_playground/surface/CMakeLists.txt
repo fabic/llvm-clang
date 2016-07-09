@@ -111,6 +111,7 @@ include_directories(../symfony/include)
 # http://linuxfromscratch.org/blfs/view/svn/general/freetype2.html
 
   pkg_check_modules(XCB xcb)
+  pkg_check_modules(XCB_AUX xcb-aux)
   pkg_check_modules(FT2 freetype2)
   pkg_check_modules(CAIROMM cairomm-1.0)
 
@@ -160,6 +161,7 @@ include_directories(../symfony/include)
       xcb+
       PUBLIC
       ${XCB_INCLUDE_DIRS}
+      ${XCB_AUX_INCLUDE_DIRS}
       ${CAIROMM_INCLUDE_DIRS}
       )
 
@@ -167,6 +169,7 @@ include_directories(../symfony/include)
       xcb+
       ${Boost_LIBRARIES}
       ${XCB_LIBRARIES}
+      ${XCB_AUX_LIBRARIES}
       ${CAIROMM_LIBRARIES}
       unwind dl # for hack_cxa_throw_exception.cpp
       pthread

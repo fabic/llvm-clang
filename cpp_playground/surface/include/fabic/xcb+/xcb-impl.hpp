@@ -48,6 +48,13 @@ xcb_connection_t *
 
 
 inline
+int Xcb::getScreenNumber() const
+{
+  return this->screenNumber;
+}
+
+
+inline
 Xcb_ref_t
   Xcb::connect(const char *displayName)
 {

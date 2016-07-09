@@ -99,6 +99,8 @@ namespace xcb {
      */
     xcb_connection_t * getXcbConnectionPtr();
 
+    int getScreenNumber() const;
+
     /**
      * @brief Connects to the X server.
      *        `xcb_connect(const char *displayname, int *screenp)`

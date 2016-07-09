@@ -8,6 +8,7 @@
 #include <type_traits>
 
 #include <xcb/xcb.h>
+#include <xcb/xcb_util.h>
 
 # include "fabic/logging.hpp"
 
@@ -41,6 +42,12 @@ namespace xcb {
   static_assert(
       std::is_same<xcb_visualid_t, xid_t>::value
     );
+
+  static_assert(
+      std::is_same<xcb_drawable_t, xid_t>::value
+    );
+
+
 
   class Xcb;
   typedef std::shared_ptr< Xcb > xcb_shared_ptr;
