@@ -22,8 +22,16 @@ make_extra_args=( )
 if [ $# -gt 0 ];
 then
     case "$1" in
-    "make")  cmake_generator="Unix Makefiles" ; shift ;;
-    "ninja") cmake_generator="Ninja"          ; shift ;;
+    "make")
+        cmake_generator="Unix Makefiles"
+        shift
+        ;;
+    "ninja")
+        cmake_generator="Ninja"
+        echo "| Ninja is `type -p ninja`"
+        echo "|   -> version `ninja --version`"
+        shift
+        ;;
     *)
         ;;
     esac

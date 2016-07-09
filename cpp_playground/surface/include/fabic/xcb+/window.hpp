@@ -148,7 +148,7 @@ public:
    *
    */
   template<uint32_t AttributesBitmask>
-  static
+  inline static
   window_shared_ptr
     createRootedWindow(
         xcb_shared_ptr    xcb_,
