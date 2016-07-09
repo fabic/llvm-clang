@@ -147,7 +147,7 @@ add_subdirectory(symfony)
 add_subdirectory(surface)
 # add_subdirectory(clang-check)
 
-if (false)
+if (true)
   ## DUMP ALL VARIABLES (DEBUG)
   # http://stackoverflow.com/questions/9298278/cmake-print-out-all-accessible-variables-in-a-script
   get_cmake_property(_variableNames VARIABLES)

@@ -126,3 +126,6 @@
 [submodule "cairo"]
 	path = misc/cairo
 	url = https://anongit.freedesktop.org/git/cairo
+[submodule "cairomm"]
+	path = misc/cairomm
+	url = https://anongit.freedesktop.org/git/cairomm.git

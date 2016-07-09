@@ -1,0 +1,13 @@
+# TODOs, ideas, wanderings
+
+
+* http://www.gnu.org/software/libsigsegv/
+
+	“ GNU libsigsegv is a library for handling page faults in user mode.
+	  A page fault occurs when a program tries to access to a region of
+	  memory that is currently not available. Catching and handling a
+	  page fault is a useful technique for implementing [...] ”
+
+
+_**EOF**_
+

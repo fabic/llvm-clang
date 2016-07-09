@@ -112,6 +112,7 @@ include_directories(../symfony/include)
 
   pkg_check_modules(XCB xcb)
   pkg_check_modules(FT2 freetype2)
+  pkg_check_modules(CAIROMM cairomm-1.0)
 
   if (XCB_FOUND)
 
@@ -159,12 +160,14 @@ include_directories(../symfony/include)
       xcb+
       PUBLIC
       ${XCB_INCLUDE_DIRS}
+      ${CAIROMM_INCLUDE_DIRS}
       )
 
     target_link_libraries(
       xcb+
       ${Boost_LIBRARIES}
       ${XCB_LIBRARIES}
+      ${CAIROMM_LIBRARIES}
       unwind dl # for hack_cxa_throw_exception.cpp
       pthread
       )

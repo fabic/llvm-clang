@@ -32,6 +32,15 @@ else
     echo "| FYI: No FHS-like '$localdir' directory, ok this is not a problem."
 fi
 
+# PKG-CONFIG
+if [ -d "$localdir/lib/pkgconfig" ]; then
+    echo "| Found a pkg-config dir. '$localdir/lib/pkgconfig' : prepending it to \$PKG_CONFIG_PATH. "
+    pathprepend "$localdir/lib/pkgconfig" PKG_CONFIG_PATH
+    export PKG_CONFIG_PATH
+else
+    echo "| FYI: Didn't find a pkg-config dir. at '$localdir/lib/pkgconfig', not setting the \$PKG_CONFIG_PATH env. var."
+fi
+
 
 #
 # Optional, verify if we have a Clang setup under local/
