@@ -366,6 +366,16 @@ namespace xcb {
         switch (e) {
           case XCB_EXPOSE: {
             logtrace << "Xcb::run(): EXPOSE !";
+            xcb_expose_event_t *ev = (xcb_expose_event_t *) event;
+            break;
+          }
+
+          case XCB_BUTTON_PRESS: {
+            /* Handle the ButtonPress event type */
+            xcb_button_press_event_t *ev = (xcb_button_press_event_t *) event;
+
+            /* ... */
+
             break;
           }
 

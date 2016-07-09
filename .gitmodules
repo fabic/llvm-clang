@@ -123,3 +123,6 @@
 [submodule "freetype2-demos"]
 	path = misc/freetype2-demos
 	url = http://git.sv.nongnu.org/r/freetype/freetype2-demos.git
+[submodule "cairo"]
+	path = misc/cairo
+	url = https://anongit.freedesktop.org/git/cairo
