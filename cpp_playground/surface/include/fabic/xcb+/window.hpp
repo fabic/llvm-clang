@@ -11,7 +11,7 @@ namespace xcb {
 namespace tk = fabic::tk;
 
 /**
- *
+ * todo: move to tk::
  */
 class Window
   : public std::enable_shared_from_this<Window>
@@ -57,6 +57,13 @@ public:
     get_geometry();
 
   xcb_visualtype_t * getVisualType();
+
+
+  virtual tk::ElementList
+    preComputePositionning(
+      int16_t w, int16_t h,
+      int16_t x, int16_t y
+    ) override;
 
 
 

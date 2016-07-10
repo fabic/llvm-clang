@@ -2,6 +2,8 @@
 #define FABIC_TK_ELEMENTS_H
 
 #include <string>
+#include <list>
+#include <memory>
 
 namespace fabic {
 namespace tk {
@@ -9,7 +11,8 @@ namespace tk {
 
 using std::string;
 
-typedef string& string_ref;
+typedef string&       string_ref;
+typedef const string& string_cref;
 
 class Positionning;
 typedef Positionning&  PositionningRef;
@@ -20,9 +23,16 @@ typedef Attributes&    AttributesRef;
 
 class Positionning
 {
+public:
+  enum Placement {
+    LEFT, RIGHT, TOP, BOTTOM
+  };
 protected:
-  uint64_t is_absolute:1;
-  uint64_t is_relative:1;
+  uint64_t type:2; // absolute, relative, ??
+  uint64_t placement:3; // top, right, bottom, left, top-right, top-left, etc...
+
+  // uint64_t is_absolute:1;
+  // uint64_t is_relative:1;
 
   uint64_t is_w_pct:1, is_w_abs:1, is_w_em:1, is_w_ex:1;
   uint64_t is_h_pct:1, is_h_abs:1, is_h_em:1, is_h_ex:1;
@@ -36,6 +46,9 @@ protected:
   int16_t _x, _y;
 
   int16_t _width, _height;
+
+  int16_t _min_width,  _max_width;
+  int16_t _min_height, _max_height;
 
   int16_t _margin_top,  _margin_right,  _margin_bottom,  _margin_left;
   int16_t _padding_top, _padding_right, _padding_bottom, _padding_left;
@@ -63,45 +76,65 @@ typedef ElementList&               ElementListRef;
 class ContainerTrait
 {
 protected:
+  ElementPtr  parent_;
   ElementList _children;
 public:
+  ContainerTrait(ElementPtr parent_);
+  virtual ~ContainerTrait();
+
+  ElementPtr parent() noexcept { return this->parent_; }
   ElementListRef children() noexcept { return this->_children; }
-}
+  bool hasChildren() const noexcept { return !this->_children.empty(); }
+
+  ElementList::reference // i.e. ElementPtr& => shared_ptr<...>&
+    emplaceChildLast(ElementPtr&& elt);
+
+};
 
 
 class Element
+  : public ContainerTrait
 {
 protected:
-  string _id;
-  Attributes _attrs;
+  string     _id;
+  Attributes _attributes;
 
 public:
-  Element();
-  virtual ~Element();
+  explicit Element(ElementPtr parent_);
+
+  virtual ~Element() override ;
 
   Element(const Element &) = delete;
   Element& operator=(const Element &) = delete;
 
-  const string_ref id() const noexcept { return this->_id; }
+  string_cref id() const noexcept { return this->_id; }
 
-  AttributesRef attributes() noexcept { return this->_attrs; }
+  AttributesRef attributes() noexcept { return this->_attributes; }
 
   /// Shortcut
-  PositionningRef positionning() noexcept { return this->_attrs.positionning(); }
+  PositionningRef positionning() noexcept { return this->_attributes.positionning(); }
 
+  virtual ElementList preComputePositionning(
+      int16_t w, int16_t h,
+      int16_t x, int16_t y
+    ) =0;
 };
 
 
 class Block
-: public Element
-, public ContainerTrait
+  : public Element
 {
-
+public:
+  Block(ElementPtr parent_);
+  virtual ~Block() override ;
 };
 
 
-class Div : public Block
+class Div
+  : public Block
 {
+  // Div(ElementPtr parent_);
+  // virtual ~Div() override ;
 
 };
 
@@ -109,7 +142,5 @@ class Div : public Block
 
 } // xcb ns
 } // fabic ns
-
-#include "fabic/xcb+/elements-inline.hpp"
 
 #endif // FABIC_TK_ELEMENTS_H

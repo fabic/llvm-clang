@@ -7,16 +7,20 @@ namespace fabic {
 namespace xcb {
 
 
+// todo: create();
+
 inline
 Window::Window(xcb_shared_ptr xcb_)
-  : xcb_( xcb_ )
+  : Block( nullptr )
+  , xcb_( xcb_ )
   , windowXid( 0 ) // fixme: 0 ?
 { }
 
 
 inline
 Window::Window(xcb_shared_ptr xcb_, xcb_window_t xid)
-  : xcb_( xcb_ )
+  : Block( nullptr )
+  , xcb_( xcb_ )
   , windowXid(xid)
 {
 
@@ -142,6 +146,19 @@ std::unique_ptr<xcb_get_geometry_reply_t>
   return std::unique_ptr<xcb_get_geometry_reply_t>(geom_);
 }
 
+
+tk::ElementList
+  Window::preComputePositionning(
+    int16_t w, int16_t h,
+    int16_t x, int16_t y
+  )
+{
+
+}
+
+
+// // // // // // // // // // // // // // // // // // // // // // // //
+// TODO: drop these statics...
 
 template<uint32_t AttributesBitmask>
 inline // static btw.

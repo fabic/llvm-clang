@@ -6,7 +6,7 @@
 #include "fabic/xcb+/window.hpp"
 
 namespace fabic {
-namespace xcb {
+namespace xcb { // todo: rename to tk:: ns.
 
   /**
    * Entry point, manages an XCB connection, keeps track of Window-s, etc...
