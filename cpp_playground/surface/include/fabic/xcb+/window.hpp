@@ -3,15 +3,19 @@
 
 #include "fabic/xcb+/xcb.hpp"
 #include "fabic/xcb+/cairo.hpp"
+#include "fabic/xcb+/elements.hpp"
 
 namespace fabic {
 namespace xcb {
+
+namespace tk = fabic::tk;
 
 /**
  *
  */
 class Window
   : public std::enable_shared_from_this<Window>
+  , public tk::Block
 {
 public:
   typedef Window& self;
