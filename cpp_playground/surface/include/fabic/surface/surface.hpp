@@ -14,7 +14,7 @@ class Surface
   : public xcb::Window
 {
 public:
-  Surface();
+  Surface(xcb::xcb_shared_ptr xcb_);
   virtual ~Surface() override ;
 };
 

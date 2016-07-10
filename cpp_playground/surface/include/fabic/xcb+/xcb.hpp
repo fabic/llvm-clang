@@ -192,7 +192,7 @@ namespace xcb { // todo: rename to tk:: ns.
      * Forces any buffered output to be written to the server. Blocks
      * until the write is complete.
      */
-    int flush();
+    self flush();
 
     /**
      * @param screenNbr The X screen number; default value -1 means the screen

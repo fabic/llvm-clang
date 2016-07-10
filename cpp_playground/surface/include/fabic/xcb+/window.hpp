@@ -38,6 +38,7 @@ public:
 
   explicit Window(xcb_shared_ptr xcb_);
 
+  // fixme: drop this.
   Window(xcb_shared_ptr xcb_, xcb_window_t xid);
 
   virtual ~Window();

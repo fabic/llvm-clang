@@ -32,42 +32,19 @@ int main(int argc, const char *argv[])
   using std::endl;
   using fabic::xcb::Xcb;
   using fabic::xcb::Window;
+  using fabic::sf::Surface;
 
   auto xcb_ = std::make_shared< Xcb >();
 
-  //auto win1 = Window::createSimpleWindow(xcb_);
+  auto win1_ = xcb_->createWindowSimple();
 
-  auto win1 = xcb_->createWindowSimple();
+  win1_->map();
 
-  win1->map();
+  auto surf_ = std::make_shared< Surface >(
+      xcb_
+    );
 
   xcb_->flush();
-
-  {
-    cout << "sizeof..." << endl
-         << sizeof(int) << endl
-         << sizeof(short int) << endl
-         << sizeof(short) << endl
-         ;
-
-    using fabic::util::popcount;
-
-    cout << "popcount..." << endl
-         << popcount<int>(128 | 32 | 8 | 2) << endl
-         << popcount(128 | 32 | 16 | 8 | 2 | 1) << endl
-         ;
-
-    using fabic::util::bit_index;
-
-    cout << "bit_index..." << endl
-         << bit_index<uint32_t>(8, 8|4|2|1) << endl
-         << bit_index<uint32_t>(8, 8|4|2) << endl
-         << bit_index<uint32_t>(8, 8|4) << endl
-         << bit_index<uint32_t>(8, 8) << endl
-         << bit_index<uint32_t>(8, 32|16|8|4|2|1) << endl
-         << bit_index<uint32_t>(8, 16|8|4|2|1) << endl
-         ;
-  }
 
   xcb_->run();
 

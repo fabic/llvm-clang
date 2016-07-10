@@ -146,19 +146,20 @@ include_directories(../symfony/include)
 
     ## XCB+
     add_executable(
-      xcb+
+      sf
       src/xcb+.cpp
+      src/surface.cpp
       ../symfony/src/hacks/hack_cxa_throw_exception.cpp
     )
 
     target_compile_options(
-      xcb+
+      sf
       PUBLIC
       # ...
       )
 
     target_include_directories(
-      xcb+
+      sf
       PUBLIC
       ${XCB_INCLUDE_DIRS}
       ${XCB_AUX_INCLUDE_DIRS}
@@ -166,7 +167,7 @@ include_directories(../symfony/include)
       )
 
     target_link_libraries(
-      xcb+
+      sf
       ${Boost_LIBRARIES}
       ${XCB_LIBRARIES}
       ${XCB_AUX_LIBRARIES}

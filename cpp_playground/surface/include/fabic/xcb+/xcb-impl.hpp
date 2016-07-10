@@ -115,7 +115,7 @@ Xcb::ConnectionError
 
 
 inline
-int
+Xcb::self
   Xcb::flush()
 {
   int status = xcb_flush( this->connection_ );
@@ -123,7 +123,7 @@ int
   if (status <= 0)
     throw base_exception();
 
-  return status;
+  return *this;
 }
 
 
