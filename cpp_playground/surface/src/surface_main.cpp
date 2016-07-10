@@ -44,6 +44,8 @@ int main(int argc, const char *argv[])
       xcb_
     );
 
+  surf_->map();
+
   xcb_->flush();
 
   xcb_->run();

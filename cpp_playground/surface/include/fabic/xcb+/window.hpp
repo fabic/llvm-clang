@@ -19,6 +19,7 @@ class Window
 {
 public:
   typedef Window& self;
+  typedef Window* self_ptr;
 
   static constexpr uint16_t default_window_width  = 640;
   static constexpr uint16_t default_window_height = 480;
@@ -59,6 +60,14 @@ public:
 
   xcb_visualtype_t * getVisualType();
 
+  virtual self_ptr
+    create(
+        uint16_t          width,
+        uint16_t          height,
+        window_shared_ptr parentWindow = nullptr
+      );
+
+  self_ptr initCairo();
 
   virtual tk::ElementList
     preComputePositionning(
@@ -66,51 +75,6 @@ public:
       int16_t x, int16_t y
     ) override;
 
-
-
-  /**
-   *
-   */
-  template<uint32_t AttributesBitmask>
-  static window_shared_ptr
-    create(
-        xcb_shared_ptr    xcb_,
-        window_shared_ptr parentWindow,
-        MaskValues<AttributesBitmask> attributes,
-        // ^ replaces those two :
-        // uint32_t          valueMask  = 0,
-        // const uint32_t *  valueList  = nullptr
-        uint16_t          width  = default_window_width,
-        uint16_t          height = default_window_height,
-        int16_t           x      = 0,
-        int16_t           y      = 0,
-        uint16_t          borderWidth = 10,
-        uint16_t          windowClass = XCB_WINDOW_CLASS_INPUT_OUTPUT,
-        xcb_visualid_t    visualXid   = XCB_COPY_FROM_PARENT
-      );
-
-  /**
-   *
-   */
-  template<uint32_t AttributesBitmask>
-  static
-  window_shared_ptr
-    createRootedWindow(
-        xcb_shared_ptr    xcb_,
-        MaskValues<AttributesBitmask> attributes,
-        uint16_t          width  = default_window_width,
-        uint16_t          height = default_window_height
-      );
-
-  /**
-   *
-   */
-  static window_shared_ptr
-    createSimpleWindow(
-        xcb_shared_ptr    xcb_,
-        uint16_t          width  = default_window_width,
-        uint16_t          height = default_window_height
-      );
 
 };
 
