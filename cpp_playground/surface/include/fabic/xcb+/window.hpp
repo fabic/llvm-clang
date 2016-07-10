@@ -14,8 +14,7 @@ namespace tk = fabic::tk;
  * todo: move to tk::
  */
 class Window
-  : public std::enable_shared_from_this<Window>
-  , public tk::Block
+  : public tk::Block
 {
 public:
   typedef Window& self;
@@ -67,15 +66,14 @@ public:
         window_shared_ptr parentWindow = nullptr
       );
 
-  self_ptr initCairo();
-
   virtual tk::ElementList
     preComputePositionning(
       int16_t w, int16_t h,
       int16_t x, int16_t y
     ) override;
 
-
+protected:
+  self_ptr initCairo();
 };
 
 } // xcb ns.

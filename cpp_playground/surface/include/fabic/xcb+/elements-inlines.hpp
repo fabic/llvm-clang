@@ -16,6 +16,15 @@ namespace tk {
     return this->_children.back();
   }
 
+
+  inline
+  ElementList::reference
+    ContainerTrait::appendChild(ElementPtr&& elt)
+  {
+    this->_children.push_back( elt );
+    return this->_children.back();
+  }
+
 } // xcb ns
 } // fabic ns
 

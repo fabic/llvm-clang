@@ -89,11 +89,15 @@ public:
   ElementList::reference // i.e. ElementPtr& => shared_ptr<...>&
     emplaceChildLast(ElementPtr&& elt);
 
+  ElementList::reference // i.e. ElementPtr& => shared_ptr<...>&
+    appendChild(ElementPtr&& elt);
+
 };
 
 
 class Element
-  : public ContainerTrait
+  : public ContainerTrait,
+    public std::enable_shared_from_this< Element >
 {
 protected:
   string     _id;
@@ -117,7 +121,10 @@ public:
   virtual ElementList preComputePositionning(
       int16_t w, int16_t h,
       int16_t x, int16_t y
-    ) =0;
+    );
+
+protected:
+  virtual void _initChildrenElementsHierarchy();
 };
 
 

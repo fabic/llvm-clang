@@ -12,11 +12,21 @@ namespace xcb = fabic::xcb;
   {
     this->create(640, 380);
     this->initCairo();
+    this->_initChildrenElementsHierarchy();
   }
 
   Surface::~Surface()
   { }
 
+  // virtual btw. from Element.
+  void
+  Surface::_initChildrenElementsHierarchy()
+  {
+    auto bottom = std::make_shared< Block >(
+        this->shared_from_this()
+      );
 
+    //this->appendChild( bottom );
+  }
 } // sf ns.
 } // fabic ns.

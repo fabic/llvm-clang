@@ -31,5 +31,20 @@ namespace tk {
   Block::~Block()
   { }
 
+
+  void
+  Element::_initChildrenElementsHierarchy()
+  { }
+
+
+  // virtual default impl.
+  ElementList Element::preComputePositionning(
+      int16_t w, int16_t h,
+      int16_t x, int16_t y
+    )
+  {
+    return ElementList();
+  }
+
 } // xcb ns
 } // fabic ns

@@ -36,9 +36,8 @@ int main(int argc, const char *argv[])
 
   auto xcb_ = std::make_shared< Xcb >();
 
-  auto win1_ = xcb_->createWindowSimple();
-
-  win1_->map();
+  // auto win1_ = xcb_->createWindowSimple();
+  // win1_->map();
 
   auto surf_ = std::make_shared< Surface >(
       xcb_

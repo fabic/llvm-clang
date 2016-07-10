@@ -16,6 +16,9 @@ class Surface
 public:
   Surface(xcb::xcb_shared_ptr xcb_);
   virtual ~Surface() override ;
+
+  virtual void _initChildrenElementsHierarchy() override ;
+
 };
 
 
