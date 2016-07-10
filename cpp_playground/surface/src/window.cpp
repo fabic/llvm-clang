@@ -1,6 +1,7 @@
 
 #include "fabic/xcb+/window.hpp"
 #include "fabic/xcb+/window-inlines.hpp"
+#include "fabic/xcb+/elements-inlines.hpp"
 #include "fabic/xcb+/xcb-inlines.hpp"
 
 namespace fabic {

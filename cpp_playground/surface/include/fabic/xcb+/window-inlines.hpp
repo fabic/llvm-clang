@@ -1,5 +1,5 @@
-#ifndef FABIC_XCB_WINDOW_IMPL_H
-#define FABIC_XCB_WINDOW_IMPL_H
+#ifndef FABIC_XCB_WINDOW_INLINES_H
+#define FABIC_XCB_WINDOW_INLINES_H
 
 #include "fabic/xcb+/window.hpp"
 
@@ -34,4 +34,4 @@ Window_ref_t
 } // xcb ns.
 } // fabic ns.
 
-#endif // FABIC_XCB_WINDOW_IMPL_H
+#endif // FABIC_XCB_WINDOW_INLINES_H

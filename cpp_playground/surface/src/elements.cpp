@@ -1,6 +1,6 @@
 
 #include "fabic/xcb+/elements.hpp"
-#include "fabic/xcb+/elements-inline.hpp"
+#include "fabic/xcb+/elements-inlines.hpp"
 
 
 namespace fabic {

@@ -1,6 +1,7 @@
 
 #include "fabic/xcb+/xcb.hpp"
 #include "fabic/xcb+/xcb-inlines.hpp"
+#include "fabic/xcb+/window-inlines.hpp"
 
 namespace fabic {
 namespace xcb {
