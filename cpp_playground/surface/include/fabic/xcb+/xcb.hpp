@@ -229,8 +229,8 @@ namespace xcb { // todo: rename to tk:: ns.
     window_shared_ptr
       createWindowSimple(
           window_shared_ptr parentWindow = nullptr,
-          uint16_t          width  = Window::default_window_width,
-          uint16_t          height = Window::default_window_height
+          uint16_t          width  = 320,
+          uint16_t          height = 200
         );
 
   };

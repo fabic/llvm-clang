@@ -147,8 +147,11 @@ include_directories(../symfony/include)
     ## XCB+
     add_executable(
       sf
-      src/xcb+.cpp
       src/surface.cpp
+      src/xcb.cpp
+      src/elements.cpp
+      src/window.cpp
+      src/surface_main.cpp
       ../symfony/src/hacks/hack_cxa_throw_exception.cpp
     )
 

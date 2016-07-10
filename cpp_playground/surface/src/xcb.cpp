@@ -1,7 +1,6 @@
-#ifndef FABIC_XCB_IMPL_H
-#define FABIC_XCB_IMPL_H
 
 #include "fabic/xcb+/xcb.hpp"
+#include "fabic/xcb+/xcb-inlines.hpp"
 
 namespace fabic {
 namespace xcb {
@@ -11,6 +10,7 @@ using std::make_shared;
 using std::shared_ptr;
 using std::make_pair;
 using std::pair;
+
 
 
 Xcb::Xcb() {
@@ -25,36 +25,6 @@ Xcb::~Xcb()
 }
 
 
-inline
-xcb_connection_t&
-  Xcb::getConnection()
-{
-  if (this->connection_ == nullptr)
-    throw base_exception();
-
-  return *this->connection_;
-}
-
-
-inline
-xcb_connection_t *
-  Xcb::getXcbConnectionPtr()
-{
-  if (this->connection_ == nullptr)
-    throw base_exception();
-
-  return this->connection_;
-}
-
-
-inline
-int Xcb::getScreenNumber() const
-{
-  return this->screenNumber;
-}
-
-
-inline
 Xcb_ref_t
   Xcb::connect(const char *displayName)
 {
@@ -74,7 +44,6 @@ Xcb_ref_t
 }
 
 
-inline
 Xcb_ref_t
   Xcb::disconnect()
 {
@@ -93,49 +62,6 @@ Xcb_ref_t
 }
 
 
-inline
-xid_t
-  Xcb::generate_xid()
-{
-  return xcb_generate_id( this->connection_ );
-}
-
-
-inline
-Xcb::ConnectionError
-  Xcb::connection_has_error()
-{
-  int retv = xcb_connection_has_error(this->connection_);
-
-  if (retv > static_cast<int>(ConnectionError::_LAST_ENUM_SENTINEL))
-    throw unexpected_return_value_from_xcb();
-
-  return static_cast<ConnectionError>(retv);
-}
-
-
-inline
-Xcb::self
-  Xcb::flush()
-{
-  int status = xcb_flush( this->connection_ );
-
-  if (status <= 0)
-    throw base_exception();
-
-  return *this;
-}
-
-
-/// private btw.
-inline
-void Xcb::throw_if_connection_in_error() {
-  if (this->connection_has_error() != ConnectionError::CONN_OK)
-    throw xcb_connection_in_error_condition();
-}
-
-
-inline
 screen_ref_t&
   Xcb::getScreenInfo(int screenNbr)
 {
@@ -161,7 +87,6 @@ screen_ref_t&
 }
 
 
-inline
 window_shared_ptr
   Xcb::getRootWindow()
 {
@@ -192,7 +117,6 @@ window_shared_ptr
 }
 
 
-inline
 window_shared_ptr
   Xcb::createWindowSimple(
       window_shared_ptr parentWindow,
@@ -261,16 +185,6 @@ window_shared_ptr
 }
 
 
-// static btw.
-inline
-void
-  Xcb::assert_void_cookie(xcb_void_cookie_t cookie)
-{
-  assert( cookie.sequence > 0 );
-}
-
-
-inline
 Xcb_ref_t
   Xcb::run()
 {
@@ -324,5 +238,3 @@ Xcb_ref_t
 
 } // xcb ns.
 } // fabic ns.
-
-#endif // FABIC_XCB_IMPL_H
