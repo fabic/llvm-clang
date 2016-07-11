@@ -7,8 +7,8 @@
 #include <boost/program_options.hpp>
 
 # include "fabic/di/container.hpp"
-# include "fabic/di/dll/dll_service_provider.hpp"
-# include "fabic/module/asio/IoService.hpp"
+# include "fabic/di/dll_service_provider.hpp"
+# include "fabic/asio/IoService.hpp"
 
 namespace fabic {
   namespace symfony {

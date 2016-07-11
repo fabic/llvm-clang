@@ -1,12 +1,13 @@
 
 #include <memory>
 #include <thread>
+
 #include <boost/dll/alias.hpp>
 #include <boost/network/protocol/http/server.hpp>
 
 # include "fabic/logging.hpp"
 # include "fabic/di/container.hpp"
-# include "fabic/module/http/handler_functor.hpp"
+# include "fabic/http/handler_functor.hpp"
 
 namespace fabic {
   namespace module {

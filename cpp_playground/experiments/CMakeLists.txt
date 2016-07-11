@@ -2,30 +2,17 @@
 #
 cmake_minimum_required(VERSION 3.3)
 
-project(Surface)
+project(FabicExperiments)
 
-include_directories(include)
+# Entails -I. & -I../experiments etc... for current dir. searched first.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # FIXME
 include_directories(../symfony/include)
 
-## GTKmm & al. CMake setup howto.
-#   https://wiki.gnome.org/Projects/gtkmm/UsingCMake
-#
-# CMake module: /usr/share/cmake/Modules/FindPkgConfig.cmake
-# Defines: GTKMM_INCLUDE_DIRS, GTKMM_LIBRARY_DIRS and GTKMM_LIBRARIES.
-  find_package(PkgConfig)
 
-
-  # include_directories(
-  #   ${GTKMM_INCLUDE_DIRS}
-  #   )
-# ^ GTKmm.
-##
-
-
-## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# BINARY: build/surface/gtk
+## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# BINARY: build/experiment/gtk
   pkg_check_modules(GTKMM gtkmm-3.0)
 
   if (GTKMM_FOUND)
@@ -37,7 +24,7 @@ include_directories(../symfony/include)
     add_executable(
       gtk
       src/gtkmm.cpp
-      ../symfony/src/hacks/hack_cxa_throw_exception.cpp
+      ../src/hacks/hack_cxa_throw_exception.cpp
     )
 
     target_compile_options(
@@ -60,13 +47,12 @@ include_directories(../symfony/include)
       pthread
       )
   endif (GTKMM_FOUND)
-
-# ^ Surface / GTKmm
+# ^ GTK
 ###
 
 
-## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# BINARY: build/surface/xlib
+## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# BINARY: build/experiments/xlib
 
   # /usr/share/apps/cmake/modules/FindX11.cmake
   find_package(X11)
@@ -74,8 +60,8 @@ include_directories(../symfony/include)
   if (X11_FOUND)
     add_executable(
       xlib
-      src/xlib.cpp
-      ../symfony/src/hacks/hack_cxa_throw_exception.cpp
+      xlib1.cpp
+      ../src/hacks/hack_cxa_throw_exception.cpp
     )
 
     target_compile_options(
@@ -99,13 +85,12 @@ include_directories(../symfony/include)
       )
   endif (X11_FOUND)
 
-# ^ Surface / Xlib
+# ^ Xlib
 ###
 
 
-
 ## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# BINARY: build/surface/xcb
+# BINARY: build/experiments/xcb1
 #
 # https://www.freetype.org/freetype2/docs/documentation.html
 # http://linuxfromscratch.org/blfs/view/svn/general/freetype2.html
@@ -116,12 +101,10 @@ include_directories(../symfony/include)
   pkg_check_modules(CAIROMM cairomm-1.0)
 
   if (XCB_FOUND)
-
-    ## xcb1
     add_executable(
       xcb1
-      src/xcb1.cpp
-      ../symfony/src/hacks/hack_cxa_throw_exception.cpp
+      xcb1.cpp
+      ../src/hacks/hack_cxa_throw_exception.cpp
     )
 
     target_compile_options(
@@ -143,43 +126,6 @@ include_directories(../symfony/include)
       unwind dl # for hack_cxa_throw_exception.cpp
       pthread
       )
-
-    ## XCB+
-    add_executable(
-      sf
-      src/surface.cpp
-      src/xcb.cpp
-      src/elements.cpp
-      src/window.cpp
-      src/surface_main.cpp
-      ../symfony/src/hacks/hack_cxa_throw_exception.cpp
-    )
-
-    target_compile_options(
-      sf
-      PUBLIC
-      # ...
-      )
-
-    target_include_directories(
-      sf
-      PUBLIC
-      ${XCB_INCLUDE_DIRS}
-      ${XCB_AUX_INCLUDE_DIRS}
-      ${CAIROMM_INCLUDE_DIRS}
-      )
-
-    target_link_libraries(
-      sf
-      ${Boost_LIBRARIES}
-      ${XCB_LIBRARIES}
-      ${XCB_AUX_LIBRARIES}
-      ${CAIROMM_LIBRARIES}
-      unwind dl # for hack_cxa_throw_exception.cpp
-      pthread
-      )
-
   endif (XCB_FOUND)
-
-# ^ Surface / Xcb1
+# ^ Xcb1
 ###
