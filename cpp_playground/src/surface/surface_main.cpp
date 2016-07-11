@@ -23,6 +23,8 @@
 
 # include "fabic/surface/surface.hpp"
 
+using namespace fabic;
+
 /**
  * MAIN !
  */
@@ -30,18 +32,21 @@ int main(int argc, const char *argv[])
 {
   using std::cout;
   using std::endl;
-  using fabic::xcb::Xcb;
-  using fabic::xcb::Window;
-  using fabic::sf::Surface;
+  using xcb::Xcb;
+  using xcb::Window;
+  using sf::Surface;
 
   auto xcb_ = std::make_shared< Xcb >();
 
   // auto win1_ = xcb_->createWindowSimple();
   // win1_->map();
 
-  auto surf_ = std::make_shared< Surface >(
-      xcb_
-    );
+  // auto surf_ = std::make_shared< Surface >(
+  //     xcb_
+  //   );
+
+  auto surf_ = (new Surface( xcb_ ))->shared_from_base< Surface >();
+  // auto surf_ = std::shared_ptr< tk::Element >(new Surface( xcb_ ))->shared_from_this< Surface >();
 
   surf_->map();
 

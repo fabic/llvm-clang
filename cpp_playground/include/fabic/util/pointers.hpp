@@ -9,7 +9,60 @@
 // #define format_address_of(x) (format_address(std::addressof(x)))
 
 namespace fabic {
-  namespace util {
+  namespace ptr {
+
+    /**
+     *
+     * Why ?
+     *  “ Note that prior to calling shared_from_this on an object t,
+     *    there must be a std::shared_ptr that owns t. ”
+     *    __ http://en.cppreference.com/w/cpp/memory/enable_shared_from_this __
+     *
+     * @link http://stackoverflow.com/a/16083526
+     * @link http://stackoverflow.com/a/15550262
+     * @link http://stackoverflow.com/a/12791172
+     * @link http://stackoverflow.com/a/32172486
+     * @link http://www.boost.org/doc/libs/1_38_0/libs/smart_ptr/sp_techniques.html#from%5Fthis
+     *       ( Boost C++ 1.38.0 smart_ptr lib. doc. about what & why was that
+     *         which became the std::enable_shared_from_this<> abstraction )
+     */
+    template< class Base >
+    class inheritable_shared_from_this
+      : public std::enable_shared_from_this< Base >
+    {
+    private:
+      /// Unfortunate shared_ptr< self > that is initialized from the below ctor
+      /// “automatically” upon (heap only!) instanciation of a concrete class.
+      std::shared_ptr< inheritable_shared_from_this > auto_inited_shared_ptr_base_;
+    public:
+      /**
+       * Here happens the unfortunate magic : always having a shared_ptr< self >
+       * that takes ownership of this, so that `std::enable_shared_from_this< Base >`
+       * immediately has its weak_ptr<...> thing initialized.
+       */
+      inheritable_shared_from_this()
+        : auto_inited_shared_ptr_base_( this )
+      {
+
+      }
+
+      virtual ~inheritable_shared_from_this() { }
+
+      template< class Concrete >
+      std::shared_ptr< Concrete > shared_from_base()
+      {
+        using ESFT = std::enable_shared_from_this< Base >;
+
+        return std::static_pointer_cast< Concrete >(
+            this->ESFT::shared_from_this()
+          );
+      }
+
+    };
+
+  } // ptr ns.
+
+  namespace util { // todo: move to ns 'pointers'
 
     /**
      * Naked pointer returned as is.
@@ -80,7 +133,7 @@ namespace fabic {
       return v.get();
     }
 
-  }
-}
+} // util ns
+} // fabic ns
 
 #endif //FABICCPPPLAYGROUND_POINTERS_HPP

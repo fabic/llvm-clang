@@ -22,9 +22,12 @@ namespace xcb = fabic::xcb;
   void
   Surface::_initChildrenElementsHierarchy()
   {
-    auto bottom = std::make_shared< Block >(
-        this->shared_from_this()
-      );
+    // auto bottom = std::make_shared< Block >(
+    //     // this->shared_from_base<Surface>()
+    //     nullptr
+    //   );
+
+    auto bottom = (new Block( this->shared_from_this() ))->shared_from_base< Block >();
 
     //this->appendChild( bottom );
   }

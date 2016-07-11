@@ -5,9 +5,12 @@
 #include <list>
 #include <memory>
 
+# include "fabic/util/pointers.hpp"
+
 namespace fabic {
 namespace tk {
 
+using fabic::ptr::inheritable_shared_from_this;
 
 using std::string;
 
@@ -96,8 +99,9 @@ public:
 
 
 class Element
-  : public ContainerTrait,
-    public std::enable_shared_from_this< Element >
+  : public ContainerTrait
+  , public inheritable_shared_from_this< Element >
+    // public std::enable_shared_from_this< Element >
 {
 protected:
   string     _id;
