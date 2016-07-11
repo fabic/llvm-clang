@@ -4,7 +4,7 @@ here=$( cd `dirname "$0"` && pwd )
 
 echo "+-- $0"
 
-cd "$here/libunwind/" &&
+cd "$here/misc/libunwind/" &&
 test -e .git &&
 git show-branch --current `git rev-parse --abbrev-ref --symbolic-full-name @{u}` &&
 git status &&

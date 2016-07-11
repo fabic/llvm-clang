@@ -159,7 +159,7 @@ if true; then
     cmake_args=(
       -DCMAKE_BUILD_TYPE=Release         \
       -DCMAKE_INSTALL_PREFIX="$localdir" \
-      -DLLVM_ENABLE_FFI=OFF     \
+      -DLLVM_ENABLE_FFI=ON     \
       -DBUILD_SHARED_LIBS=ON    \
       -DLLVM_TARGETS_TO_BUILD="host;X86" \
       -DLLVM_BUILD_DOCS=OFF     \
@@ -186,7 +186,7 @@ if true; then
     echo "|   cmake ${cmake_args[@]}"
     echo "|"
     echo "| Note that we're passing the following -Dxxx CMake options :"
-    echo "|   - LLVM_ENABLE_FFI=OFF                  (default)"
+    echo "|   - LLVM_ENABLE_FFI=ON                   (defaults to OFF)"
     echo "|   - BUILD_SHARED_LIBS=ON                 (defaults to OFF)"
     echo "|   - LLVM_BUILD_LLVM_DYLIB=OFF            (defaults to OFF)"
     echo "|   - LLVM_TARGETS_TO_BUILD=\"host;X86\"   (defaults to 'all')"
