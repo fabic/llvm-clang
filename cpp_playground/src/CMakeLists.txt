@@ -1,9 +1,4 @@
-# cpp_playground/CMakeLists.txt
-#
-# FabiC's C++ playground
-#
-# @link https://cmake.org/cmake-tutorial/
-#
+
 cmake_minimum_required(VERSION 3.3)
 
 # FYI: included from ../CMakeLists.txt
