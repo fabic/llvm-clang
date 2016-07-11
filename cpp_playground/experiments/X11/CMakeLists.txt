@@ -15,7 +15,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
     add_executable(
       gtk
-      src/gtkmm.cpp
+      gtkmm.cpp
       ../../src/hacks/hack_cxa_throw_exception.cpp
     )
 
