@@ -1,9 +1,10 @@
 #include <iostream>
 
-#include "Process.h"
-#include "Time.h"
+#include "fabic/syscall/Process.h"
+#include "fabic/syscall/Time.h"
 
 using namespace std;
+using namespace fabic::syscall;
 
 void test_time_etc();
 
@@ -13,19 +14,18 @@ void test_time_etc();
 int main() {
     cout << "Hello, World!" << endl << endl;
 
-    cout << "PID " << Std::Process::getpid() << endl;
-    cout << "UID " << Std::Process::getuid() << endl;
-    cout << "GID " << Std::Process::getgid() << endl;
+    cout << "PID " << Process::getpid() << endl;
+    cout << "UID " << Process::getuid() << endl;
+    cout << "GID " << Process::getgid() << endl;
 
     test_time_etc();
 
-    Std::Process::exit(121);
+    Process::exit(121);
     cout << "Bye, World! (and you should not see this BTW)" << endl;
     return 0;
 }
 
 void test_time_etc() {
-    using Std::Time;
     struct Time::timespec ts = Time::gettimeofday();
     cout << "Seconds      : " << ts.tv.seconds << endl;
     cout << "Microseconds : " << ts.tv.microseconds << endl;

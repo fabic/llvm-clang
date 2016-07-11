@@ -2,10 +2,12 @@
 // Created by fabi on 11/14/15.
 //
 
-#ifndef CPP_PLAYGROUND_SYSCALL_H
-#define CPP_PLAYGROUND_SYSCALL_H
+#ifndef FABIC_SYSCALL_SYSCALL_H
+#define FABIC_SYSCALL_SYSCALL_H
 
-namespace Std {
+namespace fabic {
+namespace syscall {
+
     /**
      * see musl/arch/x86_64/syscall_arch.h
      *
@@ -41,6 +43,8 @@ namespace Std {
             return ret;
         }
     };
-}
 
-#endif //CPP_PLAYGROUND_SYSCALL_H
+} // syscall ns.
+} // fabic ns.
+
+#endif //FABIC_SYSCALL_SYSCALL_H

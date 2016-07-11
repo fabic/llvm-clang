@@ -187,7 +187,6 @@ add_compile_options(
 find_package(PkgConfig)
 
 include_directories(include)
-
 add_subdirectory(src)
 add_subdirectory(experiments)
 #add_subdirectory(clang-check)

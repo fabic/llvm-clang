@@ -2,12 +2,13 @@
 // Created by fabi on 11/14/15.
 //
 
-#ifndef CPP_PLAYGROUND_TIME_H
-#define CPP_PLAYGROUND_TIME_H
+#ifndef FABIC_SYSCALL_TIME_H
+#define FABIC_SYSCALL_TIME_H
 
-#include "Syscall.h"
+#include "fabic/syscall/Syscall.h"
 
-namespace Std {
+namespace fabic {
+namespace syscall {
 
     class Time {
     public:
@@ -48,6 +49,7 @@ namespace Std {
         }
     };
 
-} // Std ns.
+} // syscall ns.
+} // fabic ns.
 
-#endif //CPP_PLAYGROUND_TIME_H
+#endif //FABIC_SYSCALL_TIME_H
