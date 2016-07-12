@@ -29,7 +29,14 @@ namespace xcb = fabic::xcb;
 
     auto bottom = (new Block( this->shared_from_this() ))->shared_from_base< Block >();
 
-    //this->appendChild( bottom );
+    auto bottom_ = tk::Element::_construct< Block >( this->shared_from_this() );
+
+    bottom_->attributes()->positionning()
+      ->placement( tk::Placement::BOTTOM )
+      ->wh(-1, 12)
+      ;
+
+    this->appendChild( bottom );
   }
 } // sf ns.
 } // fabic ns.

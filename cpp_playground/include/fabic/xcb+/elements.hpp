@@ -19,44 +19,118 @@ typedef const string& string_cref;
 
 class Positionning;
 typedef Positionning&  PositionningRef;
+typedef Positionning*  PositionningPtr;
 
 class Attributes;
 typedef Attributes&    AttributesRef;
+typedef Attributes*    AttributesPtr;
 
 
+enum Placement : uint8_t {
+  NA = 0 // “ doesn't apply ”
+  , AUTO = 1 // equiv. "document flow" somehow ?
+  , LEFT, RIGHT
+  , TOP,  BOTTOM
+  , TOP_LEFT,    TOP_RIGHT
+  , BOTTOM_LEFT, BOTTOM_RIGHT
+};
+
+
+enum Unit : uint8_t {
+  PIXELS = 0
+  , PERCENTAGE
+  , FONT_EM
+  , FONT_EX
+};
+
+
+/**
+ *
+ */
 class Positionning
 {
 public:
-  enum Placement {
-    LEFT, RIGHT, TOP, BOTTOM
-  };
+  typedef Positionning& self;
+  typedef Positionning* self_ptr;
+
 protected:
-  uint64_t type:2; // absolute, relative, ??
-  uint64_t placement:3; // top, right, bottom, left, top-right, top-left, etc...
+  uint64_t _type:2; // absolute, relative, ??
+  uint64_t _placement:4;
 
   // uint64_t is_absolute:1;
   // uint64_t is_relative:1;
 
-  uint64_t is_w_pct:1, is_w_abs:1, is_w_em:1, is_w_ex:1;
-  uint64_t is_h_pct:1, is_h_abs:1, is_h_em:1, is_h_ex:1;
+  // uint64_t is_w_pct:1, is_w_abs:1, is_w_em:1, is_w_ex:1;
+  // uint64_t is_h_pct:1, is_h_abs:1, is_h_em:1, is_h_ex:1;
 
-  uint64_t is_x_pct:1, is_x_abs:1, is_x_em:1, is_x_ex:1;
-  uint64_t is_y_pct:1, is_y_abs:1, is_y_em:1, is_y_ex:1;
+  // uint64_t is_x_pct:1, is_x_abs:1, is_x_em:1, is_x_ex:1;
+  // uint64_t is_y_pct:1, is_y_abs:1, is_y_em:1, is_y_ex:1;
 
   uint64_t is_m_pct:1, is_m_abs:1, is_m_em:1, is_m_ex:1;
   uint64_t is_p_pct:1, is_p_abs:1, is_p_em:1, is_p_ex:1;
 
-  int16_t _x, _y;
+  int16_t _x = -1,
+          _y = -1
+          ;
 
-  int16_t _width, _height;
+  int16_t _width  = -1,
+          _height = -1;
 
-  int16_t _min_width,  _max_width;
-  int16_t _min_height, _max_height;
+  int16_t _x_unit:3,
+          _y_unit:3,
+          _w_unit:3,
+          _h_unit:3
+          ;
+
+  int16_t _min_width  = -1,
+          _max_width  = -1,
+          _min_height = -1,
+          _max_height = -1
+          ;
 
   int16_t _margin_top,  _margin_right,  _margin_bottom,  _margin_left;
   int16_t _padding_top, _padding_right, _padding_bottom, _padding_left;
 
-  int16_t _depth; // _offset
+  int16_t _offset = 0; // ~depth
+
+public:
+  Positionning()
+    : _placement( Placement::AUTO )
+    , _x_unit( Unit::PIXELS )
+    , _y_unit( Unit::PIXELS )
+    , _w_unit( Unit::PIXELS )
+    , _h_unit( Unit::PIXELS )
+  { }
+
+  inline self xy(
+      int16_t x, int16_t y,
+      Unit ux = Unit::PIXELS,
+      Unit uy = Unit::PIXELS
+    ) noexcept
+  {
+    this->_x = x;
+    this->_x_unit = ux;
+
+    this->_y = y;
+    this->_y_unit = uy;
+
+    return *this;
+  }
+
+  inline self_ptr wh(int16_t w, int16_t h) noexcept
+  {
+    this->_width  = w;
+    this->_height = h;
+    return this;
+  }
+
+  inline uint8_t placement() const noexcept { return this->_placement; }
+
+  inline self_ptr placement(Placement p) noexcept
+  {
+    this->_placement = p;
+    return this;
+  }
 };
 
 
@@ -66,7 +140,7 @@ class Attributes
 protected:
   Positionning _pos;
 public:
-  PositionningRef positionning() noexcept { return this->_pos; }
+  PositionningPtr positionning() noexcept { return &this->_pos; }
 };
 
 
@@ -117,10 +191,10 @@ public:
 
   string_cref id() const noexcept { return this->_id; }
 
-  AttributesRef attributes() noexcept { return this->_attributes; }
+  AttributesPtr attributes() noexcept { return &this->_attributes; }
 
   /// Shortcut
-  PositionningRef positionning() noexcept { return this->_attributes.positionning(); }
+  // PositionningPtr positionning() noexcept { return this->_attributes->positionning(); }
 
   virtual ElementList preComputePositionning(
       int16_t w, int16_t h,

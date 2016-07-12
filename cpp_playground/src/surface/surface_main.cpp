@@ -49,7 +49,7 @@ int main(int argc, const char *argv[])
 
   // auto surf_ = (new Surface( xcb_ ))->shared_from_base< Surface >();
 
-  auto surf_ = Surface::_construct< Surface >( xcb_ );
+  auto surf_ = tk::Element::_construct< Surface >( xcb_ );
 
   surf_->map();
 
