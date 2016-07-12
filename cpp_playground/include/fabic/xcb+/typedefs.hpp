@@ -78,6 +78,7 @@ namespace xcb {
     { }
   };
 
+  struct xcb_event_type_mismatch_exception : xcb_exception {};
 
 } // xcb ns.
 } // fabic ns.

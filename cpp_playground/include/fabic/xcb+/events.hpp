@@ -59,15 +59,19 @@ enum class EventType : uint8_t {
  * hopefully won't this blow in someone face at some point.
  */
 union EventsUnion {
-  xcb_generic_event_t generic;
+  xcb_generic_event_t  _generic;
 
-  xcb_key_press_event_t     key_press;   // XCB_KEY_PRESS 2
-    xcb_key_release_event_t key_release; // XCB_KEY_RELEASE 3
+  xcb_key_press_event_t     _key_press;   // XCB_KEY_PRESS 2
+    xcb_key_release_event_t _key_release; // XCB_KEY_RELEASE 3
 
-  EventType type() const
+  xcb_expose_event_t  _expose;            // XCB_EXPOSE 12
+
+
+  inline EventType type() const
   {
     return (EventType) // C-style cast here too, not good.
-      (this->generic.response_type & ~0x80) ;
+      (this->_generic.response_type & ~0x80) ;
+    // TODO: Find out what is this last ^ bit about, actually ?
   }
 };
 
@@ -117,6 +121,13 @@ private:
       throw xcb_exception();
   }
 
+  inline void _throw_if_not_typed(EventType type) const
+    throw(xcb_event_type_mismatch_exception)
+  {
+    if (this->type() != type)
+      throw xcb_event_type_mismatch_exception();
+  }
+
 public:
   explicit Event( xcb_shared_ptr xcb_ )
     : xcb_( xcb_ )
@@ -129,6 +140,39 @@ public:
   EventDescription_cref_t description() const
     throw(xcb_exception);
 
+  xcb_window_t window_xid() const
+  {
+    xcb_window_t window_xid = 0;
+
+    switch( this->type() )
+    {
+      case EventType::EXPOSE:      window_xid = this->expose()->window; break;
+      case EventType::KEY_PRESS:   window_xid = this->key_press()->event; break;
+      case EventType::KEY_RELEASE: window_xid = this->key_release()->event; break;
+      default:
+        ;
+    }
+
+    return window_xid;
+  }
+
+  inline const xcb_expose_event_t *expose() const
+  {
+    this->_throw_if_not_typed( EventType::EXPOSE );
+    return &this->union_->_expose;
+  }
+
+  inline const xcb_key_press_event_t *key_press() const
+  {
+    this->_throw_if_not_typed( EventType::KEY_PRESS );
+    return &this->union_->_key_press;
+  }
+
+  inline const xcb_key_release_event_t *key_release() const
+  {
+    this->_throw_if_not_typed( EventType::KEY_RELEASE );
+    return &this->union_->_key_release;
+  }
 
 };
 

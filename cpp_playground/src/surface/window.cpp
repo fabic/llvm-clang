@@ -17,6 +17,7 @@ Window::Window(xcb_shared_ptr xcb_)
 { }
 
 
+// TODO: drop this one ?
 Window::Window(xcb_shared_ptr xcb_, xcb_window_t xid)
   : Block( nullptr )
   , xcb_( xcb_ )
@@ -151,10 +152,19 @@ Window::self_ptr
 
   Xcb::assert_void_cookie( _cookie );
 
-
   this->windowXid = wid;
 
+  this->xcb_->registerWindow( this->shared_from_base< Window >() );
+
   return this;
+}
+
+
+// virtual btw.
+void
+Window::handleEvent(const Event& event)
+{
+
 }
 
 

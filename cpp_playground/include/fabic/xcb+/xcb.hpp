@@ -235,6 +235,8 @@ namespace xcb { // todo: rename to tk:: ns.
     self registerWindow(window_shared_ptr win_)
         throw(xcb_window_already_registered);
 
+    window_shared_ptr lookupWindow(xcb_window_t window_xid);
+
     /**
      * Create a default-configured window.
      */
@@ -246,7 +248,10 @@ namespace xcb { // todo: rename to tk:: ns.
         );
 
   protected:
-    void _forwardXcbEvent(xcb_window_t target_window_xid);
+    void _handleEvent(const Event& event);
+    void _dispatchEvent(
+        const Event& event,
+        xcb_window_t target_window_xid );
   };
 
 } // xcb ns.

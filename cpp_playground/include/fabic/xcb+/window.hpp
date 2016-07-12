@@ -66,6 +66,8 @@ public:
         window_shared_ptr parentWindow = nullptr
       );
 
+  virtual void handleEvent(const Event& event);
+
   virtual tk::ElementList
     preComputePositionning(
       int16_t w, int16_t h,

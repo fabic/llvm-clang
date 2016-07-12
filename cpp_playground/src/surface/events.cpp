@@ -34,7 +34,7 @@ const Event::EventDescriptionMap_t Event::_event_descriptions {
   , { EventType::FOCUS_IN,       EventDescription(EventType::FOCUS_IN,       "FOCUS_IN") }
   , { EventType::FOCUS_OUT,      EventDescription(EventType::FOCUS_OUT,      "FOCUS_OUT") }
   , { EventType::KEYMAP_NOTIFY,  EventDescription(EventType::KEYMAP_NOTIFY,  "KEYMAP_NOTIFY") }
-  , { EventType::EXPOSE,         EventDescription(EventType::EXPOSE,         "EXPOSE") }
+  , { EventType::EXPOSE,         EventDescription(EventType::EXPOSE,         "EXPOSE", "xcb_expose_event_t") }
   , { EventType::GRAPHICS_EXPOSURE, EventDescription(EventType::GRAPHICS_EXPOSURE, "GRAPHICS_EXPOSURE") }
   , { EventType::NO_EXPOSURE,       EventDescription(EventType::NO_EXPOSURE, "NO_EXPOSURE") }
   , { EventType::VISIBILITY_NOTIFY, EventDescription(EventType::VISIBILITY_NOTIFY, "VISIBILITY_NOTIFY") }

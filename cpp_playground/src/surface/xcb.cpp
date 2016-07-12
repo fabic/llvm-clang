@@ -122,10 +122,12 @@ Xcb::self
   Xcb::registerWindow(window_shared_ptr win_)
     throw(xcb_window_already_registered)
 {
+  auto window_xid = win_->getXid();
+
   auto retv =
     this->windows.emplace(
       std::make_pair(
-        win_->getXid(),
+        window_xid,
         win_
         )
     );
@@ -138,7 +140,22 @@ Xcb::self
     throw xcb_window_already_registered( existing_ );
   }
 
+  logdebug << "Xcb::registerWindow(): Window XID " << window_xid << ", ok." ;
+
   return *this;
+}
+
+
+window_shared_ptr
+Xcb::lookupWindow(xcb_window_t window_xid)
+{
+  auto it = this->windows.find( window_xid );
+
+  bool found = it != this->windows.end();
+  if (!found)
+    return nullptr;
+
+  return it->second;
 }
 
 
@@ -163,10 +180,21 @@ window_shared_ptr
 
   attributes[ XCB_CW_EVENT_MASK ] =
       XCB_EVENT_MASK_EXPOSURE
-    | XCB_EVENT_MASK_ENTER_WINDOW | XCB_EVENT_MASK_LEAVE_WINDOW
-    | XCB_EVENT_MASK_KEY_PRESS    | XCB_EVENT_MASK_KEY_RELEASE
-    | XCB_EVENT_MASK_BUTTON_PRESS | XCB_EVENT_MASK_BUTTON_RELEASE
-    | XCB_EVENT_MASK_POINTER_MOTION
+    | XCB_EVENT_MASK_VISIBILITY_CHANGE
+    | XCB_EVENT_MASK_FOCUS_CHANGE
+    | XCB_EVENT_MASK_RESIZE_REDIRECT
+    | XCB_EVENT_MASK_ENTER_WINDOW   | XCB_EVENT_MASK_LEAVE_WINDOW
+    | XCB_EVENT_MASK_KEY_PRESS      | XCB_EVENT_MASK_KEY_RELEASE
+    | XCB_EVENT_MASK_BUTTON_PRESS   | XCB_EVENT_MASK_BUTTON_RELEASE
+    | XCB_EVENT_MASK_POINTER_MOTION | XCB_EVENT_MASK_POINTER_MOTION_HINT
+    | XCB_EVENT_MASK_BUTTON_MOTION
+    | XCB_EVENT_MASK_OWNER_GRAB_BUTTON
+    | XCB_EVENT_MASK_KEYMAP_STATE
+    | XCB_EVENT_MASK_STRUCTURE_NOTIFY
+    | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY
+    | XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT
+    | XCB_EVENT_MASK_PROPERTY_CHANGE
+    | XCB_EVENT_MASK_COLOR_MAP_CHANGE
     ;
 
   attributes[ XCB_CW_BACK_PIXEL ]   = screen.black_pixel;
@@ -225,38 +253,59 @@ Xcb_ref_t
 
   while( event.next() == true )
   {
-    // std::unique_ptr< xcb_generic_event_t > event_(
-    //     xcb_wait_for_event( this->connection_ )
-    //   );
+    #ifndef NDEBUG
+    if ( true ) {
+      auto descr = event.description();
 
-    // std::unique_ptr< EventsUnion > event_(
-    //     (EventsUnion *) // dangerous cast !
-    //       xcb_wait_for_event( this->connection_ )
-    //   );
+      logtrace << "Xcb::run(): Event " << descr.name()
+               << " (" << static_cast<int>(descr.type()) << ")"
+               << " is-a: " << (descr.struct_name() != nullptr ? descr.struct_name() : "???")
+               ;
+    }
+    #endif // NDEBUG
 
-    // if (event_ == nullptr) {
-    //   logtrace << "Xcb::run(): got a null event, exiting loop.";
-    //   break;
-    // }
-
-    // todo: What is this masking agaisnt ~0x80 about ?
-    // auto type = event_->response_type & ~0x80; // uint8_t btw.
-
-    // EventType type = event_->type();
-    EventType type = event.type();
-
-    auto descr = event.description();
-
-    logtrace << "Xcb::run(): Event " << descr.name()
-             << " (" << static_cast<int>(descr.type()) << ")"
-             << " is-a: " << (descr.struct_name() != nullptr ? descr.struct_name() : "???")
-             ;
+    this->_handleEvent(event);
 
   } // end of iteration waiting for events.
 
   logdebug << "Xcb::run() : end.";
 
   return *this;
+}
+
+
+void
+Xcb::_handleEvent(const Event& event)
+{
+    xcb_window_t window_xid = event.window_xid();
+
+    logtrace << "  » Window XID: " << window_xid;
+
+    if (window_xid == 0) {
+      logdebug << "  » Got no window X ID for this event, ignoring it.";
+      return;
+    }
+
+    this->_dispatchEvent(event, window_xid);
+}
+
+
+void
+Xcb::_dispatchEvent(
+    const Event& event,
+    xcb_window_t target_window_xid
+  )
+{
+  auto win_ = this->lookupWindow( target_window_xid );
+
+  if (win_ == nullptr) {
+    logtrace << "Xcb::_dispatchEvent(): no such window with X ID: "
+             << target_window_xid
+             << " (ignoring)." ;
+    return;
+  }
+
+  win_->handleEvent( event );
 }
 
 
