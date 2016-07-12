@@ -164,7 +164,28 @@ Window::self_ptr
 void
 Window::handleEvent(const Event& event)
 {
+    logtrace << "Window::handleEvent(): begin." ;
 
+    switch( event.type() )
+    {
+      case EventType::EXPOSE: {
+        auto ex_ = event.expose();
+        logtrace << "  » x = " << ex_->x << ", y = " << ex_->y
+                 << ", width = " << ex_->width << ", height = " << ex_->height
+                 ;
+        break;
+      }
+      case EventType::KEY_PRESS: {
+        break;
+      }
+      case EventType::KEY_RELEASE: {
+        break;
+      }
+      default:
+        logtrace << "Window::handleEvent(): skipping unknown event." ;
+    }
+
+    logtrace << "Window::handleEvent(): end." ;
 }
 
 

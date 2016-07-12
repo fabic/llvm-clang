@@ -140,6 +140,9 @@ public:
   EventDescription_cref_t description() const
     throw(xcb_exception);
 
+  /**
+   * @return the target window for this event; or 0 if n/a.
+   */
   xcb_window_t window_xid() const
   {
     xcb_window_t window_xid = 0;
