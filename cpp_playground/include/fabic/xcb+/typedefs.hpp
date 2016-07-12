@@ -66,7 +66,18 @@ namespace xcb {
    */
   typedef xcb_screen_t& screen_ref_t;
 
-  typedef map<xcb_window_t, window_shared_ptr> windows_map_t;
+  /// Base exception class for Xcb...
+  struct xcb_exception : std::exception { };
+
+  struct xcb_window_already_registered : xcb_exception
+  {
+    window_shared_ptr existing_window_;
+
+    xcb_window_already_registered(window_shared_ptr existing_window_)
+      : existing_window_(existing_window_)
+    { }
+  };
+
 
 } // xcb ns.
 } // fabic ns.

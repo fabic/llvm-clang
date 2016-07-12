@@ -30,6 +30,8 @@ namespace xcb { // todo: rename to tk:: ns.
   public:
     typedef Xcb& self;
 
+    typedef std::map<xcb_window_t, window_shared_ptr> windows_map_t;
+
     /**
      * the XCB_* are #define-s from xcb.h
      * For typed-return value of connection_has_error().
@@ -222,6 +224,14 @@ namespace xcb { // todo: rename to tk:: ns.
      * Enter the event loop.
      */
     virtual self run();
+
+    /**
+     * Add window `win_` to our map of windows we know about.
+     *
+     * @return self
+     */
+    self registerWindow(window_shared_ptr win_)
+        throw(xcb_window_already_registered);
 
     /**
      * Create a default-configured window.

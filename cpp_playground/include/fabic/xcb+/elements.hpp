@@ -28,7 +28,8 @@ typedef Attributes*    AttributesPtr;
 
 enum Placement : uint8_t {
   NA = 0 // “ doesn't apply ”
-  , AUTO = 1 // equiv. "document flow" somehow ?
+  , AUTO  = 1 // equiv. "document flow" somehow ?
+  , FIXED = 2
   , LEFT, RIGHT
   , TOP,  BOTTOM
   , TOP_LEFT,    TOP_RIGHT
@@ -75,6 +76,12 @@ protected:
 
   int16_t _width  = -1,
           _height = -1;
+
+  int16_t _top    = -1,
+          _left   = -1,
+          _right  = -1,
+          _bottom = -1
+          ;
 
   int16_t _x_unit:3,
           _y_unit:3,
@@ -129,6 +136,16 @@ public:
   inline self_ptr placement(Placement p) noexcept
   {
     this->_placement = p;
+
+    switch( this->_placement ) {
+      case Placement::BOTTOM :
+        this->_bottom = 0;
+        this->_top    = -1;
+        break;
+      default:
+        ;
+    }
+
     return this;
   }
 };
@@ -172,14 +189,26 @@ public:
 };
 
 
+/**
+ * @brief Base class for HTML-like elements.
+ *
+ * * MUST NOT: resort to std::make_shared< Concrete >(...) for instanciating
+ *             or any sub-type due to the inheritable_shared_from_this<...>
+ *             base class magic.
+ */
 class Element
   : public ContainerTrait
   , public inheritable_shared_from_this< Element >
     // public std::enable_shared_from_this< Element >
 {
+public:
+  typedef Element& self;
+  typedef Element* self_ptr;
+
 protected:
   string     _id;
   Attributes _attributes;
+  Attributes _computedAttributes;
 
 public:
   explicit Element(ElementPtr parent_);
@@ -189,17 +218,21 @@ public:
   Element(const Element &) = delete;
   Element& operator=(const Element &) = delete;
 
+  self_ptr id(string&& id) noexcept
+  {
+    this->_id = std::move(id);
+    return this;
+  };
+
   string_cref id() const noexcept { return this->_id; }
 
   AttributesPtr attributes() noexcept { return &this->_attributes; }
-
-  /// Shortcut
-  // PositionningPtr positionning() noexcept { return this->_attributes->positionning(); }
 
   virtual ElementList preComputePositionning(
       int16_t w, int16_t h,
       int16_t x, int16_t y
     );
+  // todo: compute & postComputePositionning()...
 
 protected:
   virtual void _initChildrenElementsHierarchy();

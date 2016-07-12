@@ -118,6 +118,30 @@ window_shared_ptr
 }
 
 
+Xcb::self
+  Xcb::registerWindow(window_shared_ptr win_)
+    throw(xcb_window_already_registered)
+{
+  auto retv =
+    this->windows.emplace(
+      std::make_pair(
+        win_->getXid(),
+        win_
+        )
+    );
+
+  windows_map_t::iterator it = retv.first;
+  bool fail                  = retv.second != true;
+
+  if (fail) {
+    auto existing_ = it->second;
+    throw xcb_window_already_registered( existing_ );
+  }
+
+  return *this;
+}
+
+
 window_shared_ptr
   Xcb::createWindowSimple(
       window_shared_ptr parentWindow,
@@ -175,14 +199,18 @@ window_shared_ptr
         value_list                   // const uint32_t   *value_list
       );
 
-    auto win = make_shared< Window >(
-      this->shared_from_this(),
-      wid
+    namespace tk = fabic::tk;
+
+    auto win_ = tk::Element::_construct< Window >(
+        this->shared_from_this(),
+        wid
       );
+
+    this->registerWindow( win_ );
 
     Xcb::assert_void_cookie( _cookie );
 
-  return win;
+  return win_;
 }
 
 
