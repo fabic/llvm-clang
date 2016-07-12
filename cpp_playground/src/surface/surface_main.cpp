@@ -45,8 +45,11 @@ int main(int argc, const char *argv[])
   //     xcb_
   //   );
 
-  auto surf_ = (new Surface( xcb_ ))->shared_from_base< Surface >();
   // auto surf_ = std::shared_ptr< tk::Element >(new Surface( xcb_ ))->shared_from_this< Surface >();
+
+  // auto surf_ = (new Surface( xcb_ ))->shared_from_base< Surface >();
+
+  auto surf_ = Surface::_construct< Surface >( xcb_ );
 
   surf_->map();
 
