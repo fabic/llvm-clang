@@ -37,6 +37,7 @@ add_executable( sf
     surface.cpp
     elements.cpp
     window.cpp
+    events.cpp
     xcb.cpp
   ../hacks/hack_cxa_throw_exception.cpp
 )

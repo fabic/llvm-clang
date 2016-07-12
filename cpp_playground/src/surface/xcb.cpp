@@ -245,37 +245,12 @@ Xcb_ref_t
     // EventType type = event_->type();
     EventType type = event.type();
 
+    auto descr = event.description();
 
-    switch( type )
-    {
-      case EventType::EXPOSE: {
-        logtrace << "Xcb::run(): EXPOSE !";
-        // xcb_expose_event_t *ev = (xcb_expose_event_t *) event;
-        // xcb_expose_event_t *ev = static_cast<xcb_expose_event_t *>( event_.get() );
-        break;
-      }
-
-      case EventType::BUTTON_PRESS: {
-        /* Handle the ButtonPress event type */
-        // xcb_button_press_event_t *ev = (xcb_button_press_event_t *) event;
-
-        /* ... */
-
-        break;
-      }
-
-      case EventType::KEY_PRESS: {
-        logtrace << "Xcb::run(): KEY PRESSED !";
-        break;
-      }
-
-      // Unknown event type, ignore it.
-      default: {
-        // logtrace << "Xcb::run(): Event type #" << type << " is unknown to us.";
-        logtrace << "Xcb::run(): Event type ...";
-        break;
-      }
-    }
+    logtrace << "Xcb::run(): Event " << descr.name()
+             << " (" << static_cast<int>(descr.type()) << ")"
+             << " is-a: " << (descr.struct_name() != nullptr ? descr.struct_name() : "???")
+             ;
 
   } // end of iteration waiting for events.
 
