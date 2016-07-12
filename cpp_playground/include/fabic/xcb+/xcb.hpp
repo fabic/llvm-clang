@@ -2,8 +2,10 @@
 #define FABIC_XCB_H
 
 #include "fabic/xcb+/typedefs.hpp"
+#include "fabic/xcb+/events.hpp"
 #include "fabic/xcb+/mask_values.hpp"
 #include "fabic/xcb+/window.hpp"
+
 
 namespace fabic {
 namespace xcb { // todo: rename to tk:: ns.
@@ -243,6 +245,8 @@ namespace xcb { // todo: rename to tk:: ns.
           uint16_t          height = 200
         );
 
+  protected:
+    void _forwardXcbEvent(xcb_window_t target_window_xid);
   };
 
 } // xcb ns.

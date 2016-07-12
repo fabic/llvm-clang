@@ -6,6 +6,34 @@
 namespace fabic {
 namespace xcb {
 
+/**
+ * todo: merge all inlines in one file if at all possible?
+ */
+inline
+bool Event::next()
+{
+  this->union_ =
+    std::unique_ptr< EventsUnion >(
+        (EventsUnion *)
+          xcb_wait_for_event( this->xcb_->getXcbConnectionPtr() )
+        // ^ dangerous blind C-style casted, beware !
+      );
+
+  return this->union_ != nullptr;
+}
+
+
+/**
+ * Short-cut for the EventsUnion::type() method.
+ */
+inline
+EventType Event::type() const noexcept
+  {
+    _assert_not_null_union();
+    return this->union_->type();
+  }
+
+// // // // // // // // // // // // // // // // // // // // // // // //
 
 inline
 xcb_connection_t&

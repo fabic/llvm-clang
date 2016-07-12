@@ -221,21 +221,41 @@ Xcb_ref_t
 
   this->flush();
 
-  xcb_generic_event_t * event;
+  Event event( this-> shared_from_this() );
 
-  while (nullptr != (event = xcb_wait_for_event( this->connection_ )))
+  while( event.next() == true )
   {
-    // todo: What is this masking agaisnt ~0x80 about ?
-    auto e = event->response_type & ~0x80; // uint8_t btw.
+    // std::unique_ptr< xcb_generic_event_t > event_(
+    //     xcb_wait_for_event( this->connection_ )
+    //   );
 
-    switch (e) {
-      case XCB_EXPOSE: {
+    // std::unique_ptr< EventsUnion > event_(
+    //     (EventsUnion *) // dangerous cast !
+    //       xcb_wait_for_event( this->connection_ )
+    //   );
+
+    // if (event_ == nullptr) {
+    //   logtrace << "Xcb::run(): got a null event, exiting loop.";
+    //   break;
+    // }
+
+    // todo: What is this masking agaisnt ~0x80 about ?
+    // auto type = event_->response_type & ~0x80; // uint8_t btw.
+
+    // EventType type = event_->type();
+    EventType type = event.type();
+
+
+    switch( type )
+    {
+      case EventType::EXPOSE: {
         logtrace << "Xcb::run(): EXPOSE !";
         // xcb_expose_event_t *ev = (xcb_expose_event_t *) event;
+        // xcb_expose_event_t *ev = static_cast<xcb_expose_event_t *>( event_.get() );
         break;
       }
 
-      case XCB_BUTTON_PRESS: {
+      case EventType::BUTTON_PRESS: {
         /* Handle the ButtonPress event type */
         // xcb_button_press_event_t *ev = (xcb_button_press_event_t *) event;
 
@@ -244,19 +264,19 @@ Xcb_ref_t
         break;
       }
 
-      case XCB_KEY_PRESS: {
+      case EventType::KEY_PRESS: {
         logtrace << "Xcb::run(): KEY PRESSED !";
         break;
       }
 
       // Unknown event type, ignore it.
       default: {
-        logtrace << "Xcb::run(): Event " << e << " is unknown to us.";
+        // logtrace << "Xcb::run(): Event type #" << type << " is unknown to us.";
+        logtrace << "Xcb::run(): Event type ...";
         break;
       }
     }
 
-    free( event );
   } // end of iteration waiting for events.
 
   logdebug << "Xcb::run() : end.";
