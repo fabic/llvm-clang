@@ -4,7 +4,7 @@
 #include "fabic/xcb+/elements-inlines.hpp"
 #include "fabic/xcb+/xcb-inlines.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace xcb {
 
 
@@ -248,4 +248,4 @@ void Window::render()
 
 
 } // xcb ns.
-} // fabic ns.
+TL_NS_END

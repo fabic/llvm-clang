@@ -3,7 +3,7 @@
 #include "fabic/xcb+/elements-inlines.hpp"
 
 
-namespace fabic {
+TL_NS_BEGIN
 namespace tk {
 
   ContainerTrait::ContainerTrait(ElementPtr parent_)
@@ -131,7 +131,7 @@ namespace tk {
             geometry->width,
             geometry->height
         ),
-        fabic::cairo::SurfaceDeleterFunctor()
+        TLNS::cairo::SurfaceDeleterFunctor()
     );
 
     return this;
@@ -139,4 +139,4 @@ namespace tk {
 */
 
 } // xcb ns
-} // fabic ns
+TL_NS_END

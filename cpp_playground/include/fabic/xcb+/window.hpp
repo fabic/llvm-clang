@@ -5,10 +5,10 @@
 #include "fabic/xcb+/cairo.hpp"
 #include "fabic/xcb+/elements.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace xcb {
 
-namespace tk = fabic::tk;
+namespace tk = TLNS::tk;
 
 /**
  * todo: move to tk::
@@ -91,6 +91,6 @@ protected:
 };
 
 } // xcb ns.
-} // fabic ns.
+TL_NS_END
 
 #endif // FABIC_XCB_WINDOW_H

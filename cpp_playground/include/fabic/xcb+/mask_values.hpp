@@ -7,12 +7,12 @@
 #include "fabic/util/bits.hpp"
 
 
-namespace fabic {
+TL_NS_BEGIN
 namespace xcb {
 
-  using fabic::util::is_power_of_two;
-  using fabic::util::popcount;
-  using fabic::util::bit_index;
+  using TLNS::util::is_power_of_two;
+  using TLNS::util::popcount;
+  using TLNS::util::bit_index;
   using std::array;
 
   template< uint32_t Bitmask,
@@ -40,6 +40,6 @@ namespace xcb {
   };
 
 } // xcb ns
-} // fabic ns
+TL_NS_END
 
 #endif // FABIC_XCB_MASK_VALUES_H

@@ -1,11 +1,11 @@
 
 # include "module-boost-asio.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
   namespace module {
     namespace asio {
 
-    namespace di = fabic::di;
+    namespace di = TLNS::di;
 
       // Ctor.
       BoostAsioService::BoostAsioService()
@@ -71,11 +71,11 @@ namespace fabic {
 
     }
   }
-}
+TL_NS_END
 
 
 BOOST_DLL_ALIAS_SECTIONED(
-    fabic::module::asio::BoostAsioService::__di_register_services,
+    TLNS::module::asio::BoostAsioService::__di_register_services,
     module_asio_di_register_services,
     Anna
   )

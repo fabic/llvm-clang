@@ -3,7 +3,7 @@
 
 #include "fabic/xcb+/window.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace xcb {
 
 
@@ -37,6 +37,6 @@ Window_ref_t
 
 
 } // xcb ns.
-} // fabic ns.
+TL_NS_END
 
 #endif // FABIC_XCB_WINDOW_INLINES_H

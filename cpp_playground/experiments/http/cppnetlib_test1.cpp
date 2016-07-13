@@ -21,7 +21,7 @@
 #include <iostream>
 #include <boost/bind/arg.hpp>
 
-namespace fabic {
+TL_NS_BEGIN
     namespace plays {
 
         namespace http = boost::network::http;
@@ -75,7 +75,7 @@ namespace fabic {
         }
 
     } // plays ns.
-} // fabic ns.
+TL_NS_END
 
 
 /**
@@ -115,7 +115,7 @@ int main(int argc, const char *const argv[]) {
 
     po::notify(args);
 
-    auto exit_status = fabic::plays::main(args);
+    auto exit_status = TLNS::plays::main(args);
 
     return exit_status;
 }

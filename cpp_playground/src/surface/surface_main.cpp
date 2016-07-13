@@ -23,7 +23,6 @@
 
 # include "fabic/surface/surface.hpp"
 
-using namespace fabic;
 
 /**
  * MAIN !
@@ -32,9 +31,9 @@ int main(int argc, const char *argv[])
 {
   using std::cout;
   using std::endl;
-  using xcb::Xcb;
-  using xcb::Window;
-  using sf::Surface;
+  using TLNS::xcb::Xcb;
+  using TLNS::xcb::Window;
+  using TLNS::sf::Surface;
 
   auto xcb_ = std::make_shared< Xcb >();
 

@@ -9,7 +9,7 @@
 # include "fabic/di/container.hpp"
 # include "fabic/http/handler_functor.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
   namespace module {
     namespace http {
 
@@ -51,7 +51,7 @@ namespace fabic {
          * from `symfony/module/http/module-http-server.cpp` :
          *
          *     BOOST_DLL_ALIAS(
-         *         fabic::module::http::http_server::__di_register_services,
+         *         TLNS::module::http::http_server::__di_register_services,
          *         di_register_services
          *     )
          */
@@ -80,4 +80,4 @@ namespace fabic {
 
     }
   }
-}
+TL_NS_END

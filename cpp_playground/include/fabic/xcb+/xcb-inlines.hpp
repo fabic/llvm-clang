@@ -3,7 +3,7 @@
 
 #include "fabic/xcb+/xcb.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace xcb {
 
 
@@ -119,6 +119,6 @@ void
 
 
 } // xcb ns.
-} // fabic ns.
+TL_NS_END
 
 #endif // FABIC_XCB_IMPL_H

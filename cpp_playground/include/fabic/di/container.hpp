@@ -15,7 +15,7 @@
 
 # include "fabic/di/service_definition.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
   namespace di {
 
     using std::string;
@@ -24,7 +24,7 @@ namespace fabic {
     using std::make_pair;
     using std::shared_ptr;
 
-    using fabic::object;
+    using TLNS::object;
 
     /**
      * Huh! a service container! in C++ ?
@@ -125,7 +125,7 @@ namespace fabic {
 
         logtrace << " » ok, found service : " << serv->id()
                  << ", got a " << serv->get_service_definition_type_name()
-                 << ", address: " << fabic::util::address_of(serv);
+                 << ", address: " << TLNS::util::address_of(serv);
 
         //typedef shared_ptr<definition<T, PointerT>> concrete_ptr_t;
 
@@ -167,6 +167,6 @@ namespace fabic {
     };
 
   } // di ns.
-} // fabic ns.
+TL_NS_END
 
 #endif

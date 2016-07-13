@@ -1,7 +1,7 @@
 
 # include "fabic/xcb+/events.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace xcb { // todo: rename to tk:: ns.
 
 
@@ -64,4 +64,4 @@ const Event::EventDescriptionMap_t Event::_event_descriptions {
 
 
 } // xcb ns.
-} // fabic ns.
+TL_NS_END

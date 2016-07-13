@@ -1,9 +1,9 @@
 
 # include "module-http-server.hpp"
 
-namespace di = fabic::di;
+namespace ioc = TLNS::di;
 
-namespace fabic {
+TL_NS_BEGIN
   namespace module {
     namespace http {
 
@@ -26,11 +26,11 @@ namespace fabic {
 
       // static btw.
       void
-      http_server::__di_register_services(di::container_shared_ptr_t container)
+      http_server::__di_register_services(ioc::container_shared_ptr_t container)
       {
         logtrace << "HEY! that's module-http-server __di_register_services() ;- Hura!";
 
-        typedef di::definition<http_server> server_service_t;
+        typedef ioc::definition<http_server> server_service_t;
 
         auto http_server_service = std::make_shared<server_service_t>("http.server");
 
@@ -38,7 +38,7 @@ namespace fabic {
 
         // Declare the FACTORY functor :
         http_server_service->set_factory_function(
-            [](di::base_definition::dependencies_map_ref deps) -> http_server_ptr_t {
+            [](ioc::base_definition::dependencies_map_ref deps) -> http_server_ptr_t {
               logtrace << "YEAH! that's service `http.server` factory functor bein' invoqued !"
                     " (which is quite remarkable, actually)";
 
@@ -97,18 +97,18 @@ namespace fabic {
 
     }
   }
-}
+TL_NS_END
 
 
 // http://www.boost.org/doc/libs/1_61_0/doc/html/boost_dll/tutorial.html
 // BOOST_DLL_ALIAS(
-//     fabic::module::http::http_server::__di_register_services,
+//     TLNS::module::http::http_server::__di_register_services,
 //     di_register_services
 // )
 
 
 BOOST_DLL_ALIAS_SECTIONED(
-    fabic::module::http::http_server::__di_register_services,
+    TLNS::module::http::http_server::__di_register_services,
     howdy,
     Anna
   )

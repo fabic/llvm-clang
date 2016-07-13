@@ -2,7 +2,7 @@
 #include "fabic/di/dll_service_provider.hpp"
 
 
-namespace fabic {
+TL_NS_BEGIN
   namespace di   {
     namespace dll {
 
@@ -71,4 +71,4 @@ namespace fabic {
 
     }
   }
-}
+TL_NS_END

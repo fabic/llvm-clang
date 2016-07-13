@@ -7,7 +7,7 @@
 
 #include "fabic/syscall/Syscall.h"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace syscall {
 
     class Time {
@@ -50,6 +50,6 @@ namespace syscall {
     };
 
 } // syscall ns.
-} // fabic ns.
+TL_NS_END
 
 #endif //FABIC_SYSCALL_TIME_H

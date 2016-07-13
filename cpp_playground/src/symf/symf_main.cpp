@@ -10,7 +10,7 @@
 # include "fabic/di/dll_service_provider.hpp"
 # include "fabic/asio/IoService.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
   namespace symfony {
 
     namespace po   = boost::program_options;
@@ -29,7 +29,7 @@ namespace fabic {
       loginfo << "  » port : " << args["port"].as<int>();
       loginfo << "";
 
-      namespace di = fabic::di;
+      namespace di = TLNS::di;
 
       auto cnt = di::service_container::new_container_instance();
 
@@ -177,16 +177,16 @@ namespace fabic {
     }
 
   } // symfony ns.
-} // fabic ns
+TL_NS_END
 
 
 /**
  * MAIN (the libc) !
  */
 int main(int argc, const char *argv[]) {
-  auto args = fabic::symfony::process_program_arguments(argc, argv);
+  auto args = TLNS::symfony::process_program_arguments(argc, argv);
 
-  auto exit_status = fabic::symfony::main(args);
+  auto exit_status = TLNS::symfony::main(args);
 
   return exit_status;
 }

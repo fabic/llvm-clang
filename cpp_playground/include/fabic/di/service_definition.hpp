@@ -10,7 +10,7 @@
 
 # include "fabic/di/base_definition.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
   namespace di {
 
     using std::string;
@@ -200,5 +200,5 @@ namespace fabic {
     };
 
   } // di ns.
-} // fabic ns.
+TL_NS_END
 #endif //FABICCPPPLAYGROUND_SERVICE_DEFINITION_HPP

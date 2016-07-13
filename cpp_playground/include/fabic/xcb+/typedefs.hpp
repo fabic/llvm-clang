@@ -13,7 +13,7 @@
 # include "fabic/logging.hpp"
 
 
-namespace fabic {
+TL_NS_BEGIN
 namespace xcb {
 
   using std::map;
@@ -81,7 +81,7 @@ namespace xcb {
   struct xcb_event_type_mismatch_exception : xcb_exception {};
 
 } // xcb ns.
-} // fabic ns.
+TL_NS_END
 
 
 #endif // FABIC_XCB_TYPEDEFS_H

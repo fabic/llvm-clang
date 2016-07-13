@@ -4,7 +4,7 @@
 #include "fabic/syscall/Time.h"
 
 using namespace std;
-using namespace fabic::syscall;
+using namespace TLNS::syscall;
 
 void test_time_etc();
 

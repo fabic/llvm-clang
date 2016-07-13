@@ -3,7 +3,7 @@
 # include <boost/network/protocol/http/server.hpp>
 
 
-namespace fabic {
+TL_NS_BEGIN
   namespace module {
     namespace http {
 
@@ -12,4 +12,4 @@ namespace fabic {
 
     }
   }
-}
+TL_NS_END

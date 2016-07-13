@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace fabic {
+TL_NS_BEGIN
 namespace util {
 
   /**
@@ -93,6 +93,6 @@ namespace util {
   static_assert( bit_index<uint32_t>(8, 32|   8|4|  1) == 3 );
 
 } // util ns.
-} // fabic ns.
+TL_NS_END
 
 #endif // FABIC_UTIL_BITS_H

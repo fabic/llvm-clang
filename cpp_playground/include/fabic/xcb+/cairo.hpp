@@ -6,7 +6,7 @@
 #include "fabic/xcb+/maths_2d.hpp"
 #include "fabic/logging.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace cairo {
 
 
@@ -58,6 +58,6 @@ public:
 
 
 } // cairo ns
-} // fabic ns
+TL_NS_END
 
 #endif //FABIC_CAIRO_H

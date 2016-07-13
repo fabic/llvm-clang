@@ -7,7 +7,7 @@
 #include "fabic/xcb+/window.hpp"
 
 
-namespace fabic {
+TL_NS_BEGIN
 namespace xcb { // todo: rename to tk:: ns.
 
   /**
@@ -255,6 +255,6 @@ namespace xcb { // todo: rename to tk:: ns.
   };
 
 } // xcb ns.
-} // fabic ns.
+TL_NS_END
 
 #endif // FABIC_XCB_H

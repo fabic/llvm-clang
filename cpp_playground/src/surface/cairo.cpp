@@ -1,7 +1,7 @@
 
 # include "fabic/xcb+/cairo.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace cairo {
 
 
@@ -47,4 +47,4 @@ Surface::init_xcb_surface(
 
 
 } // cairo ns
-} // fabic ns
+TL_NS_END

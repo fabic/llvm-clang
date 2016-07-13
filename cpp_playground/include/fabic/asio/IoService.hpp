@@ -17,7 +17,7 @@
 
 # include "fabic/di/container.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
   namespace module {
     namespace asio {
 
@@ -42,4 +42,4 @@ namespace fabic {
 
     }
   }
-}
+TL_NS_END

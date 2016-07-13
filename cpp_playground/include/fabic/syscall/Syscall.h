@@ -5,7 +5,7 @@
 #ifndef FABIC_SYSCALL_SYSCALL_H
 #define FABIC_SYSCALL_SYSCALL_H
 
-namespace fabic {
+TL_NS_BEGIN
 namespace syscall {
 
     /**
@@ -45,6 +45,6 @@ namespace syscall {
     };
 
 } // syscall ns.
-} // fabic ns.
+TL_NS_END
 
 #endif //FABIC_SYSCALL_SYSCALL_H

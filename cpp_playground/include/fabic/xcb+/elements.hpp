@@ -12,11 +12,11 @@
 # include "fabic/logging.hpp"
 # include "fabic/xcb+/maths_2d.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace tk {
 
 using std::string;
-using fabic::ptr::inheritable_shared_from_this;
+using TLNS::ptr::inheritable_shared_from_this;
 
 typedef string&       string_ref;
 typedef const string& string_cref;
@@ -213,7 +213,7 @@ protected:
   string         _id;
   Attributes     _attributes;
   Attributes     _computedAttributes;
-  fabic::cairo::Surface _surface;
+  TLNS::cairo::Surface _surface;
 
 public:
   explicit Element(ElementPtr parent_);
@@ -275,6 +275,6 @@ class Div
 
 
 } // xcb ns
-} // fabic ns
+TL_NS_END
 
 #endif // FABIC_TK_ELEMENTS_H

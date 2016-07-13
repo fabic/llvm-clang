@@ -28,7 +28,7 @@
 
 // #include "hack_cxa_throw_exception.cpp"
 
-namespace fabic {
+TL_NS_BEGIN
     namespace plays {
 
         namespace po   = boost::program_options;
@@ -101,7 +101,7 @@ namespace fabic {
         }
 
     } // plays ns.
-} // fabic ns
+TL_NS_END
 
 /**
  * Invoqued by main() within a try-catch
@@ -110,8 +110,8 @@ namespace fabic {
 int main_bis(int argc, const char *argv[])
 {
     try {
-        auto args = fabic::plays::process_program_arguments(argc, argv);
-        auto exit_status = fabic::plays::main(args);
+        auto args = TLNS::plays::process_program_arguments(argc, argv);
+        auto exit_status = TLNS::plays::main(args);
         return exit_status;
     }
     catch (std::exception& e) {

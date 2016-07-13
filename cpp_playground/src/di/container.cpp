@@ -8,7 +8,7 @@
 # include "fabic/di/container.hpp"
 # include "fabic/di/service_provider.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
   namespace di {
 
     // Ctor
@@ -110,7 +110,7 @@ namespace fabic {
 
       for (const auto &pair : this->services_.get_map_impl()) {
         service_ptr_t base = pair.second;
-        logdebug << " » " << base->id() << " [" << fabic::util::address_of(base) << "]";
+        logdebug << " » " << base->id() << " [" << TLNS::util::address_of(base) << "]";
       }
 
       logdebug << "CONTAINER DEBUG DUMP (2 - detail) :";
@@ -120,7 +120,7 @@ namespace fabic {
 
         logdebug << "  » " << base->id() << " : " << std::endl
            << "    - is-a:     " << base->get_service_definition_type_name() << std::endl
-           << "    - address : " << " [" << fabic::util::address_of(base) << "]" << std::endl
+           << "    - address : " << " [" << TLNS::util::address_of(base) << "]" << std::endl
            << "    - type:     " << base->get_type_info().pretty_name() << std::endl;
 
        auto deps = base->get_dependencies_map();
@@ -132,7 +132,7 @@ namespace fabic {
            base_dependency_declaration &dep = *tuple.second;
            logdebug << "        - " << dep.get_service_id()
               << " as " << dep.get_service_type().name()
-              << " [" << fabic::util::address_of(dep) << "]";
+              << " [" << TLNS::util::address_of(dep) << "]";
          }
         }
         else {
@@ -259,5 +259,5 @@ namespace fabic {
     }
 
   } // di ns.
-} // fabic ns.
+TL_NS_END
 

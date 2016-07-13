@@ -4,11 +4,11 @@
 # include "fabic/di/container.hpp"
 # include "fabic/asio/IoService.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
   namespace module {
     namespace asio {
 
-      namespace di = fabic::di;
+      namespace di = TLNS::di;
 
       /**
        * todo: FABIC_SYMBOL_EXPORT ?
@@ -38,7 +38,7 @@ namespace fabic {
          * from `symfony/module/asio/module-boost-asio.cpp` :
          *
          *     BOOST_DLL_ALIAS(
-         *         fabic::module::asio::BoostAsioService::__di_register_services,
+         *         TLNS::module::asio::BoostAsioService::__di_register_services,
          *         di_register_services
          *     )
          */
@@ -49,4 +49,4 @@ namespace fabic {
 
     }
   }
-}
+TL_NS_END

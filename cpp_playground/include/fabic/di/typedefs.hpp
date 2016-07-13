@@ -14,7 +14,7 @@
 #include "fabic/logging.hpp"
 #include "fabic/object.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
   namespace di {
 
     using std::shared_ptr;
@@ -67,7 +67,7 @@ namespace fabic {
     // ^ i.e. has not been constructed yet most probably.
 
   } // di ns.
-} // fabic ns.
+TL_NS_END
 
 /* Symbol visibility... relate to Link Time Optimization
  *

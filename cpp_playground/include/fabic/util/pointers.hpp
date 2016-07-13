@@ -8,7 +8,7 @@
 // #define format_address(x)    (boost::format(" [%x] ") % (x))
 // #define format_address_of(x) (format_address(std::addressof(x)))
 
-namespace fabic {
+TL_NS_BEGIN
   namespace ptr {
 
     /**
@@ -161,6 +161,6 @@ namespace fabic {
     }
 
 } // util ns
-} // fabic ns
+TL_NS_END
 
 #endif //FABICCPPPLAYGROUND_POINTERS_HPP

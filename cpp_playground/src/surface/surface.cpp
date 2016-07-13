@@ -1,11 +1,11 @@
 
 # include "fabic/surface/surface.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace sf {
 
-namespace tk  = fabic::tk;
-namespace xcb = fabic::xcb;
+namespace tk  = TLNS::tk;
+namespace xcb = TLNS::xcb;
 
   Surface::Surface(xcb::xcb_shared_ptr xcb_)
     : Window( xcb_ )
@@ -43,4 +43,4 @@ namespace xcb = fabic::xcb;
     this->appendChild( bottom_ );
   }
 } // sf ns.
-} // fabic ns.
+TL_NS_END

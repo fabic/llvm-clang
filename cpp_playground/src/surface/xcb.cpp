@@ -3,7 +3,7 @@
 #include "fabic/xcb+/xcb-inlines.hpp"
 #include "fabic/xcb+/window-inlines.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace xcb {
 
 
@@ -227,7 +227,7 @@ window_shared_ptr
         value_list                   // const uint32_t   *value_list
       );
 
-    namespace tk = fabic::tk;
+    namespace tk = TLNS::tk;
 
     auto win_ = tk::Element::_construct< Window >(
         this->shared_from_this(),
@@ -310,4 +310,4 @@ Xcb::_dispatchEvent(
 
 
 } // xcb ns.
-} // fabic ns.
+TL_NS_END

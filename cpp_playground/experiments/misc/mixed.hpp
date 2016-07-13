@@ -8,7 +8,7 @@
 //#include <ostream>
 //#include <typeinfo>
 
-namespace fabic {
+TL_NS_BEGIN
     namespace types {
 
         using std::string;
@@ -48,6 +48,6 @@ namespace fabic {
         };
 
     } // types ns.
-} // fabic ns.
+TL_NS_END
 
 #endif // FABIC_MIXED_DATATYPE

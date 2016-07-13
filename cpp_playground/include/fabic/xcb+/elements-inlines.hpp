@@ -3,7 +3,7 @@
 
 #include "elements.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace tk {
 
 
@@ -26,6 +26,6 @@ namespace tk {
   }
 
 } // xcb ns
-} // fabic ns
+TL_NS_END
 
 #endif // FABIC_TK_ELEMENTS_INLINES_H

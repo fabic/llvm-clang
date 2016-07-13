@@ -3,11 +3,11 @@
 
 #include "fabic/xcb+/xcb+.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace sf {
 
-namespace tk  = fabic::tk;
-namespace xcb = fabic::xcb;
+namespace tk  = TLNS::tk;
+namespace xcb = TLNS::xcb;
 
 
 class Surface
@@ -23,6 +23,6 @@ public:
 
 
 } // sf ns.
-} // fabic ns.
+TL_NS_END
 
 #endif // FABIC_SURFACE_H

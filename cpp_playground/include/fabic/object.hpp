@@ -5,7 +5,7 @@
 #ifndef MIXED_DATATYPE_OBJECT_HPP
 #define MIXED_DATATYPE_OBJECT_HPP
 
-namespace fabic {
+TL_NS_BEGIN
 
   /** Base _dependency container manageable_ object class.
    *
@@ -17,6 +17,6 @@ namespace fabic {
       virtual ~object() {}
   };
 
-}
+TL_NS_END
 
 #endif //MIXED_DATATYPE_OBJECT_HPP

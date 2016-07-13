@@ -11,6 +11,12 @@ project(FabicCppWanderings)
 set (FabicCppWanderings_VERSION_MAJOR 0)
 set (FabicCppWanderings_VERSION_MINOR 1)
 
+# Top-level namespace #define-s
+add_definitions(
+  -DTL_NS_BEGIN=
+  -DTL_NS_END=
+  -DTLNS=
+  )
 
 # This will cause `-I.` and similar/redondant directives like `-I../symfony/..`
 # to be emitted (for systematic ability of #include-ing files from the

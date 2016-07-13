@@ -4,7 +4,7 @@
 #include <map>
 #include "fabic/xcb+/typedefs.hpp"
 
-namespace fabic {
+TL_NS_BEGIN
 namespace xcb { // todo: rename to tk:: ns.
 
 /** Convenient enumeration for those scattered #define-s `XCB_...`
@@ -181,6 +181,6 @@ public:
 
 
 } // xcb ns.
-} // fabic ns.
+TL_NS_END
 
 #endif // FABIC_XCB_EVENTS_H
