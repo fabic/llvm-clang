@@ -12,7 +12,7 @@ namespace xcb = fabic::xcb;
   {
     this->id("surface");
     this->create(640, 380);
-    this->initCairo();
+    //this->initCairo();
     this->_initChildrenElementsHierarchy();
   }
 
@@ -37,7 +37,7 @@ namespace xcb = fabic::xcb;
         ->attributes()
         ->positionning()
         ->placement( tk::Placement::BOTTOM )
-        ->dimensions(-1, 12)
+        ->dimensions( tk::pixels_dimensions_t(-1, 12) )
         ;
 
     this->appendChild( bottom_ );

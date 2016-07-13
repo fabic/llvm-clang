@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <cairo/cairo-xcb.h>
+#include "fabic/xcb+/xcb.hpp"
+#include "fabic/xcb+/maths_2d.hpp"
 
 namespace fabic {
 namespace cairo {
@@ -23,6 +25,37 @@ public:
     cairo_surface_destroy(surface_);
     logtrace << "Deleted surface " << surface_;
   }
+};
+
+
+using fabic::xcb::window_shared_ptr;
+using fabic::tk::pixels_dimensions_t;
+
+
+/**
+ * Wrapper around Cairo C-style stuff.
+ */
+class Surface
+{
+public:
+  typedef Surface& self_ref;
+
+private:
+  std::shared_ptr< cairo_surface_t > cairoSurface_ = nullptr;
+
+public:
+
+
+  /**
+   * Prototype method for creating _self instances_ for XCB-based
+   * Cairo surfaces.
+   *
+   * @return
+   */
+   self_ref init_xcb_surface(
+      window_shared_ptr   window_,
+      pixels_dimensions_t dimensions
+    );
 };
 
 

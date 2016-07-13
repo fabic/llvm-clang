@@ -32,7 +32,6 @@ protected:
   xcb_shared_ptr xcb_;
   xcb_window_t   windowXid;
   xcb_visualtype_t * visual = nullptr;
-  std::shared_ptr<cairo_surface_t> cairoSurface_ = nullptr;
 
 public:
 
@@ -42,6 +41,9 @@ public:
   Window(xcb_shared_ptr xcb_, xcb_window_t xid);
 
   virtual ~Window();
+
+  /// Get the associated Xcb connection (shared ptr).
+  inline xcb_shared_ptr xcb() { return this->xcb_; }
 
   /**
    * @return this window's XID.
@@ -69,15 +71,19 @@ public:
   virtual void handleEvent(const Event& event);
 
   virtual void handleEventExpose(
-      uint16_t width, uint16_t height,
-      uint16_t x, uint16_t y
+      uint16_t width,
+      uint16_t height,
+      uint16_t x,
+      uint16_t y
     );
 
   tk::pixels_dimensions_t
     preComputePositionning(
-      int16_t w, int16_t h,
-      int16_t x, int16_t y
+      tk::pixels_dimensions_t dimensions,
+      tk::pixels_position_t   position
     ) override;
+
+  void render() override;
 
 protected:
   self_ptr initCairo();

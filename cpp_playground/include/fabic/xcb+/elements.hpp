@@ -7,15 +7,17 @@
 #include <type_traits>
 #include <algorithm>
 
+# include "fabic/xcb+/cairo.hpp"
 # include "fabic/util/pointers.hpp"
 # include "fabic/logging.hpp"
 
 namespace fabic {
 namespace tk {
 
-using fabic::ptr::inheritable_shared_from_this;
+namespace cairo = fabic::cairo;
 
 using std::string;
+using fabic::ptr::inheritable_shared_from_this;
 
 typedef string&       string_ref;
 typedef const string& string_cref;
@@ -46,77 +48,6 @@ enum Unit : uint8_t {
   , FONT_EM
   , FONT_EX
 };
-
-
-namespace unit {
-  template< typename ScalarType = int16_t >
-  struct pixels {
-    typedef ScalarType scalar_type;
-  };
-}
-
-
-/// Width x Height dimensions type
-/// TODO: find another name for this "dimensions" thing.
-/// TODO: have a common vs different thing for position (x,y)
-/// todo: ^ like point<> / vector<> / box<> / bounding_box<>
-template< class UnitTag >
-  struct dimensions_t
-  {
-    typedef typename UnitTag::scalar_type  scalar_t;
-    typedef       dimensions_t< UnitTag >  self_t;
-    typedef                       self_t&  self_ref;
-
-    scalar_t  width  = 0;
-    scalar_t  height = 0;
-
-    inline dimensions_t() { }
-
-    inline dimensions_t(const dimensions_t &) = default;
-    inline dimensions_t& operator=(const dimensions_t &) = default;
-
-    inline dimensions_t(scalar_t w, scalar_t h)
-      : width(w), height(h)
-    { }
-
-    /**
-     * Construct w/ a box of WxH _dim_ dimensions and use default _fallback_
-     * values for <= 0 width or height.
-     */
-    inline dimensions_t(self_t dim, self_t fallback)
-      : width(  dim.width  > 0 ? dim.width  : fallback.width  ),
-        height( dim.height > 0 ? dim.height : fallback.height )
-    { }
-
-    /// Set the width x height of _this_ box.
-    inline self_ref set(scalar_t w, scalar_t h) noexcept
-    {
-      this->width  = w;
-      this->height = h;
-      return *this;
-    }
-
-    /**
-     * Grow _this_ “ bounding box ” in width and/or height wrt. to the
-     * _other_ box.
-     *
-     * @param other
-     * @return
-     */
-    template< typename Other = self_t>
-    self_ref grow_if_bigger(const Other other) noexcept
-    {
-      // this->width  = std::max(this->width,  other.width);
-      // this->height = std::max(this->height, other.height);
-      // ^ std::max<T>() requires the same T type for both arguments.
-      this->width  = this->width  > other.width  ? this->width  : other.width;
-      this->height = this->height > other.height ? this->height : other.height;
-      return *this;
-    }
-  };
-
-/// Default signed 16-bit integer width x height dimensions type.
-typedef dimensions_t< unit::pixels<> > pixels_dimensions_t;
 
 
 /**
@@ -178,6 +109,7 @@ public:
     , _h_unit( Unit::PIXELS )
   { }
 
+  /// todo: ren. position( pixels_position_t ...)
   inline self xy(
       int16_t x, int16_t y,
       Unit ux = Unit::PIXELS,
@@ -193,10 +125,9 @@ public:
     return *this;
   }
 
-  inline self_ptr dimensions(int16_t w, int16_t h) noexcept
+  inline self_ptr dimensions(pixels_dimensions_t dim) noexcept
   {
-    //this->_dimensions.set(w, h);
-    this->_dimensions = pixels_dimensions_t(w, h);
+    this->_dimensions = dim;
     return this;
   }
 
@@ -280,9 +211,10 @@ public:
   typedef Element* self_ptr;
 
 protected:
-  string     _id;
-  Attributes _attributes;
-  Attributes _computedAttributes;
+  string         _id;
+  Attributes     _attributes;
+  Attributes     _computedAttributes;
+  cairo::Surface _surface;
 
 public:
   explicit Element(ElementPtr parent_);
@@ -302,11 +234,22 @@ public:
 
   AttributesPtr attributes() noexcept { return &this->_attributes; }
 
+  /**
+   * Recursive descent into this element sub-tree (visit children)
+   * so as to determine _this'_ “ bounding-box ” dimensions.
+   */
   virtual pixels_dimensions_t preComputePositionning(
-      int16_t w, int16_t h,
-      int16_t x, int16_t y
+      pixels_dimensions_t dimensions,
+      pixels_position_t   position
     );
-  // todo: compute & postComputePositionning()...
+
+  virtual pixels_dimensions_t computePositionning(
+      pixels_dimensions_t dimensions,
+      pixels_position_t   position
+    );
+  // todo: postComputePositionning()...
+
+  virtual void render();
 
 protected:
   virtual void _initChildrenElementsHierarchy();

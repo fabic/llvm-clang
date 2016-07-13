@@ -35,6 +35,7 @@ pkg_check_modules(FT2 freetype2)
 add_executable( sf
   surface_main.cpp
     surface.cpp
+    cairo.cpp
     elements.cpp
     window.cpp
     events.cpp

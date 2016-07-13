@@ -189,61 +189,59 @@ Window::handleEvent(const Event& event)
 
 // virtual btw.
 void Window::handleEventExpose(
-    uint16_t width, uint16_t height,
-    uint16_t x, uint16_t y
+    uint16_t width,
+    uint16_t height,
+    uint16_t x,
+    uint16_t y
   )
 {
   logtrace << "Window::handleEventExpose(): "
            << "width = " << width << ", height = " << height
            << ", x = " << x << ", y = " << y ;
 
-  this->preComputePositionning(width, height, x, y);
-}
+  assert (! (width & 0x8000) );
+  assert (! (height & 0x8000) );
 
+  // Drop eventual sign-bit for we'll be using int16_t from now on.
+  width  &= ~0x8000;
+  height &= ~0x8000;
 
-Window::self_ptr
-  Window::initCairo()
-{
-  auto geometry = this->get_geometry();
-
-  // https://www.cairographics.org/manual/cairo-XCB-Surfaces.html#cairo-xcb-surface-create
-  //   “ Note: If drawable is a Window, then the function cairo_xcb_surface_set_size()
-  //     must be called whenever the size of the window changes.
-  //     When drawable is a Window containing child windows then drawing to the
-  //     created surface will be clipped by those child windows. When the
-  //     created surface is used as a source, the contents of the children will
-  //     be included. ”
-  //     Returns a pointer to the newly created surface. The caller owns the
-  //     surface and should call cairo_surface_destroy() when done with it.
-  //     This function always returns a valid pointer, but it will return a
-  //     pointer to a "nil" surface if an error such as out of memory occurs.
-  //     You can use cairo_surface_status() to check for this.
-
-  this->cairoSurface_ = std::shared_ptr<cairo_surface_t>(
-    cairo_xcb_surface_create(
-        this->xcb_->getXcbConnectionPtr(),
-        this->getXid(),
-        this->getVisualType(),
-        geometry->width,
-        geometry->height
-      ),
-      fabic::cairo::SurfaceDeleterFunctor()
+  this->computePositionning(
+      tk::pixels_dimensions_t(width, height),
+      tk::pixels_position_t(x, y)
     );
 
-  return this;
+  this->render();
+
+  // todo: ^ get the computed bbox and ensure min. window dimensions (prevent
+  // todo:   too small window size).
+  // todo: eventually have an aspect-ratio thing wrt. to window content, like
+  // todo: when we have 2+ split-editor...
 }
 
 
+// virtual override btw.
 tk::pixels_dimensions_t
   Window::preComputePositionning(
-    int16_t w, int16_t h,
-    int16_t x, int16_t y
+    tk::pixels_dimensions_t dimensions,
+    tk::pixels_position_t   position
   )
 {
-  this->attributes()->positionning()->dimensions(w, h);
-  this->attributes()->positionning()->xy(x, y);
+  this->attributes()->positionning()->dimensions( dimensions );
+  //this->attributes()->positionning()->xy(x, y); // todo: position( position
+  // ) ??
 
-  return tk::Element::preComputePositionning(w, h, x, y);
+  return tk::Element::preComputePositionning(dimensions, position);
+}
+
+
+// virtual override btw.
+void Window::render()
+{
+  this->_surface.init_xcb_surface(
+      this->shared_from_base< Window >(),
+      this->attributes()->positionning()->dimensions()
+  );
 }
 
 
