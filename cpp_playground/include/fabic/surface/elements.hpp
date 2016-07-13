@@ -209,11 +209,13 @@ public:
   typedef Element& self;
   typedef Element* self_ptr;
 
+  using Surface = TLNS::cairo::Surface;
+
 protected:
   string         _id;
   Attributes     _attributes;
   Attributes     _computedAttributes;
-  TLNS::cairo::Surface _surface;
+  Surface        _surface;
 
 public:
   explicit Element(ElementPtr parent_);
@@ -232,6 +234,8 @@ public:
   string_cref id() const noexcept { return this->_id; }
 
   AttributesPtr attributes() noexcept { return &this->_attributes; }
+
+  Surface::self_ref surface() noexcept { return this->_surface; }
 
   /**
    * Recursive descent into this element sub-tree (visit children)

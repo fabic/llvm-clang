@@ -72,7 +72,7 @@ namespace tk {
 
     if ( ! this->children().empty() ) {
       logtrace << " » has " << this->children().size() << " children.";
-      for (tk::ElementPtr &elt : this->children()) {
+      for (ElementPtr &elt : this->children()) {
         logtrace << " » Recursing into child \"" << elt->id() << "\" sub-tree.";
 
         auto child_dimensions = elt->preComputePositionning(
@@ -93,6 +93,8 @@ namespace tk {
 
     logtrace << "Element::preComputePositionning(" << this->id() << "): end." ;
 
+    this->attributes()->positionning()->dimensions( self_dimensions );
+
     return self_dimensions;
   }
 
@@ -100,6 +102,24 @@ namespace tk {
   // virtual btw.
   void Element::render()
   {
+    // Initialize surface _this_ element surface as needed (no replace).
+    if (this->parent() != nullptr) {
+      this->surface().createSimilar(
+          this->parent()->surface(),
+          this->attributes()->positionning()->dimensions(),
+          false // no replace => keep the same/previous Cairo surface.
+      );
+    }
+
+    // Recurse render() into children sub-trees :
+    if ( ! this->children().empty() ) {
+      for (ElementPtr &elt : this->children()) {
+        elt->render();
+      }
+    }
+
+    // TEMP;
+    //auto ctx = this->surface().context();
 
   }
 

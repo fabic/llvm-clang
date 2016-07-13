@@ -29,8 +29,8 @@ private:
   Window& operator=(const Window &) = delete;
 
 protected:
-  xcb_shared_ptr xcb_;
-  xcb_window_t   windowXid;
+  xcb_shared_ptr     xcb_;
+  xcb_window_t       windowXid;
   xcb_visualtype_t * visual = nullptr;
 
 public:

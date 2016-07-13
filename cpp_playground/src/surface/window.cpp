@@ -238,12 +238,14 @@ tk::pixels_dimensions_t
 // virtual override btw.
 void Window::render()
 {
-  this->_surface.init_xcb_surface(
+  this->_surface.initXcb(
       this->xcb()->getXcbConnectionPtr(),
       this->getDrawableXid(),
       this->getVisualType(),
       this->attributes()->positionning()->dimensions()
   );
+
+  tk::Element::render();
 }
 
 
