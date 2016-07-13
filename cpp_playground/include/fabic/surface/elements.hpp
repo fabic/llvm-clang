@@ -7,10 +7,10 @@
 #include <type_traits>
 #include <algorithm>
 
-# include "fabic/xcb+/cairo.hpp"
+# include "fabic/surface/cairo.hpp"
 # include "fabic/util/pointers.hpp"
 # include "fabic/logging.hpp"
-# include "fabic/xcb+/maths_2d.hpp"
+# include "fabic/surface/maths_2d.hpp"
 
 TL_NS_BEGIN
 namespace tk {

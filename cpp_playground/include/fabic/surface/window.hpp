@@ -1,9 +1,9 @@
 #ifndef FABIC_XCB_WINDOW_H
 #define FABIC_XCB_WINDOW_H
 
-#include "fabic/xcb+/xcb.hpp"
-#include "fabic/xcb+/cairo.hpp"
-#include "fabic/xcb+/elements.hpp"
+#include "fabic/surface/xcb.hpp"
+#include "fabic/surface/cairo.hpp"
+#include "fabic/surface/elements.hpp"
 
 TL_NS_BEGIN
 namespace xcb {

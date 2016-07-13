@@ -2,7 +2,7 @@
 #define FABIC_XCB_EVENTS_H
 
 #include <map>
-#include "fabic/xcb+/typedefs.hpp"
+#include "fabic/surface/typedefs.hpp"
 
 TL_NS_BEGIN
 namespace xcb { // todo: rename to tk:: ns.

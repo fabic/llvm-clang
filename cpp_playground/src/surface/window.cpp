@@ -1,8 +1,8 @@
 
-#include "fabic/xcb+/window.hpp"
-#include "fabic/xcb+/window-inlines.hpp"
-#include "fabic/xcb+/elements-inlines.hpp"
-#include "fabic/xcb+/xcb-inlines.hpp"
+#include "fabic/surface/window.hpp"
+#include "fabic/surface/window-inlines.hpp"
+#include "fabic/surface/elements-inlines.hpp"
+#include "fabic/surface/xcb-inlines.hpp"
 
 TL_NS_BEGIN
 namespace xcb {

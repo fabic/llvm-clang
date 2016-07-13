@@ -1,10 +1,10 @@
 #ifndef FABIC_XCB_H
 #define FABIC_XCB_H
 
-#include "fabic/xcb+/typedefs.hpp"
-#include "fabic/xcb+/events.hpp"
-#include "fabic/xcb+/mask_values.hpp"
-#include "fabic/xcb+/window.hpp"
+#include "fabic/surface/typedefs.hpp"
+#include "fabic/surface/events.hpp"
+#include "fabic/surface/mask_values.hpp"
+#include "fabic/surface/window.hpp"
 
 
 TL_NS_BEGIN

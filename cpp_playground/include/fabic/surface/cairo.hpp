@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <cairo/cairo-xcb.h>
-#include "fabic/xcb+/maths_2d.hpp"
+#include "fabic/surface/maths_2d.hpp"
 #include "fabic/logging.hpp"
 
 TL_NS_BEGIN

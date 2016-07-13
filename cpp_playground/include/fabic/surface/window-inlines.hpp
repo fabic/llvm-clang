@@ -1,7 +1,7 @@
 #ifndef FABIC_XCB_WINDOW_INLINES_H
 #define FABIC_XCB_WINDOW_INLINES_H
 
-#include "fabic/xcb+/window.hpp"
+#include "fabic/surface/window.hpp"
 
 TL_NS_BEGIN
 namespace xcb {

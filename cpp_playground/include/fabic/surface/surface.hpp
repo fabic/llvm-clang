@@ -1,7 +1,7 @@
 #ifndef FABIC_SURFACE_H
 #define FABIC_SURFACE_H
 
-#include "fabic/xcb+/xcb+.hpp"
+#include "fabic/surface/xcb+.hpp"
 
 TL_NS_BEGIN
 namespace sf {
