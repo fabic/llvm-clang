@@ -68,7 +68,12 @@ public:
 
   virtual void handleEvent(const Event& event);
 
-  virtual tk::ElementList
+  virtual void handleEventExpose(
+      uint16_t width, uint16_t height,
+      uint16_t x, uint16_t y
+    );
+
+  tk::pixels_dimensions_t
     preComputePositionning(
       int16_t w, int16_t h,
       int16_t x, int16_t y

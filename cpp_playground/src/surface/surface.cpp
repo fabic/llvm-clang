@@ -10,6 +10,7 @@ namespace xcb = fabic::xcb;
   Surface::Surface(xcb::xcb_shared_ptr xcb_)
     : Window( xcb_ )
   {
+    this->id("surface");
     this->create(640, 380);
     this->initCairo();
     this->_initChildrenElementsHierarchy();
@@ -32,11 +33,12 @@ namespace xcb = fabic::xcb;
     auto bottom_ = tk::Element::_construct< Block >( this->shared_from_this() );
 
     bottom_
-      ->id("bottom")
-      ->attributes()->positionning()
-      ->placement( tk::Placement::BOTTOM )
-      ->wh(-1, 12)
-      ;
+        ->id("bottom")
+        ->attributes()
+        ->positionning()
+        ->placement( tk::Placement::BOTTOM )
+        ->dimensions(-1, 12)
+        ;
 
     this->appendChild( bottom_ );
   }

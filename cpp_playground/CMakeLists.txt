@@ -103,10 +103,10 @@ add_compile_options(
   #   - or simply set this as an environment variable,
   #   - or pass `-DBOOSTROOT=...` when running CMake.
   # (works ok with my CMake v3.4.3)
-  #set(BOOSTROOT ../local/boost-1.61.0-clang)
+  set(BOOSTROOT ../local/boost-1.61.0-clang)
 
   # This one is for JetBrains' CLion bundled CMake (v3.5.2) :
-  #set(BOOST_ROOT ${BOOSTROOT})
+  set(BOOST_ROOT ${BOOSTROOT})
 
   # These two ain't needed, actually...
   # set(BOOST_INCLUDE_DIRS ${BOOSTROOT}/include)

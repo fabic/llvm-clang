@@ -170,9 +170,7 @@ Window::handleEvent(const Event& event)
     {
       case EventType::EXPOSE: {
         auto ex_ = event.expose();
-        logtrace << "  » x = " << ex_->x << ", y = " << ex_->y
-                 << ", width = " << ex_->width << ", height = " << ex_->height
-                 ;
+        this->handleEventExpose(ex_->width, ex_->height, ex_->x, ex_->y);
         break;
       }
       case EventType::KEY_PRESS: {
@@ -186,6 +184,20 @@ Window::handleEvent(const Event& event)
     }
 
     logtrace << "Window::handleEvent(): end." ;
+}
+
+
+// virtual btw.
+void Window::handleEventExpose(
+    uint16_t width, uint16_t height,
+    uint16_t x, uint16_t y
+  )
+{
+  logtrace << "Window::handleEventExpose(): "
+           << "width = " << width << ", height = " << height
+           << ", x = " << x << ", y = " << y ;
+
+  this->preComputePositionning(width, height, x, y);
 }
 
 
@@ -222,13 +234,16 @@ Window::self_ptr
 }
 
 
-tk::ElementList
+tk::pixels_dimensions_t
   Window::preComputePositionning(
     int16_t w, int16_t h,
     int16_t x, int16_t y
   )
 {
+  this->attributes()->positionning()->dimensions(w, h);
+  this->attributes()->positionning()->xy(x, y);
 
+  return tk::Element::preComputePositionning(w, h, x, y);
 }
 
 

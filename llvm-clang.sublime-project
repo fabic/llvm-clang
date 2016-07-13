@@ -36,13 +36,12 @@
 		// }
 	],
 	// Will be excluded from indexing.
-	"binary_file_patterns":
-	[
-		"bootstrap**/**",
-		"local**/**",
-		"misc/**",
-		"php/**",
-		"tmp/**",
-	],
-	"trim_trailing_white_space_on_save": false
+	// "binary_file_patterns":
+	// [
+	// 	"bootstrap**/**",
+	// 	"local**/**",
+	// 	"misc/**",
+	// 	"php/**",
+	// 	"tmp/**",
+	// ],
 }
