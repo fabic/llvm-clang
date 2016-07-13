@@ -239,7 +239,9 @@ tk::pixels_dimensions_t
 void Window::render()
 {
   this->_surface.init_xcb_surface(
-      this->shared_from_base< Window >(),
+      this->xcb()->getXcbConnectionPtr(),
+      this->getDrawableXid(),
+      this->getVisualType(),
       this->attributes()->positionning()->dimensions()
   );
 }

@@ -10,11 +10,10 @@
 # include "fabic/xcb+/cairo.hpp"
 # include "fabic/util/pointers.hpp"
 # include "fabic/logging.hpp"
+# include "fabic/xcb+/maths_2d.hpp"
 
 namespace fabic {
 namespace tk {
-
-namespace cairo = fabic::cairo;
 
 using std::string;
 using fabic::ptr::inheritable_shared_from_this;
@@ -214,7 +213,7 @@ protected:
   string         _id;
   Attributes     _attributes;
   Attributes     _computedAttributes;
-  cairo::Surface _surface;
+  fabic::cairo::Surface _surface;
 
 public:
   explicit Element(ElementPtr parent_);

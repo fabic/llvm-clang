@@ -7,11 +7,16 @@ namespace fabic {
 namespace xcb {
 
 
-inline
-xcb_window_t
-  Window::getXid()
+inline xcb_window_t
+  Window::getXid() const
 {
   return this->windowXid;
+}
+
+inline xcb_drawable_t
+  Window::getDrawableXid() const
+{
+  return this->getXid();
 }
 
 

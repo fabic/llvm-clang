@@ -48,7 +48,8 @@ public:
   /**
    * @return this window's XID.
    */
-  xcb_window_t   getXid();
+  xcb_window_t   getXid() const;
+  xcb_drawable_t getDrawableXid() const;
   xcb_visualid_t getVisualXid();
 
   self map();

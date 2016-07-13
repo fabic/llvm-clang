@@ -4,18 +4,16 @@
 namespace fabic {
 namespace cairo {
 
-namespace xcb = fabic::xcb;
-namespace tk  = fabic::tk;
 
 // static btw.
-self_ref
+Surface::self_ref
 Surface::init_xcb_surface(
-    xcb::window_shared_ptr   window_,
-    tk::pixels_dimensions_t  dimensions
-)
+    xcb_connection_t *      conn,
+    xcb_drawable_t          drawable,
+    xcb_visualtype_t *      visual,
+    tk::pixels_dimensions_t dimensions
+  )
 {
-  // todo: window_->get_geometry() ?
-
   // https://www.cairographics.org/manual/cairo-XCB-Surfaces.html#cairo-xcb-surface-create
   //
   //   “ Note: If drawable is a Window, then the function cairo_xcb_surface_set_size()
@@ -34,9 +32,9 @@ Surface::init_xcb_surface(
 
   this->cairoSurface_ = std::shared_ptr< cairo_surface_t >(
       cairo_xcb_surface_create(
-          window_->xcb()->getXcbConnectionPtr(),
-          window_->getXid(),
-          window_->getVisualType(),
+          conn,
+          drawable,
+          visual,
           dimensions.width,
           dimensions.height
       ),

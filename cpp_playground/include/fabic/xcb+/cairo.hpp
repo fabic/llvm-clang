@@ -1,10 +1,10 @@
-#ifndef FABIC_XCB_CAIRO_H
-#define FABIC_XCB_CAIRO_H
+#ifndef FABIC_CAIRO_H
+#define FABIC_CAIRO_H
 
 #include <memory>
 #include <cairo/cairo-xcb.h>
-#include "fabic/xcb+/xcb.hpp"
 #include "fabic/xcb+/maths_2d.hpp"
+#include "fabic/logging.hpp"
 
 namespace fabic {
 namespace cairo {
@@ -28,10 +28,6 @@ public:
 };
 
 
-using fabic::xcb::window_shared_ptr;
-using fabic::tk::pixels_dimensions_t;
-
-
 /**
  * Wrapper around Cairo C-style stuff.
  */
@@ -53,13 +49,15 @@ public:
    * @return
    */
    self_ref init_xcb_surface(
-      window_shared_ptr   window_,
-      pixels_dimensions_t dimensions
-    );
+      xcb_connection_t *      conn,
+      xcb_drawable_t          drawable,
+      xcb_visualtype_t *      visual,
+      tk::pixels_dimensions_t dimensions
+  );
 };
 
 
 } // cairo ns
 } // fabic ns
 
-#endif //FABIC_XCB_CAIRO_H
+#endif //FABIC_CAIRO_H
