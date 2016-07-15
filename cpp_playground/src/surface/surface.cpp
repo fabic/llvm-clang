@@ -11,13 +11,14 @@ namespace xcb = TLNS::xcb;
     : Window( xcb_ )
   {
     this->id("surface");
-    this->create(640, 380);
-    //this->initCairo();
+    this->_create(800, 450);
     this->_initChildrenElementsHierarchy();
   }
 
+
   Surface::~Surface()
   { }
+
 
   // virtual btw. from Element.
   void

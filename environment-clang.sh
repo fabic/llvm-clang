@@ -32,6 +32,7 @@ else
     echo "| FYI: No FHS-like '$localdir' directory, ok this is not a problem."
 fi
 
+
 # PKG-CONFIG
 if [ -d "$localdir/lib/pkgconfig" ]; then
     echo "| Found a pkg-config dir. '$localdir/lib/pkgconfig' : prepending it to \$PKG_CONFIG_PATH. "
@@ -39,6 +40,39 @@ if [ -d "$localdir/lib/pkgconfig" ]; then
     export PKG_CONFIG_PATH
 else
     echo "| FYI: Didn't find a pkg-config dir. at '$localdir/lib/pkgconfig', not setting the \$PKG_CONFIG_PATH env. var."
+fi
+
+
+# CMAKE's CMAKE_MODULE_PATH
+if false;
+then
+  if [ -d "$localdir/share" ];
+  then
+    echo "| Searching for CMake modules paths..."
+    export CMAKE_MODULE_PATH="${CMAKE_MODULE_PATH:-}"
+
+    find "$localdir" -type f -name '*.cmake' | \
+      while read fn; do
+        pathappend "`dirname "$fn"`" CMAKE_MODULE_PATH
+      done
+
+    # find "$localdir" -type f -name '*.cmake' | \
+    #   while read fn; do
+    #     dirname "$fn"
+    #   done | \
+    #     sort -u | \
+    #       while read din; do
+    #         pathprepend "$din" CMAKE_MODULE_PATH
+    #         echo "|   » Found '$din'"
+    #       done
+
+    if [ ! -z "$CMAKE_MODULE_PATH" ];
+    then
+      echo "| ~> \$CMAKE_MODULE_PATH = $CMAKE_MODULE_PATH"
+    else
+      echo "| ~> found no CMake additionnal modules paths under $localdir"
+    fi
+  fi
 fi
 
 

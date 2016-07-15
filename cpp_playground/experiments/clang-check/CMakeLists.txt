@@ -1,9 +1,14 @@
 
 cmake_minimum_required(VERSION 3.3)
 
-# list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../local/share/clang/cmake")
+list(APPEND CMAKE_MODULE_PATH
+  # "${CMAKE_CURRENT_SOURCE_DIR}/../local/share/clang/cmake"
+  "${CMAKE_SOURCE_DIR}/../local/share/clang/cmake"
+  "${CMAKE_SOURCE_DIR}/../local/share/llvm/cmake"
+  )
 
-if (false)
+if (true)
+  find_package(LLVM  REQUIRED )
   find_package(Clang REQUIRED )
 
   set( LLVM_LINK_COMPONENTS
@@ -42,16 +47,16 @@ if (false)
     clangTooling
     LLVMOption
     LLVMSupport
-    LLVMX86CodeGen.so
-    LLVMX86AsmPrinter.so
-    LLVMX86AsmParser.so
-    LLVMX86Desc.so
-    LLVMX86Info.so
-    LLVMX86Disassembler.so
+    LLVMX86CodeGen
+    LLVMX86AsmPrinter
+    LLVMX86AsmParser
+    LLVMX86Desc
+    LLVMX86Info
+    LLVMX86Disassembler
     )
 
 
   install(TARGETS
     clang-check
     RUNTIME DESTINATION bin)
-endif (false)
+endif (true)

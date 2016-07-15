@@ -62,13 +62,6 @@ public:
 
   xcb_visualtype_t * getVisualType();
 
-  virtual self_ptr
-    create(
-        uint16_t          width,
-        uint16_t          height,
-        window_shared_ptr parentWindow = nullptr
-      );
-
   virtual void handleEvent(const Event& event);
 
   virtual void handleEventExpose(
@@ -87,7 +80,12 @@ public:
   void render() override;
 
 protected:
-  self_ptr initCairo();
+  virtual self_ptr
+  _create(
+      uint16_t          width,
+      uint16_t          height,
+      window_shared_ptr parentWindow = nullptr
+  );
 };
 
 } // xcb ns.

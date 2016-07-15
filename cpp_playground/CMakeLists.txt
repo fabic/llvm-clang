@@ -3,6 +3,7 @@
 # FabiC's C++ playground
 #
 # @link https://cmake.org/cmake-tutorial/
+# @link http://www.vtk.org/Wiki/CMake_Useful_Variables
 #
 cmake_minimum_required(VERSION 3.3)
 

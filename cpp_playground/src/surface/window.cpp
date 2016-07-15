@@ -94,7 +94,7 @@ std::unique_ptr<xcb_get_geometry_reply_t>
 
 // virtual btw.
 Window::self_ptr
-  Window::create(
+  Window::_create(
       uint16_t          width,
       uint16_t          height,
       window_shared_ptr parentWindow
@@ -120,11 +120,11 @@ Window::self_ptr
     | XCB_EVENT_MASK_POINTER_MOTION
     ;
 
-  attributes[ XCB_CW_BACK_PIXEL ]   = screen.black_pixel;
-  attributes[ XCB_CW_BORDER_PIXEL ] = screen.white_pixel;
+  attributes[ XCB_CW_BACK_PIXEL ]   = 0x00ddccbb; // screen.white_pixel;
+  attributes[ XCB_CW_BORDER_PIXEL ] = screen.black_pixel;
 
-  uint32_t value_mask  = attributes.bitmask();
-  uint32_t* value_list = attributes.data();
+  uint32_t   value_mask = attributes.bitmask();
+  uint32_t * value_list = attributes.data();
 
   auto wid = this->xcb_->generate_xid();
 
