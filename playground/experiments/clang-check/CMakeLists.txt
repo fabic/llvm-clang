@@ -8,8 +8,10 @@ list(APPEND CMAKE_MODULE_PATH
   )
 
 if (true)
-  find_package(LLVM  REQUIRED )
-  find_package(Clang REQUIRED )
+	#set(LLVM_ENABLE_RTTI ON)
+
+  find_package(LLVM  REQUIRED 3.8.1 )
+  find_package(Clang REQUIRED 3.8.1 )
 
   set( LLVM_LINK_COMPONENTS
     ${LLVM_TARGETS_TO_BUILD}
@@ -36,6 +38,8 @@ if (true)
       -D__STDC_LIMIT_MACROS
     )
 
+  #target_compile_options(clang-check PUBLIC -flto -v)
+
   target_link_libraries(
     clang-check
     clangAST
@@ -45,6 +49,7 @@ if (true)
     clangRewriteFrontend
     clangStaticAnalyzerFrontend
     clangTooling
+    #clangToolingCore
     LLVMOption
     LLVMSupport
     LLVMX86CodeGen
