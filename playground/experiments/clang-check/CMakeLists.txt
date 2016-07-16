@@ -1,28 +1,35 @@
 
 cmake_minimum_required(VERSION 3.3)
 
+#
+# http://llvm.org/docs/CMake.html#embedding-llvm-in-your-project
+#
+
 list(APPEND CMAKE_MODULE_PATH
-  # "${CMAKE_CURRENT_SOURCE_DIR}/../local/share/clang/cmake"
-  "${CMAKE_SOURCE_DIR}/../local/share/clang/cmake"
-  "${CMAKE_SOURCE_DIR}/../local/share/llvm/cmake"
+    "${CMAKE_SOURCE_DIR}/../local/share/clang/cmake"
+    "${CMAKE_SOURCE_DIR}/../local/share/llvm/cmake"
   )
 
+find_package( LLVM  REQUIRED CONFIG )
+find_package( Clang REQUIRED )
+
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+
 if (true)
-	#set(LLVM_ENABLE_RTTI ON)
 
-  find_package(LLVM  REQUIRED 3.8.1 )
-  find_package(Clang REQUIRED 3.8.1 )
-
-  set( LLVM_LINK_COMPONENTS
-    ${LLVM_TARGETS_TO_BUILD}
-    Option
-    Support
-    )
+  # set( LLVM_LINK_COMPONENTS
+  #   ${LLVM_TARGETS_TO_BUILD}
+  #   Option
+  #   Support
+  #   )
 
   add_executable(
     clang-check
     ClangCheck.cpp
     )
+
+  target_include_directories(clang-check PUBLIC ${LLVM_INCLUDE_DIRS})
 
   target_compile_definitions(
     clang-check
@@ -34,39 +41,46 @@ if (true)
       #   error: Must #define __STDC_CONSTANT_MACROS before #including Support/DataTypes.h ”
       #
       # See also Clang's `local/lib/clang/3.8.1/include/stdint.h`.
-      -D__STDC_CONSTANT_MACROS
-      -D__STDC_LIMIT_MACROS
+      #-D__STDC_CONSTANT_MACROS
+      #-D__STDC_LIMIT_MACROS
+      #
+      # EDIT: turns out this is achieved by :
+      ${LLVM_DEFINITIONS}
     )
-
-  target_compile_options(clang-check PUBLIC -flto)
 
   # LLVM/Clang must have been built w/ LLVM_ENABLE_RTTI=ON,
   # else you may get around unresolved "typeinfo for ..." link-time
   # problems with -fno-rtti :
   #target_compile_options(clang-check PUBLIC -fno-rtti)
 
-  target_link_libraries(
-    clang-check
-    "-Wl,-v,-plugin=LLVMgold.so"
-    clangAST
-    clangBasic
-    clangDriver
-    clangFrontend
-    clangRewriteFrontend
-    clangStaticAnalyzerFrontend
-    clangTooling
-    LLVMOption
-    LLVMSupport
-    LLVMX86CodeGen
-    LLVMX86AsmPrinter
-    LLVMX86AsmParser
-    LLVMX86Desc
-    LLVMX86Info
-    LLVMX86Disassembler
+  # “ Find the libraries that correspond to the LLVM components
+  #   that we wish to use ” :
+  llvm_map_components_to_libnames(
+      LLVM_CLANG_LIBS
+        Support Option
+        X86CodeGen
+        X86AsmParser
+        X86Desc
+        X86Info
     )
 
+  target_compile_options(clang-check PUBLIC -flto)
+
+  target_link_libraries(
+    clang-check
+      "-Wl,-v,-plugin=LLVMgold.so"
+      clangAST
+      clangBasic
+      clangDriver
+      clangFrontend
+      clangRewriteFrontend
+      clangStaticAnalyzerFrontend
+      clangTooling
+      ${LLVM_CLANG_LIBS}
+    )
 
   install(TARGETS
     clang-check
     RUNTIME DESTINATION bin)
+
 endif (true)

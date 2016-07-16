@@ -90,6 +90,8 @@ Homepage | Github repository
 
 * <http://llvm.org/docs/Packaging.html>
 
+* <http://llvm.org/docs/CMake.html#embedding-llvm-in-your-project>
+
 * <http://libcxx.llvm.org/docs/BuildingLibcxx.html>
 
     __libc++ 3.9 documentation &ndash; Building libc++__

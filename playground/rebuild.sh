@@ -1,6 +1,6 @@
 #!/bin/bash
 
-here=$(cd dirname "$0" && pwd)
+here=$(cd `dirname "$0"` && pwd)
 
 cd "$here" || exit 1
 
