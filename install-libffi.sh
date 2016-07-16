@@ -7,29 +7,22 @@ here=$(cd `dirname "$0"` && pwd)
 . "$here/functions.sh"
 
 
-# https://sourceware.org/libffi/
-# http://www.linuxfromscratch.org/blfs/view/stable/general/libffi.html
-# libffi-3.2.1 was released on November 12, 2014
-cd tmp
-wget ftp://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz -O libffi-3.2.1.tar.gz
-tar -xf libffi-3.2.1.tar.gz
-cd libffi-3.2.1
-
-sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' \
-    -i include/Makefile.in
+libffi_version="3.2.1"
 
 
-sed -e '/^includedir/ s/=.*$/=@includedir@/' \
-    -e 's/^Cflags: -I${includedir}/Cflags:/' \
-    -i libffi.pc.in
+echo "+--- $0"
+echo "|"
+echo "| This script downloads, builds and install libffi-$libffi_version"
+echo "|"
+echo "| (FFI : Foreign Function Interface)."
+echo "|"
+echo "| - https://sourceware.org/libffi/"
+echo "| - http://www.linuxfromscratch.org/blfs/view/stable/general/libffi.html"
+echo "|"
+echo "| NB: libffi-3.2.1 was released on November 12, 2014"
+echo "+-"
 
-./configure --prefix=$(cd ../../local && pwd) --disable-static
-
-make
-make install
-
-
-cat <<EOS
+cat <<EOS | sed -e 's/^/|   /'
 Quoted from https://sourceware.org/libffi/ :
 --
   What is libffi ?
@@ -60,26 +53,14 @@ Quoted from https://sourceware.org/libffi/ :
 --
 EOS
 
-exit
-
-#####
-echo "+--- $0"
-echo "|"
-echo "| This script builds and install Cairomm (C++ bindings/wrapper for Cairo)."
-echo "|"
-echo "| Official Git repository :"
-echo "|   https://cgit.freedesktop.org/cairomm/"
-echo "|"
-echo "| References :"
-echo "|"
-echo "|  - http://linuxfromscratch.org/blfs/view/svn/x/cairomm.html"
+echo "+-"
 
 
   cd "$here" || exit 1
 
   localdir=${1:-"$(mkdir -p "$here/local" && cd "$here/local" && pwd)"}
   builddir=${2:-"BUILD"}
-  sources_dir=${3:-misc/cairomm}
+  sources_dir="${3:-misc/libffi-$libffi_version}"
 
   # Ensure destination "install target" directory is an absolute path :
   if [ "X${localdir#/}" == "X${localdir}" ]; then
@@ -92,57 +73,68 @@ echo "|  - http://linuxfromscratch.org/blfs/view/svn/x/cairomm.html"
   fi
 
 
+# Download & extract tarball if sources not found :
+if [ ! -d "misc/libffi-$libffi_version" ];
+then
+
+  # Download tarball under tmp/ if not exists :
+  if [ ! -f "tmp/libffi-$libffi_version.tar.gz" ] &&
+    ! wget ftp://sourceware.org/pub/libffi/libffi-$libffi_version.tar.gz \
+      -O tmp/libffi-$libffi_version.tar.gz ;
+  then
+    echo "OUPS!"
+    exit 1
+  fi
+
+  # Extract tarbal content under misc/
+  if ! tar -xf tmp/libffi-$libffi_version.tar.gz -C misc/ ;
+  then
+    echo "GOOUPS!"
+    exit 2
+  fi
+
+  # Check sources misc/libffi-x.y.z/ exists.
+  if [ ! -d "$sources_dir" ]; then
+    echo "ARGH!"
+    exit 3
+  fi
+fi
+
+
 configure_log_filename="_configure-command-output.log.txt"
 
 # Arguments for ./configure...
 configure_args=(
         --prefix="$localdir"
+        --disable-static
   )
-
-# Boost C++ is optional
-if [ ! -z "$BOOSTROOT" ];
-then
-  echo "|"
-  echo "| Ok, \$BOOSTROOT = '$BOOSTROOT'."
-
-  if [ -d "$BOOSTROOT/include" ]; then
-    configure_args=(
-        "${configure_args[@]}"
-        --with-boost="$BOOSTROOT"
-      )
-  else
-    echo "| Oups, couldn't find Boost C++ include/ directory, ignoring."
-  fi
-fi
 
 
 echo "|"
-echo "| We'll be building Cairomm with the following ./configure arguments :"
+echo "| We'll be building libffi with the following ./configure arguments :"
 echo "|"
 echo "| ${configure_args[@]}"
 echo "|"
 
 
-if [ "x$sources_dir" == "xmisc/cairomm" ];
-then
-  echo "|"
-  echo "| Git submodule checkout misc/cairomm/ :"
+cd "$sources_dir" || exit 1
 
-    if ! git submodule update --init misc/cairomm ;
-    then
-      retv=$?
-      echo "| FAIL: Git submodule exited with status : $retv"
-      echo "+-"
-      exit $retv
-    fi
 
-  echo "| Done with Git submodule checkout, ok."
+if true; then
   echo "+-"
-else
-  echo "| \$sources_dir = '$sources_dir' != 'misc/cairomm' ==> assuming it is not a git checked-out source tree."
+  echo "| Patching Makefile.in & libffi.pc.in"
+  echo "| (as per the BLFS book)"
+
+  sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' \
+      -i include/Makefile.in
+
+  sed -e '/^includedir/ s/=.*$/=@includedir@/' \
+      -e 's/^Cflags: -I${includedir}/Cflags:/' \
+      -i libffi.pc.in
+
+  echo "+-"
 fi
 
-cd "$sources_dir" || exit 1
 
 echo "| Entered `pwd`/"
 echo "|"
@@ -168,53 +160,6 @@ echo "|   \$builddir = '$builddir'"
     exit 126
   else
     echo "| Ok, current dir. is now '`pwd`'"
-  fi
-
-
-  # RUN ./autogen.sh if ./configure ain't there.
-  if [ ! -f ../configure ];
-  then
-    echo "| ../configure script not found, it's ok, we'll run the ../autogen.sh script now..."
-    echo
-
-    srcdir=.. \
-    NOCONFIGURE=1 \
-      ../autogen.sh
-
-    retv=$?
-    if [ $retv -ne 0 ]; then
-      echo
-      echo "| FAIL: ../autogen.sh exited with status : $retv"
-      echo "+- $0 : failed -_-"
-      exit $retv
-    else
-      echo
-      echo "| Ok, ../autogen.sh completed successfully."
-    fi
-  fi
-
-
-  # MAKE DISTCLEAN
-  if true; then
-    echo "+-"
-    echo "| Running \`make distclean\`"
-    echo "| ( just in case, specifically because the autogen.sh script has"
-    echo "|   quite probably run it on its own will on our behalf )"
-    echo "|"
-    echo
-
-    make distclean
-
-    if [ $retv -ne 0 ]; then
-      echo
-      echo "| Huh!: \`make distclean\` exited with status: $retv"
-      echo "|       this is fine though, probably..."
-      echo "+"
-      exit $retv
-    else
-      echo
-      echo "| \`make distclean\`, ok."
-    fi
   fi
 
 
