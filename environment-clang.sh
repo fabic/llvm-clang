@@ -22,6 +22,7 @@ localdir=${localdir%/}
     echo "|"
   fi
 
+[ -d "$here/bin" ] && pathprepend "$here/bin"
 
 # Prepend local/bin to PATH (hopefully we have a Clang install. there).
 if [ -d "$localdir/bin" ]; then

@@ -38,10 +38,16 @@ if (true)
       -D__STDC_LIMIT_MACROS
     )
 
-  #target_compile_options(clang-check PUBLIC -flto -v)
+  target_compile_options(clang-check PUBLIC -flto)
+
+  # LLVM/Clang must have been built w/ LLVM_ENABLE_RTTI=ON,
+  # else you may get around unresolved "typeinfo for ..." link-time
+  # problems with -fno-rtti :
+  #target_compile_options(clang-check PUBLIC -fno-rtti)
 
   target_link_libraries(
     clang-check
+    "-Wl,-v,-plugin=LLVMgold.so"
     clangAST
     clangBasic
     clangDriver
@@ -49,7 +55,6 @@ if (true)
     clangRewriteFrontend
     clangStaticAnalyzerFrontend
     clangTooling
-    #clangToolingCore
     LLVMOption
     LLVMSupport
     LLVMX86CodeGen

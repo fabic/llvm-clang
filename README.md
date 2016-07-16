@@ -88,6 +88,8 @@ Homepage | Github repository
 
     Official page for Clang. Briefly mentions how to build it.
 
+* <http://llvm.org/docs/Packaging.html>
+
 * <http://libcxx.llvm.org/docs/BuildingLibcxx.html>
 
     __libc++ 3.9 documentation &ndash; Building libc++__
