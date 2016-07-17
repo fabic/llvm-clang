@@ -116,6 +116,16 @@ echo
   ln -sfnv ../../compiler-rt        llvm/projects/     &&
   ln -sfnv ../../libcxx{,abi}       llvm/projects/
 
+  # LLDB ( http://lldb.llvm.org/build.html#BuildingLldbOnLinux )
+  if [ -e lldb/CMakeLists.txt ]; then
+    echo "+--"
+    echo "| Found checked-out sources of LLDB, symlinking into llvm/tools/"
+    echo "|"
+    ln -sfnv ../../lldb llvm/tools/
+    echo "|"
+    echo "+--"
+  fi
+
   retv=$?
   echo
   if [ $retv -ne 0 ];
@@ -158,28 +168,29 @@ if true; then
       fi
 
     cmake_args=(
-      -DCMAKE_BUILD_TYPE=RelWithDebInfo  \
-      -DCMAKE_INSTALL_PREFIX="$localdir" \
-      -DBUILD_SHARED_LIBS=ON    \
-      -DLLVM_TARGETS_TO_BUILD="host;X86" \
-      -DLLVM_BUILD_DOCS=OFF     \
-      -DLLVM_ENABLE_DOXYGEN=OFF \
-      -DLLVM_ENABLE_SPHINX=OFF  \
-      -DLLVM_BINUTILS_INCDIR="$localdir/include" \
-      -DLLVM_ENABLE_FFI=ON      \
-      -DLLVM_ENABLE_EH=ON       \
-      -DLLVM_ENABLE_RTTI=ON     \
-      -DLLVM_ENABLE_CXX1Y=ON    \
-      -DLLVM_ENABLE_LTO=ON      \
-      -G Ninja \
-      ../llvm \
+      -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      -DCMAKE_INSTALL_PREFIX="$localdir"
+      -DBUILD_SHARED_LIBS=ON
+      -DLLVM_TARGETS_TO_BUILD="host;X86"
+      -DLLVM_BUILD_DOCS=OFF
+      -DLLVM_ENABLE_DOXYGEN=OFF
+      -DLLVM_ENABLE_SPHINX=OFF
+      -DLLVM_BINUTILS_INCDIR="$localdir/include"
+      -DLLVM_ENABLE_FFI=ON
+      -DLLVM_ENABLE_EH=ON
+      -DLLVM_ENABLE_RTTI=ON
+      -DLLVM_ENABLE_CXX1Y=ON
+      -DLLVM_ENABLE_LTO=ON
+      # -DLIBCXXABI_USE_LLVM_UNWINDER=ON
+      -G Ninja
+      ../llvm
       )
 
 # todo: conditionnally enable building LLVMGold iff `local/include/plugin-api.h`
 #       exists in include path ? how?
 # todo: check if we do need to pass arg. DLLVM_BINUTILS_INCDIR=...
 
-#-DCMAKE_CXX_FLAGS="-stdlib=libc++"  \
+#-DCMAKE_CXX_FLAGS="-stdlib=libc++"
 
 #-DLLVM_BINUTILS_INCDIR=/path/to/binutils/include
 # (The correct include path will contain the file plugin-api.h.)

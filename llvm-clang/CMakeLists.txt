@@ -11,7 +11,7 @@ set(LIBCXX_CXX_ABI_INCLUDE_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/libcxxabi/include)
 set(LIBCXXABI_LIBCXX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libcxx)
 set(LIBCXXABI_USE_LLVM_UNWINDER ON)
 
-if (true)
+if (false)
   set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()
 

@@ -6,10 +6,16 @@ here=$(dirname "$0")
 
 pushd "$here" || exit 127
 
+localdir="$(mkdir -p "$here/local" && cd "$here/local" && pwd)"
+builddir="build"
+
+
 echo
 echo "+-- $0"
 echo "| We're here at: `pwd` (rel.: $here)"
 echo "|"
+
+do_rebuild="no"
 
 cmake_binary=$( type -p cmake )
 cmake_generator="Unix Makefiles"
@@ -21,6 +27,8 @@ make_extra_args=( )
 # One first special arg. may be the CMake -G <generator> :
 if [ $# -gt 0 ];
 then
+  while [ $# -gt 0 ];
+  do
     case "$1" in
     "make")
         cmake_generator="Unix Makefiles"
@@ -32,11 +40,17 @@ then
         echo "|   -> version `ninja --version`"
         shift
         ;;
-    *)
+    "rebuild")
+        do_rebuild="yes"
+        echo "| Rebuild asked (will remove the build dir. '$builddir')"
+        shift
         ;;
+    *)
+        break
     esac
+  done
 
-    # Extra. arguments for CMake
+    # Extra. arguments for CMake (before a '--' arg.)
     while [ $# -gt 0 ];
     do
       arg="$1"
@@ -47,7 +61,7 @@ then
       [ "$arg" == "--" ] && break
     done
 
-    # Extra. arguments for make/ninja.
+    # Extra. arguments for make/ninja (after a '--' arg.)
     while [ $# -gt 0 ];
     do
       arg="$1"
@@ -76,12 +90,16 @@ fi
     echo "|"
   fi
 
+
 cmake_args=(
   -G "$cmake_generator"
+  -DFABIC_LOCAL_DIR="$localdir"
+  -DCMAKE_INSTALL_PREFIX="$localdir"
   -DCMAKE_BUILD_TYPE=Debug
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
   -Wdev
-  --warn-uninitialized
+  # Got too much of these from LLVM/Clang...
+  # --warn-uninitialized
   --clean-first
   "${cmake_extra_args[@]}"
   ..
@@ -91,23 +109,27 @@ make_args=(
     "${make_extra_args[@]}"
   )
 
+
 # Remove build/ subdir. only if no command line
 # arguments were provided (i.e. targets) :
-if false && [ -d build ] && [ $# -eq 0 ]; then
+if [ "x$do_rebuild" == "xyes" ] &&
+  [ -d "$builddir" ];
+then
     echo "| Removing build/ directory."
-    rm -rf build/
+    rm -rf "$builddir"
 fi
 
-if [ ! -d build ]; then
+if [ ! -d "$builddir" ]; then
     echo "| Creating build/ sub-directory."
-    mkdir build ||
+    mkdir "$builddir" ||
       exit 126
 fi
 
-if ! cd build/ ; then
+if ! cd "$builddir" ; then
     echo "| FAILED: could not ch. dir. into 'build/'"
     exit 125
 fi
+
 
 echo "| Running CMake..."
 echo "|"
@@ -131,6 +153,9 @@ if [ $retv -gt 0 ]; then
     echo "+-"
     exit 125
 fi
+
+
+read -p "CMake completed, proceed with actual build (make/ninja) ?"
 
 
 if [ "$cmake_generator" == "Ninja" ];
