@@ -7,14 +7,14 @@ llvm_map_components_to_libnames(
   )
 
 add_library(
-  testClangQuery
+  pgClangQuery
     SHARED
     Query.cpp
     QueryParser.cpp
   )
 
 target_link_libraries(
-  testClangQuery
+  pgClangQuery
 
     ${LLVM_CLANG_LIBS}
 

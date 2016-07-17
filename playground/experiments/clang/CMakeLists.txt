@@ -2,10 +2,13 @@
 # http://llvm.org/docs/CMake.html#embedding-llvm-in-your-project
 #
 
-list(APPEND CMAKE_MODULE_PATH
-    "${CMAKE_SOURCE_DIR}/../local/share/clang/cmake"
-    "${CMAKE_SOURCE_DIR}/../local/share/llvm/cmake"
-  )
+##
+# Now performed from the top-level /CMakeLists.txt :
+##
+# list(APPEND CMAKE_MODULE_PATH
+#     "${CMAKE_SOURCE_DIR}/../local/share/clang/cmake"
+#     "${CMAKE_SOURCE_DIR}/../local/share/llvm/cmake"
+#   )
 
 find_package( LLVM  REQUIRED CONFIG )
 find_package( Clang REQUIRED )

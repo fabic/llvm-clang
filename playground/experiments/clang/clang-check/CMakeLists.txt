@@ -2,14 +2,14 @@
 cmake_minimum_required(VERSION 3.3)
 
 add_executable(
-    clang-check
+    pg-clang-check
     ClangCheck.cpp
   )
 
-#target_include_directories(clang-check PUBLIC ${LLVM_INCLUDE_DIRS})
+#target_include_directories(pg-clang-check PUBLIC ${LLVM_INCLUDE_DIRS})
 
 target_compile_definitions(
-  clang-check
+  pg-clang-check
   PUBLIC
     # We need to emit 2 #define-s to get away with 2 errors raised
     # from Clang header `Support/DataTypes.h` complaining :
@@ -28,7 +28,7 @@ target_compile_definitions(
 # LLVM/Clang must have been built w/ LLVM_ENABLE_RTTI=ON,
 # else you may get around unresolved "typeinfo for ..." link-time
 # problems with -fno-rtti :
-#target_compile_options(clang-check PUBLIC -fno-rtti)
+#target_compile_options(pg-clang-check PUBLIC -fno-rtti)
 
 # “ Find the libraries that correspond to the LLVM components
 #   that we wish to use ” :
@@ -41,10 +41,10 @@ llvm_map_components_to_libnames(
       X86Info
   )
 
-# target_compile_options(clang-check PUBLIC -flto)
+# target_compile_options(pg-clang-check PUBLIC -flto)
 
 target_link_libraries(
-  clang-check
+  pg-clang-check
     # "-Wl,-v,-plugin=LLVMgold.so"
     clangAST
     clangBasic
@@ -57,6 +57,6 @@ target_link_libraries(
   )
 
 install(TARGETS
-  clang-check
+  pg-clang-check
   RUNTIME DESTINATION bin)
 

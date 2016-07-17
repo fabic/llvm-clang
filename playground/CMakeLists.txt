@@ -168,19 +168,19 @@ add_compile_options(
 #
 # FIXME: hard-coded paths, can't get my way 'round those CMake stuff...
 
-  include_directories(${CMAKE_SOURCE_DIR}/../misc/cpp-netlib)
-  include_directories(${CMAKE_SOURCE_DIR}/../misc/cpp-netlib/deps/uri/include)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib/deps/uri/include)
 
   find_file(
     LibCppNetlibClientConnections
     libcppnetlib-client-connections.so
-    PATHS ${CMAKE_SOURCE_DIR}/../misc/cpp-netlib/build/libs/network/src
+    PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib/build/libs/network/src
     )
 
   find_file(
     LibCppNetlibServerParsers
     libcppnetlib-server-parsers.so
-    PATHS ${CMAKE_SOURCE_DIR}/../misc/cpp-netlib/build/libs/network/src
+    PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib/build/libs/network/src
     )
 # ^ cpp-netlib
 ##
