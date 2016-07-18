@@ -12,6 +12,44 @@ project(FabicCppWanderings)
 set (FabicCppWanderings_VERSION_MAJOR 0)
 set (FabicCppWanderings_VERSION_MINOR 1)
 
+# FHS-style local/ directory.
+if (NOT DEFINED FABIC_LOCAL_DIR)
+  set(FABIC_LOCAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../local)
+  message(STATUS "Trying FHS-style local/ directory (guessed) : '${FABIC_LOCAL_DIR}'.")
+else()
+  message(STATUS "FHS-style local/ directory set to ${FABIC_LOCAL_DIR}")
+endif()
+
+if (NOT IS_DIRECTORY ${FABIC_LOCAL_DIR})
+  message(WARNING "FHS-like “local/” directory doesn't exist.")
+else()
+  message(STATUS "FHS-style local/ directory exists, ok.")
+endif()
+
+# TODO: auto-setup CMAKE_MODULE_PATH w/ `for ${FABIC_LOCAL_DIR}/share/*/cmake/`
+
+###
+## LLVM/Clang CMake modules
+  if (IS_DIRECTORY ${FABIC_LOCAL_DIR}/share/llvm)
+    list(APPEND CMAKE_MODULE_PATH "${FABIC_LOCAL_DIR}/share/llvm/cmake")
+    message(STATUS "LLVM: Prepended CMAKE_MODULE_PATH with '${FABIC_LOCAL_DIR}/share/llvm/cmake', ok.")
+
+    # LLVM found CMake modules found, ensure we do have those for Clang too.
+    if (IS_DIRECTORY ${FABIC_LOCAL_DIR}/share/clang)
+      list(APPEND CMAKE_MODULE_PATH "${FABIC_LOCAL_DIR}/share/clang/cmake")
+      message(STATUS "LLVM/Clang: Prepended CMAKE_MODULE_PATH with '${FABIC_LOCAL_DIR}/share/clang/cmake', ok.")
+    else()
+      message(WARNING "LLVM/Clang: couldn't find '${FABIC_LOCAL_DIR}/share/clang/cmake' (CMake modules for Clang).")
+    endif()
+  else()
+    message(WARNING "LLVM: couldn't find '${FABIC_LOCAL_DIR}/share/llvm/cmake' (CMake modules for LLVM).")
+    message(WARNING "LLVM/Clang: not setting up CMAKE_MODULE_PATH.")
+  endif()
+# ^ LLVM/Clang CMake modules search-path setup.
+##
+
+message(STATUS "FYI: CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
+
 # Top-level namespace #define-s
 add_definitions(
   -DTL_NS_BEGIN=
@@ -110,7 +148,15 @@ add_compile_options(
   #   - or simply set this as an environment variable,
   #   - or pass `-DBOOSTROOT=...` when running CMake.
   # (works ok with my CMake v3.4.3)
-  set(BOOSTROOT ../local/boost-1.61.0-clang)
+  if (NOT IS_DIRECTORY "$ENV{BOOSTROOT}")
+    set(BOOSTROOT ../local/boost-1.61.0-clang)
+    message(WARNING "Boost C++: using hard-coded path for BOOSTROOT = ${BOOSTROOT}.")
+  elseif(IS_DIRECTORY $ENV{BOOSTROOT})
+    set(BOOSTROOT $ENV{BOOSTROOT})
+    message(STATUS "Boost C++ location said to be at ${BOOSTROOT}")
+  else()
+    message(WARNING "Boost C++ location $ENV{BOOSTROOT} ain't no exit buddy.")
+  endif()
 
   # This one is for JetBrains' CLion bundled CMake (v3.5.2) :
   set(BOOST_ROOT ${BOOSTROOT})
@@ -167,7 +213,7 @@ add_compile_options(
 #   - ${LibCppNetlibServerParsers}
 #
 # FIXME: hard-coded paths, can't get my way 'round those CMake stuff...
-
+if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib/boost)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib/deps/uri/include)
 
@@ -182,6 +228,7 @@ add_compile_options(
     libcppnetlib-server-parsers.so
     PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib/build/libs/network/src
     )
+endif()
 # ^ cpp-netlib
 ##
 

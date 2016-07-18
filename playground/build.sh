@@ -6,7 +6,7 @@ here=$(dirname "$0")
 
 pushd "$here" || exit 127
 
-localdir="$(mkdir -p "$here/local" && cd "$here/local" && pwd)"
+localdir="$(mkdir -p "$here/../local" && cd "$here/../local" && pwd)"
 builddir="build"
 
 

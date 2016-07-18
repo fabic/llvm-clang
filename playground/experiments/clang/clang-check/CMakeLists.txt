@@ -8,22 +8,23 @@ add_executable(
 
 #target_include_directories(pg-clang-check PUBLIC ${LLVM_INCLUDE_DIRS})
 
-target_compile_definitions(
-  pg-clang-check
-  PUBLIC
-    # We need to emit 2 #define-s to get away with 2 errors raised
-    # from Clang header `Support/DataTypes.h` complaining :
-    #
-    # “ error: Must #define __STDC_LIMIT_MACROS before #including Support/DataTypes.h
-    #   error: Must #define __STDC_CONSTANT_MACROS before #including Support/DataTypes.h ”
-    #
-    # See also Clang's `local/lib/clang/3.8.1/include/stdint.h`.
-    #-D__STDC_CONSTANT_MACROS
-    #-D__STDC_LIMIT_MACROS
-    #
-    # EDIT: turns out this is achieved by :
-    ${LLVM_DEFINITIONS}
-  )
+# NOTE: Performed by parent CMakeLists.txt
+#target_compile_definitions(
+#  pg-clang-check
+#  PUBLIC
+#    # We need to emit 2 #define-s to get away with 2 errors raised
+#    # from Clang header `Support/DataTypes.h` complaining :
+#    #
+#    # “ error: Must #define __STDC_LIMIT_MACROS before #including Support/DataTypes.h
+#    #   error: Must #define __STDC_CONSTANT_MACROS before #including Support/DataTypes.h ”
+#    #
+#    # See also Clang's `local/lib/clang/3.8.1/include/stdint.h`.
+#    #-D__STDC_CONSTANT_MACROS
+#    #-D__STDC_LIMIT_MACROS
+#    #
+#    # EDIT: turns out this is achieved by :
+#    ${LLVM_DEFINITIONS}
+#  )
 
 # LLVM/Clang must have been built w/ LLVM_ENABLE_RTTI=ON,
 # else you may get around unresolved "typeinfo for ..." link-time

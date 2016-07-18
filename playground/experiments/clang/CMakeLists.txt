@@ -22,5 +22,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 include_directories( ${LLVM_INCLUDE_DIRS} )
 
+# Imported these from LLVM/Clang
 add_subdirectory(clang-check)
 add_subdirectory(clang-query)
+
+# /me learning Clang
+add_subdirectory(learning)
+# ^ C++ basic TUs :
+add_subdirectory(fixtures)
