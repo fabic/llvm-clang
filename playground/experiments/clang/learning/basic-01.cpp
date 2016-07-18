@@ -118,7 +118,7 @@ int main(int argc, const char **argv)
 
   CommonOptionsParser optionsParser(argc, argv, ClangBasic01Category);
 
-#if 0
+#if 1
     std::cout << "# Compilation database sources :" << std::endl;
 
     for (auto &fileName : optionsParser.getCompilations().getAllFiles()) {
@@ -141,10 +141,11 @@ int main(int argc, const char **argv)
   Tool.appendArgumentsAdjuster( getClangStripOutputAdjuster() );
 
   Tool.appendArgumentsAdjuster(
-      getInsertArgumentAdjuster(
-          "-fsyntax-only",
-          ArgumentInsertPosition::BEGIN
-      )
+      getClangSyntaxOnlyAdjuster()
+      // getInsertArgumentAdjuster(
+      //     "-fsyntax-only",
+      //     ArgumentInsertPosition::BEGIN
+      // )
   );
 
   HelloWorldActionFactory CheckFactory;
