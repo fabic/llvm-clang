@@ -47,4 +47,5 @@ endif (true)
 ## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
+add_subdirectory(clong)
 add_subdirectory(surface)

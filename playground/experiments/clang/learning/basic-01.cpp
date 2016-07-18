@@ -35,6 +35,10 @@
 #include "llvm/Support/Signals.h"
 #include "llvm/Support/TargetSelect.h"
 
+#include <iostream>
+
+# include "fabic/clong/ClangAstConsumer.hpp"
+
 using namespace clang::driver;
 using namespace clang::tooling;
 using namespace llvm;
@@ -58,11 +62,14 @@ static cl::extrahelp MoreHelp(
 
 static cl::OptionCategory ClangBasic01Category("clang-basic-01 options");
 
-static std::unique_ptr<opt::OptTable> Options( createDriverOptTable() );
+static std::unique_ptr< opt::OptTable > Options( createDriverOptTable() );
 
-//static cl::opt<bool>
-//ASTDump("ast-dump", cl::desc(Options->getOptionHelpText(options::OPT_ast_dump)),
-//        cl::cat(ClangBasic01Category));
+static cl::opt<bool>
+  OptHelloWorld(
+    "hello-world",
+    cl::desc("Hello world !"),
+    cl::cat( ClangBasic01Category )
+);
 
 static cl::opt<bool>
   ASTList(
@@ -71,11 +78,6 @@ static cl::opt<bool>
     cl::cat( ClangBasic01Category )
 );
 
-//static cl::opt<bool>
-//ASTPrint("ast-print",
-//         cl::desc(Options->getOptionHelpText(options::OPT_ast_print)),
-//         cl::cat(ClangBasic01Category));
-
 //static cl::opt<std::string> ASTDumpFilter(
 //    "ast-dump-filter",
 //    cl::desc(Options->getOptionHelpText(options::OPT_ast_dump_filter)),
@@ -83,18 +85,23 @@ static cl::opt<bool>
 
 namespace {
 
-  class ClangCheckActionFactory {
+  using namespace TLNS::clong;
+
+  class HelloWorldActionFactory {
   public:
     std::unique_ptr< clang::ASTConsumer > newASTConsumer()
     {
       if (ASTList)
         return clang::CreateASTDeclNodeLister();
+      else if (OptHelloWorld)
+        return ClangASTConsumer::create();
 
       return llvm::make_unique< clang::ASTConsumer >();
     }
   };
 
 } // namespace
+
 
 /**
  * MAIN() !
@@ -109,10 +116,24 @@ int main(int argc, const char **argv)
   llvm::InitializeAllAsmPrinters();
   llvm::InitializeAllAsmParsers();
 
-  CommonOptionsParser OptionsParser(argc, argv, ClangBasic01Category);
+  CommonOptionsParser optionsParser(argc, argv, ClangBasic01Category);
 
-  ClangTool Tool(OptionsParser.getCompilations(),
-                 OptionsParser.getSourcePathList());
+#if 0
+    std::cout << "# Compilation database sources :" << std::endl;
+
+    for (auto &fileName : optionsParser.getCompilations().getAllFiles()) {
+      std::cout << "  * " << fileName << std::endl;
+    }
+
+    std::cout << "# Sources (command line) :" << std::endl;
+
+    for (auto &fileName : optionsParser.getSourcePathList()) {
+      std::cout << "# " << fileName << std::endl;
+    }
+#endif // 1
+
+  ClangTool Tool(optionsParser.getCompilations(),
+                 optionsParser.getCompilations().getAllFiles());
 
   // Clear adjusters because -fsyntax-only is inserted by the default chain.
   Tool.clearArgumentsAdjusters();
@@ -122,10 +143,11 @@ int main(int argc, const char **argv)
   Tool.appendArgumentsAdjuster(
       getInsertArgumentAdjuster(
           "-fsyntax-only",
-          ArgumentInsertPosition::BEGIN)
+          ArgumentInsertPosition::BEGIN
+      )
   );
 
-  ClangCheckActionFactory CheckFactory;
+  HelloWorldActionFactory CheckFactory;
 
   std::unique_ptr< FrontendActionFactory >
       FrontendFactory = newFrontendActionFactory(&CheckFactory);

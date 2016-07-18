@@ -136,7 +136,7 @@ public:
   }
 };
 
-class ClangCheckActionFactory {
+class HelloWorldActionFactory {
 public:
   std::unique_ptr<clang::ASTConsumer> newASTConsumer() {
     if (ASTList)
@@ -174,7 +174,7 @@ int main(int argc, const char **argv) {
   Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster(
       Analyze ? "--analyze" : "-fsyntax-only", ArgumentInsertPosition::BEGIN));
 
-  ClangCheckActionFactory CheckFactory;
+  HelloWorldActionFactory CheckFactory;
   std::unique_ptr<FrontendActionFactory> FrontendFactory;
 
   // Choose the correct factory based on the selected mode.

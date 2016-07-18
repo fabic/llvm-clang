@@ -14,12 +14,13 @@ llvm_map_components_to_libnames(
 
 target_link_libraries(
     basic-01
-      clangAST
-      clangBasic
-      clangDriver
-      clangFrontend
-      clangRewriteFrontend
-      clangStaticAnalyzerFrontend
-      clangTooling
-      ${LLVM_CLANG_LIBS}
+      clong
+        clangAST
+        clangBasic
+        clangDriver
+        clangFrontend
+        clangRewriteFrontend
+        clangStaticAnalyzerFrontend
+        clangTooling
+          ${LLVM_CLANG_LIBS}
   )
