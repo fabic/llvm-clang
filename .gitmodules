@@ -132,3 +132,15 @@
 [submodule "ninja"]
 	path = misc/ninja
 	url = https://github.com/ninja-build/ninja.git
+[submodule "wayland"]
+	path = misc/wayland/wayland
+	url = https://anongit.freedesktop.org/git/wayland/wayland.git
+[submodule "wayland-protocols"]
+	path = misc/wayland/wayland-protocols
+	url = https://anongit.freedesktop.org/git/wayland/wayland.git
+[submodule "wayland-libinput"]
+	path = misc/wayland/libinput
+	url = https://anongit.freedesktop.org/git/wayland/libinput.git
+[submodule "wayland-weston"]
+	path = misc/wayland/weston
+	url = https://anongit.freedesktop.org/git/wayland/weston.git
