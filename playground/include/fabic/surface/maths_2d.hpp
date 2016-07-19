@@ -5,11 +5,13 @@ TL_NS_BEGIN
 namespace tk {
 
   namespace unit {
+
     /// Type trait for "a pixel location" (~)
     template< typename ScalarType = int16_t >
     struct pixels {
       typedef ScalarType scalar_type;
     };
+
   }
 
 
@@ -79,7 +81,68 @@ typedef dimensions_t< unit::pixels<> > pixels_dimensions_t;
 /// fixme: refactor the dimensions_t<> as a vector<> or sthg alike.
 typedef dimensions_t< unit::pixels<> > pixels_position_t;
 
+  // // // // // // // // // // // // // // // // // // // // // // //
 
+  /// A 2D vector.
+  template< class UnitTag = unit::pixels<> >
+  class Vector {
+  public:
+    typedef typename UnitTag::scalar_type scalar_t;
+  protected:
+    scalar_t x_ = 0;
+    scalar_t y_ = 0;
+  public:
+    Vector() { }
+    Vector(scalar_t x, scalar_t y) : x_(x), y_(y) { }
+    scalar_t x() const noexcept { return this->x_; }
+    scalar_t y() const noexcept { return this->y_; }
+  };
+
+  // // // // // // // // // // // // // // // // // // // // // // //
+
+  /// Width x Height dimensions.
+  /// ( sub-classing Vector<> here only for having some
+  ///   "dimensions semantics" when we code ).
+  template< class UnitTag = unit::pixels<> >
+  class Dimensions : public Vector< UnitTag > {
+  public:
+    using base_t   = Vector< UnitTag >;
+    using scalar_t = typename Vector< UnitTag >::scalar_t ;
+  protected:
+    // Hiding those two so that we speak in terms of dimensions.
+    scalar_t x() const noexcept;
+    scalar_t y() const noexcept;
+  public:
+    Dimensions() : base_t() { }
+
+    Dimensions(scalar_t w, scalar_t h) : base_t(w, h) { }
+
+    scalar_t width()  const noexcept { return this->x(); }
+    scalar_t height() const noexcept { return this->y(); }
+  };
+
+  // // // // // // // // // // // // // // // // // // // // // // //
+
+  /// A 2D Rectangle.
+  template< class UnitTag = unit::pixels<> >
+  class Rectangle {
+  public:
+    typedef typename UnitTag::scalar_type  scalar_t;
+    typedef Vector< UnitTag >              vector_t;
+    typedef vector_t                       position_t;
+    typedef Dimensions< UnitTag >          dimensions_t;
+  protected:
+    vector_t     position_;
+    dimensions_t dimensions_;
+  public:
+    Rectangle() : position_(0, 0), dimensions_(0, 0) { }
+
+    Rectangle(vector_t pos, vector_t dim)
+        : position_( pos ), dimensions_( dim ) { }
+
+    vector_t     position()   const noexcept { return this->position_; }
+    dimensions_t dimensions() const noexcept { return this->dimensions_; }
+  };
 
 } // xcb ns
 TL_NS_END

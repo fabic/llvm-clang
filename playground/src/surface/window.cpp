@@ -206,10 +206,12 @@ void Window::handleEventExpose(
   width  &= ~0x8000;
   height &= ~0x8000;
 
-  this->computePositionning(
-      tk::pixels_dimensions_t(width, height),
-      tk::pixels_position_t(x, y)
-    );
+  tk::Rectangle<> rect(
+      tk::Rectangle<>::position_t(0, 0),
+      tk::Rectangle<>::dimensions_t(width, height)
+  );
+
+  this->computePositionning( rect );
 
   this->render();
 
@@ -219,20 +221,15 @@ void Window::handleEventExpose(
   // todo: when we have 2+ split-editor...
 }
 
-
 // virtual override btw.
-tk::pixels_dimensions_t
-  Window::preComputePositionning(
-    tk::pixels_dimensions_t dimensions,
-    tk::pixels_position_t   position
-  )
-{
-  this->attributes()->positionning()->dimensions( dimensions );
-  //this->attributes()->positionning()->xy(x, y); // todo: position( position
-  // ) ??
+  tk::Rectangle<>
+  Window::computePositionning(tk::Rectangle<> rect)
+  {
+    this->boundingBox( rect );
 
-  return tk::Element::preComputePositionning(dimensions, position);
-}
+    // forward processing to parent impl.
+    return tk::Element::computePositionning( rect );
+  }
 
 
 // virtual override btw.
@@ -244,6 +241,10 @@ void Window::render()
       this->getVisualType(),
       this->attributes()->positionning()->dimensions()
   );
+
+  tk::Rectangle<> rect;
+  //auto a = rect.dimensions().x();
+
 
   tk::Element::render();
 }

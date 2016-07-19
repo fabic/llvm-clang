@@ -32,6 +32,7 @@ namespace xcb = TLNS::xcb;
     // auto bottom = (new Block( this->shared_from_this() ))->shared_from_base< Block >();
 
     auto bottom_ = tk::Element::_construct< Block >( this->shared_from_this() );
+    auto left_   = tk::Element::_construct< Block >( this->shared_from_this() );
 
     bottom_
         ->id("bottom")
@@ -42,6 +43,16 @@ namespace xcb = TLNS::xcb;
         ;
 
     this->appendChild( bottom_ );
+
+    left_
+        ->id("left")
+        ->attributes()
+        ->positionning()
+        ->placement( tk::Placement::AUTO )
+        ->dimensions( tk::pixels_dimensions_t(-1, -1) )
+        ;
+
+    this->appendChild( left_ );
   }
 } // sf ns.
 TL_NS_END

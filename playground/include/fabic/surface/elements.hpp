@@ -75,8 +75,8 @@ protected:
   int16_t _width  = -1,
           _height = -1;
 
-  int16_t _top    = -1,
-          _left   = -1,
+  int16_t _top    = 0,
+          _left   = 0,
           _right  = -1,
           _bottom = -1
           ;
@@ -214,7 +214,7 @@ public:
 protected:
   string         _id;
   Attributes     _attributes;
-  Attributes     _computedAttributes;
+  Rectangle<>    _bounding_box;
   Surface        _surface;
 
 public:
@@ -237,20 +237,19 @@ public:
 
   Surface::self_ref surface() noexcept { return this->_surface; }
 
+  Rectangle<> boundingBox() const noexcept { return this->_bounding_box; }
+
+  self_ptr boundingBox(Rectangle<> rect) noexcept {
+    this->_bounding_box = rect;
+  }
+
   /**
    * Recursive descent into this element sub-tree (visit children)
    * so as to determine _this'_ “ bounding-box ” dimensions.
    */
-  virtual pixels_dimensions_t preComputePositionning(
-      pixels_dimensions_t dimensions,
-      pixels_position_t   position
-    );
+  virtual Rectangle<> computePositionning(Rectangle<> rect);
 
-  virtual pixels_dimensions_t computePositionning(
-      pixels_dimensions_t dimensions,
-      pixels_position_t   position
-    );
-  // todo: postComputePositionning()...
+  virtual Rectangle<> computeBoundingBox(Rectangle<> rect);
 
   virtual void render();
 

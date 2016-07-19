@@ -71,11 +71,8 @@ public:
       uint16_t y
     );
 
-  tk::pixels_dimensions_t
-    preComputePositionning(
-      tk::pixels_dimensions_t dimensions,
-      tk::pixels_position_t   position
-    ) override;
+  tk::Rectangle<>
+    computePositionning(tk::Rectangle<> rect) override;
 
   void render() override;
 

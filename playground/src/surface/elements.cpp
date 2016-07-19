@@ -38,53 +38,31 @@ namespace tk {
 
 
   // virtual default impl.
-  pixels_dimensions_t
-  Element::computePositionning(
-      pixels_dimensions_t  dimensions,
-      pixels_position_t    position
-    )
-  {
-    pixels_dimensions_t self_dimensions =
-        this->preComputePositionning(dimensions, position);
-
-    // todo: impl. sthg here ?
-
-    // todo: postComputePositionning ?
-
-    return self_dimensions;
-  }
-
-
-  // virtual default impl.
-  pixels_dimensions_t
-  Element::preComputePositionning(
-      pixels_dimensions_t  dimensions,
-      pixels_position_t    position
-    )
+  Rectangle<>
+  Element::computePositionning(Rectangle<> rect)
   {
     logtrace << "Element::preComputePositionning(" << this->id() << "): begin." ;
 
-    pixels_dimensions_t
-      self_dimensions(
-        this->attributes()->positionning()->dimensions(),
-        dimensions
-      );
-
-    if ( ! this->children().empty() ) {
+    if ( ! this->children().empty() )
+    {
       logtrace << " » has " << this->children().size() << " children.";
-      for (ElementPtr &elt : this->children()) {
+
+      for (ElementPtr& elt : this->children()) {
         logtrace << " » Recursing into child \"" << elt->id() << "\" sub-tree.";
 
-        auto child_dimensions = elt->preComputePositionning(
-            self_dimensions,
-            position
-          );
+        auto child_dimensions = elt->computePositionning(Rectangle());
 
         logtrace << " » Got child dimensions : "
                  << child_dimensions.width << 'x' << child_dimensions.height;
 
         self_dimensions.grow_if_bigger(child_dimensions);
       }
+
+      logtrace << " » done with children (of " << this->id() << ')';
+    }
+    else {
+      logtrace << " » is leaf element (no children)." ;
+      auto pos = this->computeBoundingBox( rect );
     }
 
     logtrace << " » Computed '" << this->id() << "' dimensions : "
@@ -98,6 +76,21 @@ namespace tk {
     return self_dimensions;
   }
 
+  // virtual btw.
+  Rectangle<>
+  Element::computeBoundingBox(Rectangle<> rect)
+  {
+    uint8_t p = this->attributes()->positionning()->placement();
+
+    switch(p) {
+    case Placement::BOTTOM:
+      break;
+    default:
+      logerror << "Placement enum. value " << p << " is not handled (switch-case-default)." ;
+    }
+
+    return rect;
+  }
 
   // virtual btw.
   void Element::render()
