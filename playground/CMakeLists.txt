@@ -243,7 +243,7 @@ find_package(PkgConfig)
 include_directories(include)
 add_subdirectory(src)
 add_subdirectory(experiments)
-add_subdirectory(lib/fltk)
+add_subdirectory(lib)
 
 
 ### DUMP ALL VARIABLES (DEBUG) ##############################################
