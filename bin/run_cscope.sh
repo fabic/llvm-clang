@@ -31,6 +31,7 @@ locations=(
     "$llvmClang/llvm/lib"
     "$llvmClang/llvm/tools"
     "$misc/cpp-netlib/boost/"
+    "$misc/fltk"
     "$misc/glibc"
     "$misc/libunwind/src"
     "$misc/linux-headers/include"

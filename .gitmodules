@@ -152,3 +152,7 @@
 	#url = https://github.com/fltk/test-only.git
 	# ^ upstream ; /me forked it :
 	url = git@github.com:fabic/test-only.git
+[submodule "fltk3"]
+	path = misc/fltk3
+	url = git@github.com:fabic/test-only.git
+	branch = branch-3.0
