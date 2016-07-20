@@ -148,7 +148,7 @@
 	path = misc/fifth
 	url = https://github.com/clbr/fifth.git
 [submodule "fltk"]
-	path = misc/fltk
+	path = playground/lib/fltk
 	#url = https://github.com/fltk/test-only.git
 	# ^ upstream ; /me forked it :
 	url = git@github.com:fabic/test-only.git
