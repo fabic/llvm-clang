@@ -44,8 +44,8 @@ findargs=( "$@" )
 # Search sources files and grep :
 findcmd=(
   find
-    "${findargs[@]}" 
-       \( -type d -name '.*' -prune \)
+    "${findargs[@]}"
+       \( -type d -iregex '.+/\..+$' -prune \)
     -o -type f
        \(
          -iregex '.+.\(c\|h\|cpp\|hpp\|cxx\|hxx\|s\|S\|x\|cmake\)$'

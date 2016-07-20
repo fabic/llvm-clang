@@ -11,7 +11,7 @@ if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/fltk/CMakeLists.txt)
   option(OPTION_BUILD_EXAMPLES "build example programs" OFF)
 #  option(OPTION_BUILD_HTML_DOCUMENTATION "build html docs" ON)
 
-#  option(OPTION_CAIRO "use lib Cairo" ON)
+  option(OPTION_CAIRO    "use lib Cairo" ON)
 #  option(OPTION_CAIROEXT "use FLTK code instrumentation for cairo extended use" ON)
 
   option(OPTION_USE_GL      "use OpenGL"                OFF)
