@@ -144,3 +144,11 @@
 [submodule "wayland-weston"]
 	path = misc/wayland/weston
 	url = https://anongit.freedesktop.org/git/wayland/weston.git
+[submodule "fifth-web-browser"]
+	path = misc/fifth
+	url = https://github.com/clbr/fifth.git
+[submodule "fltk"]
+	path = misc/fltk
+	#url = https://github.com/fltk/test-only.git
+	# ^ upstream ; /me forked it :
+	url = git@github.com:fabic/test-only.git
