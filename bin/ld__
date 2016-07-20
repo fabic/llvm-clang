@@ -1,0 +1,26 @@
+#!/bin/bash
+
+localdir=$(cd `dirname "$0"`/../local && pwd)
+
+if [ -x "$localdir/bin/ld.gold" ] && [ -x "$localdir/lib/LLVMgold.so" ];
+then
+  exec "$localdir/ld.gold"              \
+    -plugin "$localdir/lib/LLVMgold.so" \
+    "$@"
+#
+# Try fallback to -plugin arg. to `ld` (NOT TESTED)
+# TODO: can't tell if this is ok ?
+elif [ -x "$localdir/bin/ld" ]; 
+then
+  exec "$localdir/bin/ld" \
+    -plugin "$localdir/lib/LLVMgold.so" \
+    "$@"
+#
+#
+#
+else
+  try_next_ld=$( type -a ld | head -n2 | tail -n1 )
+  exec "$try_next_ld" \
+    -plugin "$localdir/lib/LLVMgold.so" \
+    "$@"
+fi
