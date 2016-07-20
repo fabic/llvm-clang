@@ -64,14 +64,14 @@ add_definitions(
 
 
 # Replacing these `set ...` by add_compile_options(...) :
-#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++ -Wall -pedantic")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++")
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 
 
 add_compile_options(
-  -std=c++1z
-  -stdlib=libc++
+  # -std=c++1z
+  # -stdlib=libc++
   -fPIC
   -Wall
   -pedantic
@@ -243,7 +243,7 @@ find_package(PkgConfig)
 include_directories(include)
 add_subdirectory(src)
 add_subdirectory(experiments)
-#add_subdirectory(clang-check)
+add_subdirectory(lib/fltk)
 
 
 ### DUMP ALL VARIABLES (DEBUG) ##############################################

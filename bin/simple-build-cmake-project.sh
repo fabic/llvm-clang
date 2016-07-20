@@ -2,17 +2,19 @@
 #
 # fabic/2016-06-20
 
-here=$(dirname "$0")
+rewt="$( cd `dirname "$0"`/.. && pwd )"
+here="$( pwd )"
 
-pushd "$here" || exit 127
+pushd "$here"
 
-localdir="$(mkdir -p "$here/local" && cd "$here/local" && pwd)"
-builddir="build"
+localdir="$(mkdir -pv "$rewt/local" && cd "$rewt/local" && pwd)"
+builddir="BUILD"
 
 
 echo
-echo "+-- $0"
-echo "| We're here at: `pwd` (rel.: $here)"
+echo "+-- $0 $@"
+echo "|"
+echo "| Current dir. : `pwd`"
 echo "|"
 
 do_rebuild="no"
@@ -98,7 +100,6 @@ cmake_args=(
   -DCMAKE_BUILD_TYPE=Debug
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
   -Wdev
-  # Got too much of these from LLVM/Clang...
   # --warn-uninitialized
   --clean-first
   "${cmake_extra_args[@]}"
@@ -115,18 +116,22 @@ make_args=(
 if [ "x$do_rebuild" == "xyes" ] &&
   [ -d "$builddir" ];
 then
-    echo "| Removing build/ directory."
+    echo "| Removing $builddir/ directory."
     rm -rf "$builddir"
 fi
 
+
+# Create BUILD/ if not exists :
 if [ ! -d "$builddir" ]; then
-    echo "| Creating build/ sub-directory."
+    echo "| Creating $builddir/ sub-directory."
     mkdir "$builddir" ||
       exit 126
 fi
 
+
+# Enter BUILD/ dir.
 if ! cd "$builddir" ; then
-    echo "| FAILED: could not ch. dir. into 'build/'"
+    echo "| FAILED: could not ch. dir. into '$builddir/'"
     exit 125
 fi
 
@@ -207,15 +212,19 @@ else
 fi
 
 
+# move out of BUILD/ (return to previous dir.)
+echo "popd" &&
+popd
+
+# equiv. to $here actually...
+prevdir="${OLDPWD}"
+
 echo "|"
-echo "| List of executable files under '$here/build/' :"
+echo "| List of executable files under '$prevdir' :"
 echo "|"
 
-# move out of build/ (return to previous dir.)
 echo &&
-popd &&
-echo &&
-  find "$here/build/" \( -type d -name CMakeFiles -prune \) -o -type f -perm -a+x -print0 | \
+  find "$prevdir" \( -type d -name CMakeFiles -prune \) -o -type f -perm -a+x -print0 | \
     xargs -0r ls -ltrh | \
       sed -e 's@^@|    &@'
 
