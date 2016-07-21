@@ -2,9 +2,9 @@
 #define SURFACE_XCB_H
 
 #include "fabic/surface/xcb/typedefs.hpp"
-#include "events.hpp"
-#include "fabic/surface/mask_values.hpp"
-#include "window.hpp"
+#include "fabic/surface/xcb/events.hpp"
+#include "fabic/surface/xcb/mask_values.hpp"
+#include "fabic/surface/xcb/window.hpp"
 
 namespace sf {
   namespace xcb {

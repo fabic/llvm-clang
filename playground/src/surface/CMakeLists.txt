@@ -33,14 +33,14 @@ pkg_check_modules(FT2 freetype2)
 
 
 add_executable( sf
-  surface_main.cpp
+    main.cpp
     surface.cpp
-    cairo.cpp
-    elements.cpp
-    xcb/window.cpp
-    xcb/events.cpp
     xcb/xcb.cpp
-  ../hacks/hack_cxa_throw_exception.cpp
+    xcb/events.cpp
+    xcb/window.cpp
+    cairo/cairo.cpp
+    ui/elements.cpp
+    ../hacks/hack_cxa_throw_exception.cpp
 )
 
 target_compile_options( sf

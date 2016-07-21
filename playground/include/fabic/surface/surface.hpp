@@ -1,9 +1,8 @@
-#ifndef FABIC_SURFACE_H
-#define FABIC_SURFACE_H
+#ifndef SF_SURFACE_H
+#define SF_SURFACE_H
 
 #include "fabic/surface/xcb+.hpp"
 
-TL_NS_BEGIN
 namespace sf {
 
   namespace tk  = TLNS::tk;
@@ -15,11 +14,10 @@ namespace sf {
     Surface(xcb::xcb_shared_ptr xcb_);
     virtual ~Surface() override;
 
-//    virtual void _initChildrenElementsHierarchy() override;
+    //virtual void _initChildrenElementsHierarchy() override;
 
   };
 
 } // sf ns.
-TL_NS_END
 
-#endif // FABIC_SURFACE_H
+#endif // SF_SURFACE_H

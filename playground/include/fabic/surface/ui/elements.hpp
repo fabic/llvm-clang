@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <algorithm>
 
-# include "fabic/surface/cairo.hpp"
+# include "fabic/surface/cairo/cairo.hpp"
 # include "fabic/util/pointers.hpp"
 # include "fabic/logging.hpp"
 # include "fabic/surface/maths_2d.hpp"

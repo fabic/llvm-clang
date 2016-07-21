@@ -1,7 +1,6 @@
 
 #include "fabic/surface/xcb/xcb.hpp"
 #include "fabic/surface/xcb/xcb-inlines.hpp"
-#include "fabic/surface/xcb/window-inlines.hpp"
 
 namespace sf {
   namespace xcb {
