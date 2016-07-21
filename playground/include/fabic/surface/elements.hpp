@@ -241,6 +241,7 @@ public:
 
   self_ptr boundingBox(Rectangle<> rect) noexcept {
     this->_bounding_box = rect;
+    return this;
   }
 
   /**

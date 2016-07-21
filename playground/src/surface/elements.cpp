@@ -43,6 +43,7 @@ namespace tk {
   {
     logtrace << "Element::preComputePositionning(" << this->id() << "): begin." ;
 
+    #if 0
     if ( ! this->children().empty() )
     {
       logtrace << " » has " << this->children().size() << " children.";
@@ -74,6 +75,9 @@ namespace tk {
     this->attributes()->positionning()->dimensions( self_dimensions );
 
     return self_dimensions;
+    #endif // 0
+
+    return rect;
   }
 
   // virtual btw.

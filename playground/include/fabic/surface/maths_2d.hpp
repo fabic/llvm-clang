@@ -137,14 +137,14 @@ typedef dimensions_t< unit::pixels<> > pixels_position_t;
   public:
     Rectangle() : position_(0, 0), dimensions_(0, 0) { }
 
-    Rectangle(vector_t pos, vector_t dim)
+    Rectangle(vector_t pos, dimensions_t dim)
         : position_( pos ), dimensions_( dim ) { }
 
     vector_t     position()   const noexcept { return this->position_; }
     dimensions_t dimensions() const noexcept { return this->dimensions_; }
   };
 
-} // xcb ns
+} // tk ns
 TL_NS_END
 
 #endif //FABIC_TK_MATHS_2D_HPP

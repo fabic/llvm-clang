@@ -211,9 +211,9 @@ void Window::handleEventExpose(
       tk::Rectangle<>::dimensions_t(width, height)
   );
 
-  this->computePositionning( rect );
+//  this->computePositionning( rect );
 
-  this->render();
+//  this->render();
 
   // todo: ^ get the computed bbox and ensure min. window dimensions (prevent
   // todo:   too small window size).
