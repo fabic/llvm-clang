@@ -1,6 +1,7 @@
 
 #include "fabic/surface/xcb/xcb.hpp"
-#include "fabic/surface/xcb/xcb-inlines.hpp"
+#include "fabic/surface/xcb/inline-decls.hpp"
+#include "fabic/logging.hpp"
 
 namespace sf {
   namespace xcb {
@@ -157,11 +158,11 @@ namespace sf {
 
 
     window_shared_ptr
-    Xcb::createWindowSimple(
+      Xcb::createWindowSimple(
         window_shared_ptr parentWindow,
         uint16_t          width,
         uint16_t          height
-    )
+      )
     {
       if (parentWindow == nullptr)
         parentWindow = this->getRootWindow();
@@ -224,12 +225,7 @@ namespace sf {
               value_list                   // const uint32_t   *value_list
           );
 
-      namespace tk = TLNS::tk;
-
-      auto win_ = tk::Element::_construct< Window >(
-          this->shared_from_this(),
-          wid
-      );
+      auto win_ = std::make_shared< Window >( this->shared_from_this() );
 
       this->registerWindow( win_ );
 

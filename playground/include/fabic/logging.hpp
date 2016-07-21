@@ -1,9 +1,12 @@
-//
-// Created by cadet on 6/24/16.
-//
+#ifndef FABIC_LOGGING_HPP
+#define FABIC_LOGGING_HPP
 
-#ifndef FABICCPPPLAYGROUND_LOGGING_HPP
-#define FABICCPPPLAYGROUND_LOGGING_HPP
+/** include/fabic/logging.hpp
+ *
+ * Basic logging abilities, based on Boost.Log v2
+ *
+ * \link http://www.boost.org/doc/libs/1_61_0/libs/log/doc/html/index.html
+ */
 
 #include <boost/format.hpp>
 #include <boost/log/trivial.hpp>
@@ -72,4 +75,4 @@
  *   - So that it passes `-DBOOST_LOG_DYN_LINK` as compiler argument.
  */
 
-#endif //FABICCPPPLAYGROUND_LOGGING_HPP
+#endif // FABIC_LOGGING_HPP

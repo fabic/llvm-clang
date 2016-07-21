@@ -63,3 +63,5 @@ target_link_libraries( sf
   unwind dl # for hack_cxa_throw_exception.cpp
   pthread
 )
+
+add_subdirectory(tests)

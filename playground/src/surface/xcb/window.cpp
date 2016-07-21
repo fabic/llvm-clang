@@ -1,25 +1,22 @@
 
 #include "fabic/surface/xcb/window.hpp"
-#include "fabic/surface/ui/elements-inlines.hpp"
-#include "fabic/surface/xcb/xcb-inlines.hpp"
+#include "fabic/surface/xcb/inline-decls.hpp"
+//#include "fabic/surface/ui/elements-inlines.hpp"
+#include "fabic/logging.hpp"
 
 namespace sf {
   namespace xcb {
 
 
-// todo: create();
-
     Window::Window(xcb_shared_ptr xcb_)
-        : Block( nullptr )
-        , xcb_( xcb_ )
+        : xcb_( xcb_ )
         , windowXid( 0 ) // fixme: 0 ?
     { }
 
 
-// TODO: drop this one ?
+    // TODO: drop this one ?
     Window::Window(xcb_shared_ptr xcb_, xcb_window_t xid)
-        : Block( nullptr )
-        , xcb_( xcb_ )
+        : xcb_( xcb_ )
         , windowXid(xid)
     { }
 
@@ -28,7 +25,7 @@ namespace sf {
 
 
     xcb_visualtype_t *
-    Window::getVisualType()
+      Window::getVisualType()
     {
       if (this->visual != nullptr)
         return this->visual;
@@ -43,8 +40,8 @@ namespace sf {
     }
 
 
-    std::unique_ptr<xcb_get_window_attributes_reply_t>
-    Window::get_attributes()
+    std::unique_ptr< xcb_get_window_attributes_reply_t >
+      Window::get_attributes()
     {
       auto conn_ = this->xcb_->getXcbConnectionPtr();
 
@@ -60,12 +57,12 @@ namespace sf {
       if (attrs_ == nullptr)
         throw Xcb::base_exception();
 
-      return std::unique_ptr<xcb_get_window_attributes_reply_t>(attrs_);
+      return std::unique_ptr< xcb_get_window_attributes_reply_t >( attrs_ );
     }
 
 
-    std::unique_ptr<xcb_get_geometry_reply_t>
-    Window::get_geometry()
+    std::unique_ptr< xcb_get_geometry_reply_t >
+      Window::get_geometry()
     {
       auto conn_ = this->xcb_->getXcbConnectionPtr();
 
@@ -86,18 +83,19 @@ namespace sf {
         throw Xcb::base_exception();
 
       assert( error_ == nullptr );
+      // TODO: ^ to sthg with it ? throw ? log ?
 
-      return std::unique_ptr<xcb_get_geometry_reply_t>(geom_);
+      return std::unique_ptr< xcb_get_geometry_reply_t >( geom_ );
     }
 
 
-// virtual btw.
+    // virtual btw.
     Window::self_ptr
-    Window::_create(
+      Window::_create(
         uint16_t          width,
         uint16_t          height,
         window_shared_ptr parentWindow
-    )
+      )
     {
       if (parentWindow == nullptr)
         parentWindow = this->xcb_->getRootWindow();
@@ -106,17 +104,17 @@ namespace sf {
 
       constexpr uint32_t bitmask =
           XCB_CW_BACK_PIXEL
-              | XCB_CW_BORDER_PIXEL
-              | XCB_CW_EVENT_MASK;
+        | XCB_CW_BORDER_PIXEL
+        | XCB_CW_EVENT_MASK;
 
       MaskValues<bitmask> attributes;
 
       attributes[ XCB_CW_EVENT_MASK ] =
           XCB_EVENT_MASK_EXPOSURE
-              | XCB_EVENT_MASK_ENTER_WINDOW | XCB_EVENT_MASK_LEAVE_WINDOW
-              | XCB_EVENT_MASK_KEY_PRESS    | XCB_EVENT_MASK_KEY_RELEASE
-              | XCB_EVENT_MASK_BUTTON_PRESS | XCB_EVENT_MASK_BUTTON_RELEASE
-              | XCB_EVENT_MASK_POINTER_MOTION
+        | XCB_EVENT_MASK_ENTER_WINDOW | XCB_EVENT_MASK_LEAVE_WINDOW
+        | XCB_EVENT_MASK_KEY_PRESS    | XCB_EVENT_MASK_KEY_RELEASE
+        | XCB_EVENT_MASK_BUTTON_PRESS | XCB_EVENT_MASK_BUTTON_RELEASE
+        | XCB_EVENT_MASK_POINTER_MOTION
           ;
 
       attributes[ XCB_CW_BACK_PIXEL ]   = 0x00ddccbb; // screen.white_pixel;
@@ -153,7 +151,7 @@ namespace sf {
 
       this->windowXid = wid;
 
-      this->xcb_->registerWindow( this->shared_from_base< Window >() );
+      this->xcb_->registerWindow( this->shared_from_this() );
 
       return this;
     }
@@ -205,13 +203,12 @@ namespace sf {
       width  &= ~0x8000;
       height &= ~0x8000;
 
-      tk::Rectangle<> rect(
-          tk::Rectangle<>::position_t(0, 0),
-          tk::Rectangle<>::dimensions_t(width, height)
-      );
+//      tk::Rectangle<> rect(
+//          tk::Rectangle<>::position_t(0, 0),
+//          tk::Rectangle<>::dimensions_t(width, height)
+//      );
 
 //  this->computePositionning( rect );
-
 //  this->render();
 
       // todo: ^ get the computed bbox and ensure min. window dimensions (prevent
@@ -220,33 +217,33 @@ namespace sf {
       // todo: when we have 2+ split-editor...
     }
 
-// virtual override btw.
-    tk::Rectangle<>
-    Window::computePositionning(tk::Rectangle<> rect)
-    {
-      this->boundingBox( rect );
-
-      // forward processing to parent impl.
-      return tk::Element::computePositionning( rect );
-    }
-
-
-// virtual override btw.
-    void Window::render()
-    {
-      this->_surface.initXcb(
-          this->xcb()->getXcbConnectionPtr(),
-          this->getDrawableXid(),
-          this->getVisualType(),
-          this->attributes()->positionning()->dimensions()
-      );
-
-      tk::Rectangle<> rect;
-      //auto a = rect.dimensions().x();
+    // virtual override btw.
+//    tk::Rectangle<>
+//    Window::computePositionning(tk::Rectangle<> rect)
+//    {
+//      this->boundingBox( rect );
+//
+//      // forward processing to parent impl.
+//      return tk::Element::computePositionning( rect );
+//    }
 
 
-      tk::Element::render();
-    }
+      // virtual override btw.
+//    void Window::render()
+//    {
+//      this->_surface.initXcb(
+//          this->xcb()->getXcbConnectionPtr(),
+//          this->getDrawableXid(),
+//          this->getVisualType(),
+//          this->attributes()->positionning()->dimensions()
+//      );
+//
+//      tk::Rectangle<> rect;
+//      //auto a = rect.dimensions().x();
+//
+//
+//      tk::Element::render();
+//    }
 
 
   } // xcb ns.

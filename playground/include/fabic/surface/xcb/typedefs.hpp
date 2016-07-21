@@ -10,7 +10,7 @@
 #include <xcb/xcb.h>
 #include <xcb/xcb_util.h>
 
-# include "fabic/logging.hpp"
+// # include "fabic/logging.hpp"
 
 namespace sf {
   namespace xcb {
