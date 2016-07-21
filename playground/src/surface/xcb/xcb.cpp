@@ -21,11 +21,17 @@ namespace sf {
     {
       if (this->connection_ != nullptr)
         this->disconnect();
+
+      // base class has its destructor being protected (and
+      // anyway w/o impl.), we're invoking it just for the sake
+      // of "completeness".
+      using parent_t = std::enable_shared_from_this< Xcb >;
+      parent_t::~enable_shared_from_this();
     }
 
 
     Xcb_ref_t
-    Xcb::connect(const char *displayName)
+      Xcb::connect(const char *displayName)
     {
       logtrace << "Xcb: Connecting to "
                << (displayName ? displayName : "default display.");
@@ -44,7 +50,7 @@ namespace sf {
 
 
     Xcb_ref_t
-    Xcb::disconnect()
+      Xcb::disconnect()
     {
       logtrace << "Xcb: Disconnecting from server...";
 
@@ -62,7 +68,7 @@ namespace sf {
 
 
     screen_ref_t&
-    Xcb::getScreenInfo(int screenNbr)
+      Xcb::getScreenInfo(int screenNbr)
     {
       screenNbr = screenNbr > -1 ?
                   screenNbr : this->screenNumber;
@@ -87,7 +93,7 @@ namespace sf {
 
 
     window_shared_ptr
-    Xcb::getRootWindow()
+      Xcb::getRootWindow()
     {
       if (this->rootWindow != nullptr)
         return this->rootWindow;
@@ -117,8 +123,8 @@ namespace sf {
 
 
     Xcb::self
-    Xcb::registerWindow(window_shared_ptr win_)
-    throw(xcb_window_already_registered)
+      Xcb::registerWindow(window_shared_ptr win_)
+        throw(window_already_registered_ex)
     {
       auto window_xid = win_->getXid();
 
@@ -135,7 +141,7 @@ namespace sf {
 
       if (fail) {
         auto existing_ = it->second;
-        throw xcb_window_already_registered( existing_ );
+        throw window_already_registered_ex( existing_ );
       }
 
       logdebug << "Xcb::registerWindow(): Window XID " << window_xid << ", ok." ;
@@ -145,7 +151,7 @@ namespace sf {
 
 
     window_shared_ptr
-    Xcb::lookupWindow(xcb_window_t window_xid)
+      Xcb::lookupWindow(xcb_window_t window_xid)
     {
       auto it = this->windows.find( window_xid );
 
@@ -236,7 +242,7 @@ namespace sf {
 
 
     Xcb_ref_t
-    Xcb::run()
+      Xcb::run()
     {
       logdebug << "Xcb::run() : begin.";
 
@@ -268,7 +274,7 @@ namespace sf {
 
 
     void
-    Xcb::_handleEvent(const Event& event)
+      Xcb::_handleEvent(const Event& event)
     {
       xcb_window_t window_xid = event.window_xid();
 
@@ -284,7 +290,7 @@ namespace sf {
 
 
     void
-    Xcb::_dispatchEvent(
+      Xcb::_dispatchEvent(
         const Event& event,
         xcb_window_t target_window_xid
     )

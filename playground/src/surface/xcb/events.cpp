@@ -7,12 +7,12 @@ namespace sf {
 
     Event::EventDescription_cref_t
       Event::description()
-          const throw( xcb_exception )
+          const throw( base_exception )
     {
       const auto it = this->_event_descriptions.find( this->type() );
 
       if (it == this->_event_descriptions.end())
-        throw xcb_exception();
+        throw base_exception();
 
       return it->second;
     }

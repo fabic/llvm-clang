@@ -2,6 +2,7 @@
 #define SURFACE_XCB_H
 
 #include "fabic/surface/xcb/typedefs.hpp"
+#include "fabic/surface/xcb/exceptions.hpp"
 #include "fabic/surface/xcb/events.hpp"
 #include "fabic/surface/xcb/mask_values.hpp"
 #include "fabic/surface/xcb/window.hpp"
@@ -59,11 +60,6 @@ namespace sf {
         _LAST_ENUM_SENTINEL
       };
 
-
-      // Exceptions TODO: move these out of here (typedefs.hpp)?
-      struct base_exception : std::exception {};
-      struct unexpected_return_value_from_xcb : base_exception {};
-      struct xcb_connection_in_error_condition : base_exception {};
 
     private:
       xcb_connection_t *connection_ = nullptr;
@@ -232,7 +228,7 @@ namespace sf {
        * @return self
        */
       self registerWindow(window_shared_ptr win_)
-      throw(xcb_window_already_registered);
+      throw(window_already_registered_ex);
 
       window_shared_ptr lookupWindow(xcb_window_t window_xid);
 

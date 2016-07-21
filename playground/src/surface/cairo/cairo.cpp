@@ -1,4 +1,5 @@
 
+#include <cassert>
 # include "fabic/surface/cairo/cairo.hpp"
 # include "fabic/logging.hpp"
 
@@ -8,12 +9,12 @@ namespace sf {
 
     // static btw.
     Surface::self_ref
-      Surface::initXcb(
-        xcb_connection_t * conn,
-        xcb_drawable_t     drawable,
-        xcb_visualtype_t * visual,
-        tk::pixels_dimensions_t dimensions
-    )
+      Surface::initXCB(
+          xcb_connection_t * conn,
+          xcb_drawable_t     drawable,
+          xcb_visualtype_t * visual,
+          Dimensions<>       dimensions
+      )
     {
       // https://www.cairographics.org/manual/cairo-XCB-Surfaces.html#cairo-xcb-surface-create
       //
@@ -32,8 +33,8 @@ namespace sf {
               conn,
               drawable,
               visual,
-              dimensions.width,
-              dimensions.height
+              dimensions.width(),
+              dimensions.height()
           ),
           // Custom deleter functor.
           SurfaceDeleterFunctor()
@@ -51,9 +52,9 @@ namespace sf {
         throw base_exception();
       }
 
-      logtrace << "Surface::initXcb(): "
-            "Cairo XCB surface created, dimensions WxH : "
-               << dimensions.width << 'x' << dimensions.height ;
+      logtrace << "Surface::initXCB(): "
+                  "Cairo XCB surface created, dimensions WxH : "
+               << dimensions.width() << 'x' << dimensions.height() ;
 
       return *this;
     }
@@ -61,10 +62,10 @@ namespace sf {
 
     Surface::self_ref
       Surface::createSimilar(
-        Surface&                other,
-        tk::pixels_dimensions_t dimensions,
-        bool                    replace
-    )
+        Surface&      other,
+        Dimensions<>  dimensions,
+        bool          replace
+      )
     {
       if (!replace && this->cairoSurface_ != nullptr)
         return *this;
@@ -72,19 +73,19 @@ namespace sf {
       assert( replace || this->cairoSurface_ == nullptr );
 
       logtrace << "Surface::createSimilar(): "
-            "Creating similar Cairo surface with dimensions WxH : "
-               << dimensions.width << 'x' << dimensions.height ;
+                  "Creating similar Cairo surface with dimensions WxH : "
+               << dimensions.width() << 'x' << dimensions.height() ;
 
       this->cairoSurface_ = std::shared_ptr< cairo_surface_t >(
           cairo_surface_create_similar(
               other.cairoSurface_.get(), // other
               CAIRO_CONTENT_COLOR_ALPHA, // content (https://www.cairographics.org/manual/cairo-cairo-surface-t.html#cairo-content-t)
-              dimensions.width,
-              dimensions.height
+              dimensions.width(),
+              dimensions.height()
           ),
           // Custom deleter functor.
           SurfaceDeleterFunctor()
-      );
+        );
 
       cairo_status_t status = cairo_surface_status( this->cairoSurface_.get() );
 

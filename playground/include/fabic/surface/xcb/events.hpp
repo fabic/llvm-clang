@@ -3,6 +3,7 @@
 
 #include <map>
 #include "fabic/surface/xcb/typedefs.hpp"
+#include "fabic/surface/xcb/exceptions.hpp"
 
 namespace sf {
   namespace xcb {
@@ -150,17 +151,20 @@ namespace sf {
       static const EventDescriptionMap_t _event_descriptions;
 
     private:
-      void _assert_not_null_union() const throw (xcb_exception)
+      /// Assert guard that ensures the `union_` property ain't nullptr.
+      void _assert_not_null_union() const
+        throw (base_exception)
       {
         if (this->union_ == nullptr)
-          throw xcb_exception();
+          throw base_exception();
       }
 
-      void _throw_if_not_typed(EventType type)
-          const throw( xcb_event_type_mismatch_exception )
+      /// Helper for asserting the current exception is of the given `type`.
+      void _throw_if_not_typed(EventType type) const
+        throw( event_type_mismatch_ex )
       {
         if (this->type() != type)
-          throw xcb_event_type_mismatch_exception();
+          throw event_type_mismatch_ex();
       }
 
     public:
@@ -175,7 +179,7 @@ namespace sf {
       EventType type() const noexcept;
 
       /// @return a description for the current event.
-      EventDescription_cref_t description() const throw(xcb_exception);
+      EventDescription_cref_t description() const throw( base_exception );
 
       /**
        * @return the target window X ID for this event; or 0 if n/a.
@@ -195,19 +199,19 @@ namespace sf {
         return window_xid;
       }
 
-      inline const xcb_expose_event_t *expose() const
+      inline const xcb_expose_event_t * expose() const
       {
         this->_throw_if_not_typed( EventType::EXPOSE );
         return &this->union_->_expose;
       }
 
-      inline const xcb_key_press_event_t *key_press() const
+      inline const xcb_key_press_event_t * key_press() const
       {
         this->_throw_if_not_typed( EventType::KEY_PRESS );
         return &this->union_->_key_press;
       }
 
-      inline const xcb_key_release_event_t *key_release() const
+      inline const xcb_key_release_event_t * key_release() const
       {
         this->_throw_if_not_typed( EventType::KEY_RELEASE );
         return &this->union_->_key_release;

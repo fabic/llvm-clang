@@ -55,7 +55,7 @@ namespace sf {
           );
 
       if (attrs_ == nullptr)
-        throw Xcb::base_exception();
+        throw got_nullptr_from_xcb_ex();
 
       return std::unique_ptr< xcb_get_window_attributes_reply_t >( attrs_ );
     }
@@ -80,7 +80,7 @@ namespace sf {
           );
 
       if (geom_ == nullptr)
-        throw Xcb::base_exception();
+        throw got_nullptr_from_xcb_ex();
 
       assert( error_ == nullptr );
       // TODO: ^ to sthg with it ? throw ? log ?
@@ -157,7 +157,7 @@ namespace sf {
     }
 
 
-// virtual btw.
+    // virtual btw.
     void
     Window::handleEvent(const Event& event)
     {
@@ -184,7 +184,7 @@ namespace sf {
     }
 
 
-// virtual btw.
+    // virtual btw.
     void Window::handleEventExpose(
         uint16_t width,
         uint16_t height,
@@ -231,7 +231,7 @@ namespace sf {
       // virtual override btw.
 //    void Window::render()
 //    {
-//      this->_surface.initXcb(
+//      this->_surface.initXCB(
 //          this->xcb()->getXcbConnectionPtr(),
 //          this->getDrawableXid(),
 //          this->getVisualType(),

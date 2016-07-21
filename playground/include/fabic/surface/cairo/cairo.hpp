@@ -1,11 +1,11 @@
 #ifndef SF_CAIRO_H
 #define SF_CAIRO_H
 
-#include <exception>
 #include <memory>
 #include <cairo/cairo-xcb.h>
 
-#include "fabic/surface/maths_2d.hpp"
+#include "fabic/surface/common.hpp"
+#include "fabic/surface/maths/rectangle.hpp"
 #include "fabic/logging.hpp"
 
 namespace sf {
@@ -28,40 +28,11 @@ namespace sf {
 
   namespace cairo {
 
-    struct base_exception : std::exception {};
-
-
-  /**
-   * https://www.cairographics.org/manual/cairo-cairo-surface-t.html#cairo-surface-destroy
-   * http://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr
-   */
-    class SurfaceDeleterFunctor {
-    public:
-      void operator()(cairo_surface_t * surface_) noexcept
-      {
-        cairo_surface_destroy( surface_ );
-        logtrace << "Deleted cairo surface (cairo_surface_t *) " << surface_;
-      }
-    };
-
+    struct base_exception : sf::ex::base_exception {};
 
     /**
-     *
+     * Wrapper around Cairo C-style stuff.
      */
-    class ContextDeleterFunctor {
-    public:
-      void operator()(cairo_t * context_) noexcept
-      {
-        cairo_destroy( context_ );
-        logtrace << "Deleted cairo context (cairo_t *) " << context_;
-      }
-    };
-
-
-
-  /**
-   * Wrapper around Cairo C-style stuff.
-   */
     class Surface
     {
     public:
@@ -90,11 +61,11 @@ namespace sf {
        * @return *this
        */
       self_ref
-      createSimilar(
-          Surface&                other,
-          tk::pixels_dimensions_t dimensions,
-          bool                    replace = false
-      );
+        createSimilar(
+          Surface&     other,
+          Dimensions<> dimensions,
+          bool         replace = false
+        );
 
       /**
        * Prototype method for creating _self instances_ for XCB-based
@@ -102,12 +73,44 @@ namespace sf {
        *
        * @return
        */
-      self_ref initXcb(
-          xcb_connection_t *conn,
-          xcb_drawable_t drawable,
-          xcb_visualtype_t *visual,
-          tk::pixels_dimensions_t dimensions
-      );
+      self_ref
+        initXCB(
+          xcb_connection_t * conn,
+          xcb_drawable_t     drawable,
+          xcb_visualtype_t * visual,
+          Dimensions<>       dimensions
+        );
+    };
+
+
+
+    /**
+     * Functor for automatic invoquation of `cairo_surface_destroy(...)`
+     * by `std::shared_ptr< cairo_surface_t >`.
+     *
+     * https://www.cairographics.org/manual/cairo-cairo-surface-t.html#cairo-surface-destroy
+     * http://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr
+     */
+    class SurfaceDeleterFunctor {
+    public:
+      void operator()(cairo_surface_t * surface_) noexcept
+      {
+        cairo_surface_destroy( surface_ );
+        logtrace << "Deleted cairo surface (cairo_surface_t *) " << surface_;
+      }
+    };
+
+
+    /**
+     * Likewise above...
+     */
+    class ContextDeleterFunctor {
+    public:
+      void operator()(cairo_t * context_) noexcept
+      {
+        cairo_destroy( context_ );
+        logtrace << "Deleted cairo context (cairo_t *) " << context_;
+      }
     };
 
 
