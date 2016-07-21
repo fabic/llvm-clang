@@ -1,7 +1,7 @@
 #ifndef FABIC_XCB_IMPL_H
 #define FABIC_XCB_IMPL_H
 
-#include "fabic/surface/xcb.hpp"
+#include "xcb.hpp"
 
 TL_NS_BEGIN
 namespace xcb {

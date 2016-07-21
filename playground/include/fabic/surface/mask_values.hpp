@@ -3,7 +3,7 @@
 
 #include <array>
 
-#include "fabic/surface/typedefs.hpp"
+#include "fabic/surface/xcb/typedefs.hpp"
 #include "fabic/util/bits.hpp"
 
 
