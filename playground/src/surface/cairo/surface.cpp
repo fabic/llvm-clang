@@ -1,6 +1,6 @@
 
 #include <cassert>
-# include "fabic/surface/cairo/cairo.hpp"
+# include "fabic/surface/cairo/surface.hpp"
 # include "fabic/logging.hpp"
 
 namespace sf {

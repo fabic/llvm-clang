@@ -37,7 +37,7 @@ add_executable( sf-xcb-window-cairo-test1
       ../xcb/events.cpp
       ../xcb/xcb.cpp
       ../xcb/window.cpp
-        ../cairo/cairo.cpp
+      ../cairo/surface.cpp
     ../../hacks/hack_cxa_throw_exception.cpp
   )
 target_include_directories( sf-xcb-window-cairo-test1 PUBLIC ${XCB_INCLUDE_DIRS} ${XCB_AUX_INCLUDE_DIRS} ${CAIRO_XCB_INCLUDE_DIRS})

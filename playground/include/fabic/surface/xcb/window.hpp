@@ -2,7 +2,7 @@
 #define SF_XCB_WINDOW_H
 
 #include "fabic/surface/xcb/xcb.hpp"
-//#include "fabic/surface/cairo.hpp"
+#include "fabic/surface/cairo/surface.hpp"
 
 namespace sf {
   namespace xcb {
@@ -28,6 +28,7 @@ namespace sf {
       xcb_shared_ptr     xcb_;
       xcb_window_t       windowXid;
       xcb_visualtype_t * visual = nullptr;
+      cairo::Surface     surface_;
 
     public:
 
@@ -44,17 +45,17 @@ namespace sf {
       /**
        * @return this window's XID.
        */
-      xcb_window_t getXid() const;
+      xcb_window_t   getXid() const;
       xcb_drawable_t getDrawableXid() const;
       xcb_visualid_t getVisualXid();
 
       self map();
 
       std::unique_ptr< xcb_get_window_attributes_reply_t >
-      get_attributes();
+        get_attributes();
 
       std::unique_ptr< xcb_get_geometry_reply_t >
-      get_geometry();
+        get_geometry();
 
       xcb_visualtype_t * getVisualType();
 
@@ -67,12 +68,15 @@ namespace sf {
           uint16_t y
       );
 
+      /// Create a basic / default-configured X Window.
       virtual self_ptr
-      _create(
-          uint16_t width,
-          uint16_t height,
-          window_shared_ptr parentWindow = nullptr
-      );
+        create(
+            uint16_t width,
+            uint16_t height,
+            window_shared_ptr parentWindow = nullptr
+          );
+
+      virtual self_ptr initCairoSurface();
     };
 
   } // xcb ns.

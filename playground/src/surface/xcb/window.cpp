@@ -91,10 +91,10 @@ namespace sf {
 
     // virtual btw.
     Window::self_ptr
-      Window::_create(
-        uint16_t          width,
-        uint16_t          height,
-        window_shared_ptr parentWindow
+      Window::create(
+          uint16_t width,
+          uint16_t height,
+          window_shared_ptr parentWindow
       )
     {
       if (parentWindow == nullptr)
@@ -215,6 +215,27 @@ namespace sf {
       // todo:   too small window size).
       // todo: eventually have an aspect-ratio thing wrt. to window content, like
       // todo: when we have 2+ split-editor...
+    }
+
+
+    Window::self_ptr
+      Window::initCairoSurface()
+    {
+      auto geometry = this->get_geometry();
+
+      Dimensions<> dimensions(
+          geometry->width,
+          geometry->height
+      );
+
+      this->surface_.initXCB(
+          this->xcb_->getXcbConnectionPtr(),
+          this->getDrawableXid(),
+          this->getVisualType(),
+          dimensions
+        );
+
+      return this;
     }
 
     // virtual override btw.

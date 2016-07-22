@@ -10,7 +10,7 @@ namespace xcb = TLNS::xcb;
     : Window( xcb_ )
   {
     //this->id("surface");
-    this->_create(800, 450);
+    this->create(800, 450);
     //this->_initChildrenElementsHierarchy();
   }
 

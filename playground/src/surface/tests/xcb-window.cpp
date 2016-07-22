@@ -16,7 +16,7 @@ int main(int argc, const char *argv[])
 
   auto win_ = std::make_shared< Window >( xcb_ );
 
-  win_->_create(320, 240, nullptr);
+  win_->create(320, 240, nullptr);
 
   win_->map();
 

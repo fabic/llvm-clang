@@ -38,7 +38,7 @@ add_executable( sf
     xcb/xcb.cpp
     xcb/events.cpp
     xcb/window.cpp
-    cairo/cairo.cpp
+    cairo/surface.cpp
     ui/elements.cpp
     ../hacks/hack_cxa_throw_exception.cpp
 )
