@@ -22,7 +22,21 @@ localdir=${localdir%/}
     echo "|"
   fi
 
+
+# Create FHS-like directory structure under local/
+#
+# NOTE: local/share/aclocal/ is created as it may be needed by autotools,
+#       and specifically for building Wayland ;
+#       see https://wayland.freedesktop.org/building.html
+#
+if ! mkdir -pv "$localdir"/{,bin,include,lib/pkgconfig,share/{aclocal,info,man,pkgconfig}}/ ;
+then
+  echo "| FAILED: something went wrong while creating directories structure under '$localdir'."
+  return 1
+fi
+
 [ -d "$here/bin" ] && pathprepend "$here/bin"
+
 
 # Prepend local/bin to PATH (hopefully we have a Clang install. there).
 if [ -d "$localdir/bin" ]; then
@@ -37,12 +51,24 @@ fi
 # PKG-CONFIG
 if [ -d "$localdir/lib/pkgconfig" ]; then
     echo "| Found a pkg-config dir. '$localdir/lib/pkgconfig' : prepending it to \$PKG_CONFIG_PATH. "
-    pathprepend "$localdir/lib/pkgconfig" PKG_CONFIG_PATH
+    pathprepend "$localdir/lib/pkgconfig"   PKG_CONFIG_PATH
+    # Wayland also suggests that we have it under local/share/ :
+    [ -d "$localdir/share/pkgconfig" ] &&
+      pathprepend "$localdir/share/pkgconfig" PKG_CONFIG_PATH
     export PKG_CONFIG_PATH
 else
     echo "| FYI: Didn't find a pkg-config dir. at '$localdir/lib/pkgconfig', not setting the \$PKG_CONFIG_PATH env. var."
 fi
 
+
+# AutoTools' aclocal
+# ( see https://wayland.freedesktop.org/building.html )
+if [ -d "$localdir/aclocal" ];
+then
+  export ACLOCAL_PATH="$localdir/aclocal"
+  export ACLOCAL="aclocal -I $ACLOCAL_PATH"
+  echo "| Set up autotools' aclocal path."
+fi
 
 # CMAKE's CMAKE_MODULE_PATH
 if false;
@@ -230,7 +256,7 @@ if [ -d "$localdir/lib" ]; then
     pathprepend "$localdir/lib" LD_RUN_PATH
     #pathprepend "$localdir/lib" LIBRARY_PATH
     pathprepend "$localdir/lib" LD_LIBRARY_PATH
-    export LD_RUN_PATH LD_LIBRARY_PATH LIBRARY_PATH 
+    export LD_RUN_PATH LD_LIBRARY_PATH LIBRARY_PATH
 fi
 
 
