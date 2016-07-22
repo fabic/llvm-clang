@@ -43,10 +43,29 @@ namespace sf {
       std::shared_ptr< cairo_t > createCairoContext(bool replace = false);
 
       self_ref fill(rgba<> color);
+      self_ref stroke();
+      self_ref flush();
+
+      cairo_status_t status();
+
+      self_ref setSize(Dimensions<> dim);
 
       inline self_ref source_rgba(rgba<double> color);
 
       inline self_ref rectangle(Rectangle<> rectangle);
+
+      inline self_ref move_to(Vector<> pos);
+      inline self_ref rel_move_to(Vector<> pos);
+
+      inline self_ref line_to(Vector<> pos);
+      inline self_ref rel_line_to(Vector<> pos);
+
+//      template< typename ...VectorArgs >
+//      inline self_ref move_to(VectorArgs&& ...args) {
+//        return this->move_to(Vector<>(std::forward<VectorArgs>(args)...));
+//      }
+
+      inline self_ref set_line_width(int16_t width);
 
       /**
        * @link https://www.cairographics.org/manual/cairo-cairo-surface-t.html#cairo-surface-create-similar
@@ -114,6 +133,108 @@ namespace sf {
         );
 
       return *this;
+    }
+
+
+    inline Surface::self_ref
+      Surface::setSize(Dimensions<> dim)
+    {
+      this->dimensions_ = dim;
+
+      cairo_xcb_surface_set_size(
+          this->cairoSurface_.get(),
+          dim.width(),
+          dim.height()
+        );
+
+      return *this;
+    }
+
+
+    inline Surface::self_ref
+      Surface::flush()
+    {
+      cairo_surface_flush( this->cairoSurface_.get() );
+      return *this;
+    }
+
+
+    inline Surface::self_ref
+      Surface::stroke()
+    {
+      cairo_stroke( this->cairoContext_.get() );
+      return *this;
+    }
+
+
+    inline Surface::self_ref
+      Surface::move_to(Vector<> pos)
+    {
+      cairo_move_to(
+          this->context().get(),
+          pos.x(),
+          pos.y()
+        );
+
+      return *this;
+    }
+
+    inline Surface::self_ref
+      Surface::rel_move_to(Vector<> pos)
+    {
+      cairo_move_to(
+          this->context().get(),
+          pos.x(),
+          pos.y()
+        );
+
+      return *this;
+    }
+
+
+    inline Surface::self_ref
+      Surface::line_to(Vector<> pos)
+    {
+      cairo_line_to(
+          this->context().get(),
+          pos.x(),
+          pos.y()
+        );
+
+      return *this;
+    }
+
+
+    inline Surface::self_ref
+      Surface::rel_line_to(Vector<> pos)
+    {
+      cairo_rel_line_to(
+          this->context().get(),
+          pos.x(),
+          pos.y()
+        );
+
+      return *this;
+    }
+
+
+    inline Surface::self_ref
+    Surface::set_line_width(int16_t width)
+    {
+      cairo_set_line_width(
+          this->context().get(),
+          width
+        );
+      return *this;
+    }
+
+
+    inline cairo_status_t
+      Surface::status()
+    {
+      return cairo_surface_status(
+          this->cairoSurface_.get()
+        );
     }
 
   } // cairo ns.

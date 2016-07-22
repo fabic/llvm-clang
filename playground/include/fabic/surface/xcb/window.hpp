@@ -55,6 +55,7 @@ namespace sf {
       xcb_visualid_t getVisualXid();
 
       self map();
+      self flush();
 
       std::unique_ptr< xcb_get_window_attributes_reply_t >
         get_attributes();
@@ -86,6 +87,8 @@ namespace sf {
           );
 
       virtual self_ptr initCairoSurface();
+
+      virtual self_ptr render();
     };
 
   } // xcb ns.

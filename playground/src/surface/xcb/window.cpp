@@ -153,6 +153,8 @@ namespace sf {
 
       this->xcb_->registerWindow( this->shared_from_this() );
 
+      this->initCairoSurface();
+
       return this;
     }
 
@@ -203,6 +205,10 @@ namespace sf {
       width  &= ~0x8000;
       height &= ~0x8000;
 
+      this->_surface.setSize( Dimensions<>(width, height) );
+
+      this->render();
+
 //      tk::Rectangle<> rect(
 //          tk::Rectangle<>::position_t(0, 0),
 //          tk::Rectangle<>::dimensions_t(width, height)
@@ -218,6 +224,8 @@ namespace sf {
 
       if (this->handle_expose_callback_ != nullptr)
         this->handle_expose_callback_(*this, width, height);
+
+      this->flush();
     }
 
 
@@ -237,6 +245,22 @@ namespace sf {
           this->getVisualType(),
           dimensions
         );
+
+      return this;
+    }
+
+    // virtual btw.
+    Window::self_ptr
+      Window::render()
+    {
+      auto sf = this->surface();
+
+      sf.source_rgba(rgba<>(64, 96, 72));
+      sf.set_line_width(3);
+
+      sf.move_to(Vector<>(16, 64));
+      sf.line_to(Vector<>(32, 256));
+      sf.stroke();
 
       return this;
     }

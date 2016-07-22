@@ -150,6 +150,12 @@ namespace sf {
       return *this;
     }
 
+    inline Window_ref_t Window::flush()
+    {
+      this->surface().flush();
+      xcb_->flush();
+      return *this;
+    }
 
     inline Window::self_ptr
       Window::setHandleExportCallback(
