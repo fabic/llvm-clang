@@ -22,10 +22,14 @@ int main(int argc, const char *argv[])
   win_->create(320, 240, nullptr);
   win_->initCairoSurface();
 
+  win_->surface().fill(sf::rgba<>(96, 128, 32, 128));
+
   //Surface surf;
   //surf.initXCB();
 
   win_->map();
+
+  win_->surface().fill(sf::rgba<>(96, 128, 32, 128));
 
   xcb_->run();
 

@@ -56,15 +56,17 @@ namespace sf {
                   "Cairo XCB surface created, dimensions WxH : "
                << dimensions.width() << 'x' << dimensions.height() ;
 
+      this->dimensions_ = dimensions;
+
       return *this;
     }
 
 
     Surface::self_ref
-      Surface::createSimilar(
-        Surface&      other,
-        Dimensions<>  dimensions,
-        bool          replace
+      Surface::createSimilarAs(
+          Surface &other,
+          Dimensions<> dimensions,
+          bool replace
       )
     {
       if (!replace && this->cairoSurface_ != nullptr)
@@ -72,7 +74,7 @@ namespace sf {
 
       assert( replace || this->cairoSurface_ == nullptr );
 
-      logtrace << "Surface::createSimilar(): "
+      logtrace << "Surface::createSimilarAs(): "
                   "Creating similar Cairo surface with dimensions WxH : "
                << dimensions.width() << 'x' << dimensions.height() ;
 
@@ -98,12 +100,15 @@ namespace sf {
 
 
     std::shared_ptr< cairo_t >
-      Surface::context(bool replace)
+      Surface::createCairoContext(bool replace)
     {
       if (!replace && this->cairoContext_ != nullptr)
         return this->cairoContext_;
 
-      assert( replace || this->cairoSurface_ == nullptr );
+      if (replace && this->cairoContext_ != nullptr) {
+        logtrace << "Surface::context(replace = true): Releasing previous context.";
+        this->cairoContext_.reset();
+      }
 
       this->cairoContext_ = std::shared_ptr< cairo_t >(
           cairo_create( this->cairoSurface_.get() ),
@@ -121,7 +126,39 @@ namespace sf {
         throw base_exception();
       }
 
+      logtrace << "Surface::context(): Created Cairo context.";
+
       return this->cairoContext_;
+    }
+
+
+    Surface::self_ref
+      Surface::fill(rgba<> color)
+    {
+
+      this->source_rgba(color);
+
+      this->rectangle(
+          Rectangle<>(
+              Rectangle<>::position_t(0,0),
+              this->dimensions()
+          )
+        );
+
+      cairo_t * cr = this->context().get();
+
+      cairo_fill(cr);
+
+      cairo_stroke(cr);
+
+      
+
+      cairo_set_line_width (cr, 0.1);
+      cairo_set_source_rgb (cr, 0, 0, 0);
+      cairo_rectangle (cr, 0.25, 0.25, 0.5, 0.5);
+      cairo_stroke (cr);
+
+      return *this;
     }
 
   } // cairo ns.

@@ -6,26 +6,10 @@
 
 #include "fabic/surface/common.hpp"
 #include "fabic/surface/maths/rectangle.hpp"
+#include "fabic/surface/color.hpp"
 #include "fabic/logging.hpp"
 
 namespace sf {
-
-  // FIXME: TEMP
-  namespace color {
-    template< typename scalar_type >
-    struct rgba {
-      scalar_type r = 0;
-      scalar_type g = 0;
-      scalar_type b = 0;
-      scalar_type a = 0;
-
-      inline rgba(scalar_type r, scalar_type g, scalar_type b, scalar_type a)
-          : r(r), g(g), b(b), a(a)
-      { }
-    };
-  }
-
-
   namespace cairo {
 
     struct base_exception : sf::ex::base_exception {};

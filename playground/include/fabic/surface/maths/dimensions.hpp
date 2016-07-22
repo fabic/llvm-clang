@@ -29,6 +29,13 @@ namespace sf {
     Dimensions(Scalar width, Scalar height)
         : base_t(width, height) { }
 
+    Dimensions< Scalar >& operator=(const Dimensions< Scalar >& other)
+    {
+      this->x_ = other.x_;
+      this->y_ = other.y_;
+      return *this;
+    }
+
     Scalar width()  const noexcept { return this->width_; }
     Scalar height() const noexcept { return this->height_; }
   };

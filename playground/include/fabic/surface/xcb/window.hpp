@@ -59,6 +59,8 @@ namespace sf {
 
       xcb_visualtype_t * getVisualType();
 
+      cairo::Surface::reference surface() { return this->surface_; }
+
       virtual void handleEvent(const Event &event);
 
       virtual void handleEventExpose(

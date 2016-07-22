@@ -16,6 +16,9 @@ namespace sf {
       typedef Surface& reference;
 
     private:
+      /// Keep track of the surface dimensions.
+      Dimensions<> dimensions_;
+
       std::shared_ptr< cairo_surface_t > cairoSurface_ = nullptr;
 
       /// https://www.cairographics.org/manual/cairo-cairo-t.html#cairo-create
@@ -25,9 +28,25 @@ namespace sf {
 
       //inline surface() { return this->cairoSurface_.get(); }
 
-      std::shared_ptr< cairo_t > context(bool replace = false);
+      Dimensions<> dimensions() const { return this->dimensions_; }
 
-      //self_ref fill();
+      inline std::shared_ptr< cairo_t > context();
+
+      /**
+       * Create a Cairo context.
+       *
+       * \link https://www.cairographics.org/manual/cairo-cairo-t.html
+       *
+       * \param replace
+       * \return
+       */
+      std::shared_ptr< cairo_t > createCairoContext(bool replace = false);
+
+      self_ref fill(rgba<> color);
+
+      inline self_ref source_rgba(rgba<> color);
+
+      inline self_ref rectangle(Rectangle<> rectangle);
 
       /**
        * @link https://www.cairographics.org/manual/cairo-cairo-surface-t.html#cairo-surface-create-similar
@@ -37,10 +56,10 @@ namespace sf {
        * @return *this
        */
       self_ref
-        createSimilar(
-          Surface&     other,
-          Dimensions<> dimensions,
-          bool         replace = false
+        createSimilarAs(
+            Surface &other,
+            Dimensions<> dimensions,
+            bool replace = false
         );
 
       /**
@@ -58,6 +77,44 @@ namespace sf {
         );
     };
 
+
+    // // // // // // // // // // // // // // // // // // // // // // //
+
+
+    inline std::shared_ptr< cairo_t >
+      Surface::context()
+    {
+      if (this->cairoContext_ == nullptr)
+        this->createCairoContext();
+      return this->cairoContext_;
+    }
+
+
+    inline Surface::self_ref
+      Surface::source_rgba(rgba<> color)
+    {
+      cairo_set_source_rgba(
+          this->context().get(),
+          color.r, color.g, color.b, color.a
+        );
+
+      return *this;
+    }
+
+
+    inline Surface::self_ref
+      Surface::rectangle(Rectangle<> rect)
+    {
+      cairo_rectangle(
+          this->context().get(),
+          rect.position().x(),
+          rect.position().y(),
+          rect.dimensions().width(),
+          rect.dimensions().height()
+        );
+
+      return *this;
+    }
 
   } // cairo ns.
 } // sf ns.
