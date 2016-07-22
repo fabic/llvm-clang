@@ -2,6 +2,8 @@
 # include "fabic/surface/cairo/cairo.hpp"
 # include "fabic/logging.hpp"
 
+#include <random>
+
 /**
  * MAIN !
  */
@@ -20,16 +22,23 @@ int main(int argc, const char *argv[])
   auto win_ = std::make_shared< Window >( xcb_ );
 
   win_->create(320, 240, nullptr);
-  win_->initCairoSurface();
-
-  win_->surface().fill(sf::rgba<>(96, 128, 32, 128));
-
-  //Surface surf;
-  //surf.initXCB();
-
   win_->map();
 
+  win_->initCairoSurface();
   win_->surface().fill(sf::rgba<>(96, 128, 32, 128));
+
+  //win_->surface().fill(sf::rgba<>(96, 128, 32, 128));
+
+  win_->setHandleExportCallback(
+      [](Window& win, uint16_t width, uint16_t height)
+      {
+        logtrace << "HEY!! " << width << 'x' << height;
+        std::minstd_rand r;
+        win.surface().fill(
+            sf::rgba<unsigned long>(r(), r(), r(), r())
+        );
+      }
+    );
 
   xcb_->run();
 

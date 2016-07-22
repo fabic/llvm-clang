@@ -44,7 +44,7 @@ namespace sf {
 
       self_ref fill(rgba<> color);
 
-      inline self_ref source_rgba(rgba<> color);
+      inline self_ref source_rgba(rgba<double> color);
 
       inline self_ref rectangle(Rectangle<> rectangle);
 
@@ -91,7 +91,7 @@ namespace sf {
 
 
     inline Surface::self_ref
-      Surface::source_rgba(rgba<> color)
+      Surface::source_rgba(rgba<double> color)
     {
       cairo_set_source_rgba(
           this->context().get(),

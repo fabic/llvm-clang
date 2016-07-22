@@ -126,7 +126,7 @@ namespace sf {
     inline xcb_window_t
     Window::getXid() const
     {
-      return this->windowXid;
+      return this->_xid;
     }
 
     inline xcb_drawable_t
@@ -136,8 +136,7 @@ namespace sf {
     }
 
 
-    inline
-    Window_ref_t
+    inline Window_ref_t
     Window::map()
     {
       xcb_void_cookie_t _cookie =
@@ -149,6 +148,16 @@ namespace sf {
       Xcb::assert_void_cookie( _cookie );
 
       return *this;
+    }
+
+
+    inline Window::self_ptr
+      Window::setHandleExportCallback(
+          Window::handle_expose_callback_func_t clbk
+      )
+    {
+      this->handle_expose_callback_ = clbk;
+      return this;
     }
 
   } // xcb ns.

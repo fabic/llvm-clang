@@ -19,6 +19,9 @@ namespace sf {
       typedef Window&  self;
       typedef Window * self_ptr;
 
+      typedef void handle_expose_callback_t(Window& win, uint16_t width, uint16_t height);
+      typedef std::function< handle_expose_callback_t  > handle_expose_callback_func_t;
+
     private:
       // Prevent inadvertent copies.
       Window(const Window &) = delete;
@@ -26,9 +29,11 @@ namespace sf {
 
     protected:
       xcb_shared_ptr     xcb_;
-      xcb_window_t       windowXid;
-      xcb_visualtype_t * visual = nullptr;
-      cairo::Surface     surface_;
+      xcb_window_t       _xid;
+      xcb_visualtype_t * visual_type_ = nullptr;
+      cairo::Surface     _surface;
+
+      handle_expose_callback_func_t handle_expose_callback_ = nullptr;
 
     public:
 
@@ -59,7 +64,7 @@ namespace sf {
 
       xcb_visualtype_t * getVisualType();
 
-      cairo::Surface::reference surface() { return this->surface_; }
+      cairo::Surface::reference surface() { return this->_surface; }
 
       virtual void handleEvent(const Event &event);
 
@@ -69,6 +74,8 @@ namespace sf {
           uint16_t x,
           uint16_t y
       );
+
+      self_ptr setHandleExportCallback(handle_expose_callback_func_t clbk);
 
       /// Create a basic / default-configured X Window.
       virtual self_ptr

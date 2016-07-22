@@ -10,14 +10,14 @@ namespace sf {
 
     Window::Window(xcb_shared_ptr xcb_)
         : xcb_( xcb_ )
-        , windowXid( 0 ) // fixme: 0 ?
+        , _xid( 0 ) // fixme: 0 ?
     { }
 
 
     // TODO: drop this one ?
     Window::Window(xcb_shared_ptr xcb_, xcb_window_t xid)
         : xcb_( xcb_ )
-        , windowXid(xid)
+        , _xid(xid)
     { }
 
 
@@ -27,16 +27,16 @@ namespace sf {
     xcb_visualtype_t *
       Window::getVisualType()
     {
-      if (this->visual != nullptr)
-        return this->visual;
+      if (this->visual_type_ != nullptr)
+        return this->visual_type_;
 
-      this->visual = xcb_aux_get_visualtype(
+      this->visual_type_ = xcb_aux_get_visualtype(
           this->xcb_->getXcbConnectionPtr(),
           this->xcb_->getScreenNumber(),
           this->get_attributes()->visual // xcb_visualid_t
       );
 
-      return this->visual;
+      return this->visual_type_;
     }
 
 
@@ -149,7 +149,7 @@ namespace sf {
 
       Xcb::assert_void_cookie( _cookie );
 
-      this->windowXid = wid;
+      this->_xid = wid;
 
       this->xcb_->registerWindow( this->shared_from_this() );
 
@@ -215,6 +215,9 @@ namespace sf {
       // todo:   too small window size).
       // todo: eventually have an aspect-ratio thing wrt. to window content, like
       // todo: when we have 2+ split-editor...
+
+      if (this->handle_expose_callback_ != nullptr)
+        this->handle_expose_callback_(*this, width, height);
     }
 
 
@@ -228,7 +231,7 @@ namespace sf {
           geometry->height
       );
 
-      this->surface_.initXCB(
+      this->_surface.initXCB(
           this->xcb_->getXcbConnectionPtr(),
           this->getDrawableXid(),
           this->getVisualType(),
