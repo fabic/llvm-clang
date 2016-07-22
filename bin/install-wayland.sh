@@ -171,7 +171,13 @@ function autotools_based_sources_run_make()
       echo "|"
       echo "+-- $0 $@ ~~~> FAILED."
       return $retv
+    else
+      echo
+      echo "| Make completed successfully."
+      echo "+- $0() $@"
     fi
+
+    return $retv
 }
 # ^ end of function autotools_based_sources_run_make().
 ##
@@ -182,6 +188,8 @@ function autotools_based_sources_run_make()
 ##
 function autotools_based_sources_run_make_install()
 {
+  local let retv=127
+
   echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
   echo "|"
   echo "| Running \`make install\`..."
@@ -192,6 +200,7 @@ function autotools_based_sources_run_make_install()
   make install
 
   retv=$?
+
   if [ $retv -ne 0 ];
   then
     echo
@@ -208,7 +217,7 @@ function autotools_based_sources_run_make_install()
     echo "|"
     echo "| make install done !"
     echo "|"
-    echo "+-"
+    echo "+- $0() $@"
   fi
 
   return $retv
@@ -225,6 +234,8 @@ function autotools_based_sources_build_n_install()
   local builddir="$3"
   shift 3
   # ^ remainder arguments $@ will be for configure.
+
+  local let retv=127
 
   if [ ! -d "$sources_dir" ]; then
     echo "| FAIL: no such directory \$sources_dir = '$sources_dir'"
@@ -267,18 +278,58 @@ function autotools_based_sources_build_n_install()
     echo "| Ok, current dir. is now '`pwd`'"
   fi
 
-  autotools_based_sources_configure "$@"
-  autotools_based_sources_run_make
-  # autotools_based_sources_run_make_install
+  autotools_based_sources_configure --prefix="$localdir" "$@" &&
+  autotools_based_sources_run_make &&
+  autotools_based_sources_run_make_install
+
+  retv=$?
+
+  return $retv
 }
 # ^ end of function autotools_based_sources_build_n_install().
 ##
 
-pushd .
-autotools_based_sources_build_n_install \
-    misc/wayland/wayland/ local/ BUILD/ \
-    --disable-documentation
-popd
+
+function auto_build_thing()
+{
+  local answer="nil"
+
+  echo "+-- $0() $@"
+  echo "|"
+
+  while read -p "| Proceed ? (y/n)" answer ;
+  do
+    case "$answer" in
+      yes|y|Y)
+        break
+        ;;
+      no|n|N)
+        return 0
+        ;;
+      *)
+        ;;
+    esac
+  done
+
+  pushd .
+    autotools_based_sources_build_n_install "$@"
+    retv=$?
+  popd
+
+  return $retv
+}
+
+
+auto_build_thing misc/wayland/wayland           local BUILD --disable-documentation
+
+auto_build_thing misc/wayland/wayland-protocols local BUILD --disable-documentation
+
+auto_build_thing misc/wayland/mesa local BUILD \
+  --enable-gles2                               \
+  --with-egl-platforms=x11,wayland,drm         \
+  --enable-gbm                                 \
+  --enable-shared-glapi                        \
+  --with-gallium-drivers=r300,r600,swrast,nouveau
 
 echo "|"
 echo "+--- $0 $@ : FINISHED, exit status: $retv"

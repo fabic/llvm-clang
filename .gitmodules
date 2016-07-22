@@ -156,3 +156,6 @@
 	path = misc/fltk3
 	url = git@github.com:fabic/test-only.git
 	branch = branch-3.0
+[submodule "mesa-gl"]
+	path = misc/wayland/mesa
+	url = https://anongit.freedesktop.org/git/mesa/mesa.git
