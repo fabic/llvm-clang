@@ -41,10 +41,10 @@ int main(int argc, const char *argv[])
         auto sf = win.surface();
 
         auto dim = sf.dimensions();
-        const auto a = r();
-        const auto b = r();
-        long long x = (a * dim.width())  / r.max();
-        long long y = (b * dim.height()) / r.max();
+        double a = r() / (double) r.max();
+        double b = r() / (double) r.max();
+        double x = a * dim.width();
+        double y = b * dim.height();
 
         sf.move_to(sf::Vector<>(x, y));
         sf.rel_line_to(sf::Vector<>(64, 92));

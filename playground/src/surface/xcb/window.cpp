@@ -255,11 +255,18 @@ namespace sf {
     {
       auto sf = this->surface();
 
-      sf.source_rgba(rgba<>(64, 96, 72));
-      sf.set_line_width(3);
+      sf.source_rgba(rgba<>(255, 64, 32));
 
-      sf.move_to(Vector<>(16, 64));
-      sf.line_to(Vector<>(32, 256));
+      sf.set_line_width(20);
+
+      auto dim = sf.dimensions();
+
+      sf.move_to(Vector<>(0, 0));
+      sf.line_to(Vector<>(dim.height(), dim.width()));
+
+      sf.move_to(Vector<>(dim.width(), 0));
+      sf.line_to(Vector<>(0, dim.height()));
+
       sf.stroke();
 
       return this;
