@@ -76,7 +76,7 @@ namespace sf {
           uint16_t y
       );
 
-      self_ptr setHandleExportCallback(handle_expose_callback_func_t clbk);
+      self_ptr setHandleExposeCallback(handle_expose_callback_func_t clbk);
 
       /// Create a basic / default-configured X Window.
       virtual self_ptr

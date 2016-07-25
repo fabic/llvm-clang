@@ -1,6 +1,4 @@
 # include "fabic/surface/xcb+.hpp"
-# include "fabic/surface/cairo/cairo.hpp"
-# include "fabic/logging.hpp"
 
 #include <random>
 
@@ -24,23 +22,16 @@ int main(int argc, const char *argv[])
   win_->create(320, 240, nullptr);
   win_->map();
 
-//  win_->initCairoSurface();
-//  win_->surface().fill(sf::rgba<>(96, 128, 32, 128));
-
-  //win_->surface().fill(sf::rgba<>(96, 128, 32, 128));
-
-  win_->setHandleExportCallback(
-      [](Window& win, uint16_t width, uint16_t height)
-      {
+  win_->setHandleExposeCallback(
+      [](Window &win, uint16_t width, uint16_t height) {
         logtrace << "HEY!! " << width << 'x' << height
                  << " / Cairo surface status : " << win.surface().status();
         std::random_device r;
-//        win.surface().fill(
-//            sf::rgba<unsigned long>(r(), r(), r(), r())
-//        );
+
         auto sf = win.surface();
 
         auto dim = sf.dimensions();
+
         double a = r() / (double) r.max();
         double b = r() / (double) r.max();
         double x = a * dim.width();
@@ -52,7 +43,7 @@ int main(int argc, const char *argv[])
         sf.source_rgba(sf::rgba<double>(1.0, .9, .7, .75));
         sf.stroke();
       }
-    );
+  );
 
   xcb_->run();
 

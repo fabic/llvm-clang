@@ -58,6 +58,8 @@ namespace sf {
 
       this->dimensions_ = dimensions;
 
+      this->createCairoContext();
+
       return *this;
     }
 

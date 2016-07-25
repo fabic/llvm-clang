@@ -175,8 +175,14 @@ namespace sf {
       /// Get  next XCB event.
       bool next();
 
-      /// @return the type of the current event.
-      EventType type() const noexcept;
+      /**
+       * Short-cut for the EventsUnion::type() method.
+       * \return the type of the current event.
+       */
+      EventType type() const noexcept {
+        _assert_not_null_union();
+        return this->union_->type();
+      }
 
       /// @return a description for the current event.
       EventDescription_cref_t description() const throw( base_exception );

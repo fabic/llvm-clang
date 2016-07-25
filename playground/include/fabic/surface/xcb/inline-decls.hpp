@@ -25,16 +25,6 @@ namespace sf {
     }
 
 
-    /**
-     * Short-cut for the EventsUnion::type() method.
-     */
-    inline
-    EventType Event::type() const noexcept
-    {
-      _assert_not_null_union();
-      return this->union_->type();
-    }
-
     // // // // // // // // // // // // // // // // // // // // // // //
     // //  XCB  // // // // // // // // // // // // // // // // // // //
     // // // // // // // // // // // // // // // // // // // // // // //
@@ -158,7 +148,7 @@ namespace sf {
     }
 
     inline Window::self_ptr
-      Window::setHandleExportCallback(
+      Window::setHandleExposeCallback(
           Window::handle_expose_callback_func_t clbk
       )
     {

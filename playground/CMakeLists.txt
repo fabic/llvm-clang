@@ -96,8 +96,8 @@ add_compile_options(
 #   http://clang.llvm.org/docs/LTOVisibility.html
 
 add_compile_options(
-  -O0
-  -ggdb
+  # -O0
+  #-ggdb
     # So as to get better/meaninful stack traces in error messages :
     -fno-omit-frame-pointer
     # and disable tail call elimination

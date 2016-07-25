@@ -97,7 +97,7 @@ cmake_args=(
   -G "$cmake_generator"
   -DFABIC_LOCAL_DIR="$localdir"
   -DCMAKE_INSTALL_PREFIX="$localdir"
-  -DCMAKE_BUILD_TYPE=Debug
+  #-DCMAKE_BUILD_TYPE=Debug
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
   -Wdev
   # --warn-uninitialized

@@ -212,8 +212,7 @@ namespace sf {
 //      tk::Rectangle<> rect(
 //          tk::Rectangle<>::position_t(0, 0),
 //          tk::Rectangle<>::dimensions_t(width, height)
-//      );
-
+//        );
 //  this->computePositionning( rect );
 //  this->render();
 
@@ -255,14 +254,19 @@ namespace sf {
     {
       auto sf = this->surface();
 
-      sf.source_rgba(rgba<>(255, 64, 32));
+      sf.set_operator(CAIRO_OPERATOR_CLEAR);
+      sf.paint();
+
+      sf.set_operator(CAIRO_OPERATOR_OVER);
+
+      sf.source_rgba(rgba<>(255, 64, 32, 127));
 
       sf.set_line_width(20);
 
       auto dim = sf.dimensions();
 
       sf.move_to(Vector<>(0, 0));
-      sf.line_to(Vector<>(dim.height(), dim.width()));
+      sf.line_to(Vector<>(dim.width(), dim.height()));
 
       sf.move_to(Vector<>(dim.width(), 0));
       sf.line_to(Vector<>(0, dim.height()));

@@ -13,7 +13,7 @@ namespace sf {
     Scalar b = 0;
     Scalar a = 0;
 
-    inline rgba(Scalar r, Scalar g, Scalar b, Scalar a = 0)
+    inline rgba(Scalar r, Scalar g, Scalar b, Scalar a)
         : r(r), g(g), b(b), a(a)
     { }
 

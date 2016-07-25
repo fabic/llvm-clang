@@ -22,6 +22,7 @@ namespace sf {
       std::shared_ptr< cairo_surface_t > cairoSurface_ = nullptr;
 
       /// https://www.cairographics.org/manual/cairo-cairo-t.html#cairo-create
+      /// TODO: be unique_ptr<>.
       std::shared_ptr< cairo_t > cairoContext_         = nullptr;
 
     public:
@@ -30,6 +31,7 @@ namespace sf {
 
       Dimensions<> dimensions() const { return this->dimensions_; }
 
+      // fixme: return a ref. ? or simply _not_ the shared_ptr<> ?
       inline std::shared_ptr< cairo_t > context();
 
       /**
@@ -46,6 +48,14 @@ namespace sf {
       self_ref stroke();
       self_ref flush();
 
+      /**
+       * A drawing operator that paints the current source everywhere within
+       * the current clip region.
+       *
+       * [`cairo-paint()`](https://www.cairographics.org/manual/cairo-cairo-t.html#cairo-paint)
+       */
+      self_ref paint() noexcept;
+
       cairo_status_t status();
 
       self_ref setSize(Dimensions<> dim);
@@ -59,6 +69,8 @@ namespace sf {
 
       inline self_ref line_to(Vector<> pos);
       inline self_ref rel_line_to(Vector<> pos);
+
+      inline self_ref set_operator(cairo_operator_t op) noexcept ;
 
 //      template< typename ...VectorArgs >
 //      inline self_ref move_to(VectorArgs&& ...args) {
@@ -103,8 +115,8 @@ namespace sf {
     inline std::shared_ptr< cairo_t >
       Surface::context()
     {
-      if (this->cairoContext_ == nullptr)
-        this->createCairoContext();
+//      if (this->cairoContext_ == nullptr)
+//        this->createCairoContext();
       return this->cairoContext_;
     }
 
@@ -158,6 +170,14 @@ namespace sf {
       return *this;
     }
 
+
+    inline
+    Surface::self_ref
+    Surface::paint() noexcept
+    {
+      cairo_paint(this->cairoContext_.get());
+      return *this;
+    }
 
     inline Surface::self_ref
       Surface::stroke()
@@ -235,6 +255,18 @@ namespace sf {
       return cairo_surface_status(
           this->cairoSurface_.get()
         );
+    }
+
+
+    inline Surface::self_ref
+    Surface::set_operator(cairo_operator_t op) noexcept
+    {
+      cairo_set_operator(
+          this->cairoContext_.get(),
+          op
+        );
+
+      return *this;
     }
 
   } // cairo ns.
