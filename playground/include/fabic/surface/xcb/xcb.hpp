@@ -25,6 +25,7 @@ namespace sf {
      * * <https://www.x.org/wiki/guide/xlib-and-xcb/>
      * * <https://www.x.org/releases/X11R7.7/doc/libxcb/tutorial/index.html>
      * * <http://rosettacode.org/wiki/Window_creation/X11#XCB>
+     * * <https://xcb.freedesktop.org/manual/group__XCB__Core__API.html>
      * * [`x11-helper.c` of the “Rofi window switcher”](https://github.com/DaveDavenport/rofi/blob/master/source/x11-helper.c)
      */
     class Xcb

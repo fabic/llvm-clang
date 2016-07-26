@@ -159,3 +159,6 @@
 [submodule "mesa-gl"]
 	path = misc/wayland/mesa
 	url = https://anongit.freedesktop.org/git/mesa/mesa.git
+[submodule "rofi-win-switch"]
+	path = misc/rofi-win-switch
+	url = https://github.com/DaveDavenport/rofi.git
