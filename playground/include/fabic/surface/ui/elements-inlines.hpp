@@ -1,10 +1,10 @@
-#ifndef FABIC_TK_ELEMENTS_INLINES_H
-#define FABIC_TK_ELEMENTS_INLINES_H
+#ifndef SF_UI_ELEMENTS_INLINES_H
+#define SF_UI_ELEMENTS_INLINES_H
 
 #include "elements.hpp"
 
-TL_NS_BEGIN
-namespace tk {
+namespace sf {
+namespace ui {
 
 
   inline
@@ -25,7 +25,7 @@ namespace tk {
     return this->_children.back();
   }
 
-} // xcb ns
-TL_NS_END
+} // ui ns
+} // sf ns
 
-#endif // FABIC_TK_ELEMENTS_INLINES_H
+#endif // SF_UI_ELEMENTS_INLINES_H

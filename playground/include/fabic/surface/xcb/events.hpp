@@ -76,8 +76,8 @@ namespace sf {
     union EventsUnion {
       xcb_generic_event_t  _generic;
 
-      xcb_key_press_event_t     _key_press;   // XCB_KEY_PRESS 2
-      xcb_key_release_event_t _key_release; // XCB_KEY_RELEASE 3
+      xcb_key_press_event_t     _key_press;   // XCB_KEY_PRESS   2
+      xcb_key_release_event_t _key_release;   // XCB_KEY_RELEASE 3
 
       xcb_expose_event_t  _expose;            // XCB_EXPOSE 12
 

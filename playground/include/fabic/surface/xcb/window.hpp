@@ -3,6 +3,7 @@
 
 #include "fabic/surface/xcb/xcb.hpp"
 #include "fabic/surface/cairo/surface.hpp"
+#include "fabic/surface/ui/elements.hpp"
 
 namespace sf {
   namespace xcb {

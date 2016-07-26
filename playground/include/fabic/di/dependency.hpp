@@ -8,7 +8,6 @@
 # include "fabic/di/typedefs.hpp"
 # include "fabic/di/type_info.hpp"
 
-TL_NS_BEGIN
   namespace di {
 
     using std::string;
@@ -91,5 +90,5 @@ TL_NS_BEGIN
     };
 
   } // di ns.
-TL_NS_END
+
 #endif //FABICCPPPLAYGROUND_DEPENDENCY_HPP

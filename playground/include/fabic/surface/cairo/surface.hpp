@@ -8,6 +8,8 @@ namespace sf {
 
     /**
      * Wrapper around Cairo C-style stuff.
+     *
+     * [Cookbook: “How to:Create and use an XcbSurface”](https://www.cairographics.org/cookbook/xcbsurface.c/)
      */
     class Surface
     {
@@ -23,11 +25,9 @@ namespace sf {
 
       /// https://www.cairographics.org/manual/cairo-cairo-t.html#cairo-create
       /// TODO: be unique_ptr<>.
-      std::shared_ptr< cairo_t > cairoContext_         = nullptr;
+      std::shared_ptr< cairo_t > cairoContext_ = nullptr;
 
     public:
-
-      //inline surface() { return this->cairoSurface_.get(); }
 
       Dimensions<> dimensions() const { return this->dimensions_; }
 

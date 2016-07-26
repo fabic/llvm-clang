@@ -7,7 +7,6 @@
 
 #include "fabic/di/service_definition.hpp"
 
-TL_NS_BEGIN
   namespace di {
 
     /**
@@ -40,6 +39,5 @@ TL_NS_BEGIN
     };
 
   } // di ns.
-TL_NS_END
 
 #endif //FABICCPPPLAYGROUND_SERVICE_PROVIDER_HPP

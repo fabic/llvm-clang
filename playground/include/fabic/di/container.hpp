@@ -15,7 +15,6 @@
 
 # include "fabic/di/service_definition.hpp"
 
-TL_NS_BEGIN
   namespace di {
 
     using std::string;
@@ -125,7 +124,7 @@ TL_NS_BEGIN
 
         logtrace << " » ok, found service : " << serv->id()
                  << ", got a " << serv->get_service_definition_type_name()
-                 << ", address: " << TLNS::util::address_of(serv);
+                 << ", address: " << dude::util::address_of(serv);
 
         //typedef shared_ptr<definition<T, PointerT>> concrete_ptr_t;
 
@@ -167,6 +166,5 @@ TL_NS_BEGIN
     };
 
   } // di ns.
-TL_NS_END
 
 #endif

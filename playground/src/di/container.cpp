@@ -110,7 +110,7 @@ TL_NS_BEGIN
 
       for (const auto &pair : this->services_.get_map_impl()) {
         service_ptr_t base = pair.second;
-        logdebug << " » " << base->id() << " [" << TLNS::util::address_of(base) << "]";
+        logdebug << " » " << base->id() << " [" << dude::util::address_of(base) << "]";
       }
 
       logdebug << "CONTAINER DEBUG DUMP (2 - detail) :";
@@ -120,7 +120,7 @@ TL_NS_BEGIN
 
         logdebug << "  » " << base->id() << " : " << std::endl
            << "    - is-a:     " << base->get_service_definition_type_name() << std::endl
-           << "    - address : " << " [" << TLNS::util::address_of(base) << "]" << std::endl
+           << "    - address : " << " [" << dude::util::address_of(base) << "]" << std::endl
            << "    - type:     " << base->get_type_info().pretty_name() << std::endl;
 
        auto deps = base->get_dependencies_map();
@@ -132,7 +132,7 @@ TL_NS_BEGIN
            base_dependency_declaration &dep = *tuple.second;
            logdebug << "        - " << dep.get_service_id()
               << " as " << dep.get_service_type().name()
-              << " [" << TLNS::util::address_of(dep) << "]";
+              << " [" << dude::util::address_of(dep) << "]";
          }
         }
         else {

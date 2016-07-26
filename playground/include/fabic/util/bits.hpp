@@ -1,10 +1,10 @@
-#ifndef FABIC_UTIL_BITS_H
-#define FABIC_UTIL_BITS_H
+#ifndef DUDE_UTIL_BITS_H
+#define DUDE_UTIL_BITS_H
 
 #include <cstdint>
 #include <type_traits>
 
-TL_NS_BEGIN
+namespace dude {
 namespace util {
 
   /**
@@ -93,6 +93,6 @@ namespace util {
   static_assert( bit_index<uint32_t>(8, 32|   8|4|  1) == 3 );
 
 } // util ns.
-TL_NS_END
+} // dude ns
 
-#endif // FABIC_UTIL_BITS_H
+#endif // DUDE_UTIL_BITS_H

@@ -8,7 +8,6 @@
 
 # include "fabic/di/dependency.hpp"
 
-TL_NS_BEGIN
   namespace di {
 
     using std::string;
@@ -82,5 +81,5 @@ TL_NS_BEGIN
       };
 
   } // di ns.
-TL_NS_END
+
 #endif //FABICCPPPLAYGROUND_BASE_SERVICE_DEFINITION_HPP

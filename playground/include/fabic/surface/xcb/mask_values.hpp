@@ -9,9 +9,9 @@
 namespace sf {
   namespace xcb {
 
-    using TLNS::util::is_power_of_two;
-    using TLNS::util::popcount;
-    using TLNS::util::bit_index;
+    using dude::util::is_power_of_two;
+    using dude::util::popcount;
+    using dude::util::bit_index;
     using std::array;
 
     template< uint32_t Bitmask,

@@ -12,7 +12,6 @@
 
 # include "fabic/di/service_provider.hpp"
 
-TL_NS_BEGIN
   namespace di   {
     namespace dll {
 
@@ -39,6 +38,5 @@ TL_NS_BEGIN
 
     } // dll ns.
   } // di ns.
-TL_NS_END
 
 #endif //FABICCPPPLAYGROUND_DLL_SERVICE_PROVIDER_HPP

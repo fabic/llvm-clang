@@ -250,7 +250,7 @@ namespace sf {
 
       Event event( this-> shared_from_this() );
 
-      while( event.next() == true )
+      while( event.next() )
       {
         #ifndef NDEBUG
         if ( true ) {

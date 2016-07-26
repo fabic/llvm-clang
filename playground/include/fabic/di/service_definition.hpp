@@ -10,7 +10,6 @@
 
 # include "fabic/di/base_definition.hpp"
 
-TL_NS_BEGIN
   namespace di {
 
     using std::string;
@@ -93,7 +92,7 @@ TL_NS_BEGIN
                  << this->id()
                  << " is-a " << this->get_service_definition_type_name()
                  << ", requires(" << service_id << ")"
-                 << ", address : " << util::address_of(this);
+                 << ", address : " << dude::util::address_of(this);
 
         auto pair = this->dependencies.insert(
             std::make_pair(
@@ -200,5 +199,5 @@ TL_NS_BEGIN
     };
 
   } // di ns.
-TL_NS_END
+
 #endif //FABICCPPPLAYGROUND_SERVICE_DEFINITION_HPP

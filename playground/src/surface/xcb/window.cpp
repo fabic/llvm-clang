@@ -169,7 +169,10 @@ namespace sf {
       {
       case EventType::EXPOSE: {
         auto ex_ = event.expose();
-        this->handleEventExpose(ex_->width, ex_->height, ex_->x, ex_->y);
+        // Avoid extra redraws by checking if this is
+        // the last expose event in the sequence.
+        if (ex_->count == 0)
+          this->handleEventExpose(ex_->width, ex_->height, ex_->x, ex_->y);
         break;
       }
       case EventType::KEY_PRESS: {
@@ -181,6 +184,8 @@ namespace sf {
       default:
         logtrace << "Window::handleEvent(): skipping unknown event." ;
       }
+
+      this->render();
 
       logtrace << "Window::handleEvent(): end." ;
     }

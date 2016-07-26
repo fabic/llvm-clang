@@ -1,6 +1,5 @@
-
-#ifndef FABICCPPPLAYGROUND_POINTERS_HPP
-#define FABICCPPPLAYGROUND_POINTERS_HPP
+#ifndef DUDE_UTIL_POINTERS_HPP
+#define DUDE_UTIL_POINTERS_HPP
 
 #include <memory>
 #include <boost/format.hpp>
@@ -8,7 +7,7 @@
 // #define format_address(x)    (boost::format(" [%x] ") % (x))
 // #define format_address_of(x) (format_address(std::addressof(x)))
 
-TL_NS_BEGIN
+namespace dude {
   namespace ptr {
 
     /**
@@ -161,6 +160,6 @@ TL_NS_BEGIN
     }
 
 } // util ns
-TL_NS_END
+} // dude ns
 
-#endif //FABICCPPPLAYGROUND_POINTERS_HPP
+#endif //DUDE_UTIL_POINTERS_HPP
