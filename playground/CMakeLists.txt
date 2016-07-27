@@ -4,7 +4,7 @@
 #
 # @link https://cmake.org/cmake-tutorial/
 # @link http://www.vtk.org/Wiki/CMake_Useful_Variables
-#
+
 cmake_minimum_required(VERSION 3.3)
 
 project(FabicCppWanderings)
@@ -12,24 +12,29 @@ project(FabicCppWanderings)
 set (FabicCppWanderings_VERSION_MAJOR 0)
 set (FabicCppWanderings_VERSION_MINOR 1)
 
-# FHS-style local/ directory.
-if (NOT DEFINED FABIC_LOCAL_DIR)
-  set(FABIC_LOCAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../local)
-  message(STATUS "Trying FHS-style local/ directory (guessed) : '${FABIC_LOCAL_DIR}'.")
-else()
-  message(STATUS "FHS-style local/ directory set to ${FABIC_LOCAL_DIR}")
-endif()
 
-if (NOT IS_DIRECTORY ${FABIC_LOCAL_DIR})
-  message(WARNING "FHS-like “local/” directory doesn't exist.")
-else()
-  message(STATUS "FHS-style local/ directory exists, ok.")
-endif()
+## FHS-style local/ directory.
+#
+  if (NOT DEFINED FABIC_LOCAL_DIR)
+    set(FABIC_LOCAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../local)
+    message(STATUS "Trying FHS-style local/ directory (guessed) : '${FABIC_LOCAL_DIR}'.")
+  else()
+    message(STATUS "FHS-style local/ directory set to ${FABIC_LOCAL_DIR}")
+  endif()
 
+  if (NOT IS_DIRECTORY ${FABIC_LOCAL_DIR})
+    message(WARNING "FHS-like “local/” directory doesn't exist.")
+  else()
+    message(STATUS "FHS-style local/ directory exists, ok.")
+  endif()
+# ^ local/ FHS-style setup.
+##
+
+
+### LLVM/Clang CMake modules # # # # # # # # # # # # # # # # # # # # # # # # #
+##
 # TODO: auto-setup CMAKE_MODULE_PATH w/ `for ${FABIC_LOCAL_DIR}/share/*/cmake/`
 
-###
-## LLVM/Clang CMake modules
   if (IS_DIRECTORY ${FABIC_LOCAL_DIR}/share/llvm)
     list(APPEND CMAKE_MODULE_PATH "${FABIC_LOCAL_DIR}/share/llvm/cmake")
     message(STATUS "LLVM: Prepended CMAKE_MODULE_PATH with '${FABIC_LOCAL_DIR}/share/llvm/cmake', ok.")
@@ -45,22 +50,41 @@ endif()
     message(WARNING "LLVM: couldn't find '${FABIC_LOCAL_DIR}/share/llvm/cmake' (CMake modules for LLVM).")
     message(WARNING "LLVM/Clang: not setting up CMAKE_MODULE_PATH.")
   endif()
+
+  message(STATUS "FYI: CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
 # ^ LLVM/Clang CMake modules search-path setup.
 ##
 
-message(STATUS "FYI: CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
+
+## PKG-CONFIG auto-configuration “CMake bridge” # # # # # # # # # # # #
+#
+# CMake module: /usr/share/cmake/Modules/FindPkgConfig.cmake
+# Cf also: https://wiki.gnome.org/Projects/gtkmm/UsingCMake
+find_package(PkgConfig)
+
+
+##
+# This will cause `-I.` and similar/redondant directives like `-I../symfony/..`
+# to be emitted (for systematic ability of #include-ing files from the
+# “current source file” directory)
+#
+# EDIT/2016-07-27 : Enabling thing project-wide, having definitions (headers)
+#                   separated from the sources provide no added value at the
+#                   moment.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+
+### # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+### #  COMPILER FLAGS, DEFINES, ETC...  # # # # # # # # # # # # # # # #
+### # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Top-level namespace #define-s
+# FIXME: drop this.
 add_definitions(
   -DTL_NS_BEGIN=
   -DTL_NS_END=
   -DTLNS=
   )
-
-# This will cause `-I.` and similar/redondant directives like `-I../symfony/..`
-# to be emitted (for systematic ability of #include-ing files from the
-# “current source file” directory)
-#set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
 # Replacing these `set ...` by add_compile_options(...) :
@@ -79,6 +103,7 @@ add_compile_options(
   #   ^ http://clang.llvm.org/docs/UsersManual.html#enabling-all-diagnostics
   )
 
+
 add_compile_options(
   -fcolor-diagnostics
   -fdiagnostics-show-category=name
@@ -95,15 +120,17 @@ add_compile_options(
 # ^ requires LLVMgold.so, missing on my Sabayon system (Clang 3.8).
 #   http://clang.llvm.org/docs/LTOVisibility.html
 
+
 add_compile_options(
-  # -O0
-  #-ggdb
+  # -O0 -ggdb
+  # ^ this is automatically handled by CMake build type thing.
     # So as to get better/meaninful stack traces in error messages :
     -fno-omit-frame-pointer
     # and disable tail call elimination
     -fno-optimize-sibling-calls
   )
 # ^ implies -g
+
 
 add_compile_options(
   # -fsanitize=address     # http://clang.llvm.org/docs/AddressSanitizer.html
@@ -118,6 +145,7 @@ add_compile_options(
   #-fsanitize=cfi -flto  # http://clang.llvm.org/docs/ControlFlowIntegrity.html (requries -flto)
   # -fsanitize=safe-stack  # http://clang.llvm.org/docs/SafeStack.html
   )
+
 
 add_compile_options(
   # -fvisibility-inlines-hidden
@@ -185,18 +213,17 @@ add_compile_options(
 
   if (Boost_FOUND)
   	include_directories(${Boost_INCLUDE_DIR})
+    # TODO: do this where it is actually needed.
   	find_package (
       Boost
       COMPONENTS REQUIRED
         log
-        #log_setup
-        # ^ ain't needed it appears.
         program_options
         filesystem
         system
     )
-  #else
-  #  message("Ain't find no Boost C++ lad :-/")
+  else()
+    message(WARNING "Boost C++: Ain't not found lad :-/")
   endif (Boost_FOUND)
 # ^ Boost C++
 ###
@@ -233,17 +260,15 @@ endif()
 ##
 
 
-## pkg-config auto-configuration “CMake bridge” # # # # # # # # # # # # # # #
-#
-# CMake module: /usr/share/cmake/Modules/FindPkgConfig.cmake
-# Defines: GTKMM_INCLUDE_DIRS, GTKMM_LIBRARY_DIRS and GTKMM_LIBRARIES.
-# Cf also: https://wiki.gnome.org/Projects/gtkmm/UsingCMake
-find_package(PkgConfig)
-
 include_directories(include)
-add_subdirectory(src)
+# ^ NOTE/2016-07-27: emptied the include/ dir. in favor of having headers reside
+#                    along implementations.
+
 add_subdirectory(experiments)
+
 add_subdirectory(lib)
+
+add_subdirectory(src)
 
 
 ### DUMP ALL VARIABLES (DEBUG) ##############################################
@@ -256,5 +281,6 @@ add_subdirectory(lib)
      message(STATUS "${_variableName}=${${_variableName}}")
     endforeach()
   endif (false)
+
 ##
 ### ^ CMake defined variables debug dump. ###################################

@@ -7,8 +7,6 @@ message(STATUS "Clong: Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 add_definitions( ${LLVM_DEFINITIONS} )
 
-# set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 include_directories( ${LLVM_INCLUDE_DIRS} )
 
 add_library(
