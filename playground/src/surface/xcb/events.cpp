@@ -47,7 +47,7 @@ namespace sf {
         , { EventType::CONFIGURE_NOTIFY,  EventDescription(EventType::CONFIGURE_NOTIFY,  "CONFIGURE_NOTIFY") }
         , { EventType::CONFIGURE_REQUEST, EventDescription(EventType::CONFIGURE_REQUEST, "CONFIGURE_REQUEST") }
         , { EventType::GRAVITY_NOTIFY,    EventDescription(EventType::GRAVITY_NOTIFY,    "GRAVITY_NOTIFY") }
-        , { EventType::RESIZE_REQUEST,    EventDescription(EventType::RESIZE_REQUEST,    "RESIZE_REQUEST") }
+        , { EventType::RESIZE_REQUEST,    EventDescription(EventType::RESIZE_REQUEST,    "RESIZE_REQUEST", "xcb_resize_request_event_t") }
         , { EventType::CIRCULATE_NOTIFY,  EventDescription(EventType::CIRCULATE_NOTIFY,  "CIRCULATE_NOTIFY") }
         , { EventType::CIRCULATE_REQUEST, EventDescription(EventType::CIRCULATE_REQUEST, "CIRCULATE_REQUEST") }
         , { EventType::PROPERTY_NOTIFY,   EventDescription(EventType::PROPERTY_NOTIFY,   "PROPERTY_NOTIFY") }

@@ -113,7 +113,12 @@ namespace sf {
           XCB_EVENT_MASK_EXPOSURE
         | XCB_EVENT_MASK_VISIBILITY_CHANGE
         | XCB_EVENT_MASK_FOCUS_CHANGE
-        | XCB_EVENT_MASK_RESIZE_REDIRECT
+        // | XCB_EVENT_MASK_RESIZE_REDIRECT
+        // ^ not this one, entails that we have to handle XCB_RESIZE_REQUEST
+        //   events, which appear to not only shadow EXPOSE events, but also
+        //   entail that some stuff that X would have performed on our behalf
+        //   no longer get done (had the pb that the "drawable area" wasn't
+        //   scaling automatically along me resizing the window).
         | XCB_EVENT_MASK_ENTER_WINDOW   | XCB_EVENT_MASK_LEAVE_WINDOW
         | XCB_EVENT_MASK_KEY_PRESS      | XCB_EVENT_MASK_KEY_RELEASE
         | XCB_EVENT_MASK_BUTTON_PRESS   | XCB_EVENT_MASK_BUTTON_RELEASE
@@ -184,6 +189,11 @@ namespace sf {
         // the last expose event in the sequence.
         if (ex_->count == 0)
           this->handleEventExpose(ex_->width, ex_->height, ex_->x, ex_->y);
+        break;
+      }
+      case EventType::RESIZE_REQUEST: {
+        auto ex_ = event.resize_request();
+        this->handleEventExpose(ex_->width, ex_->height, -1, -1);
         break;
       }
       case EventType::KEY_PRESS: {
@@ -275,7 +285,7 @@ namespace sf {
 
       sf.set_operator(CAIRO_OPERATOR_OVER);
 
-      sf.source_rgba(rgba<>(255, 64, 32, 127));
+      sf.source_rgba(rgba<>(255, 255, 255, 32));
 
       sf.set_line_width(20);
 

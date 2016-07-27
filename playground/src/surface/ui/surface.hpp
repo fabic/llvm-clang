@@ -15,11 +15,14 @@ namespace sf {
         : public XcbWindow
     {
     public:
+      typedef Surface * self_ptr;
+      typedef XcbWindow parent;
+
+    public:
       Surface(shared_ptr< Xcb > xcb_);
       virtual ~Surface() override;
 
-      //virtual void _initChildrenElementsHierarchy() override;
-
+      virtual self_ptr render() override;
     };
 
   } // ui ns.

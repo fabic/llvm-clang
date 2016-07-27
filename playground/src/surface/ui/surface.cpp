@@ -4,9 +4,6 @@
 namespace sf {
   namespace ui {
 
-     using Xcb = xcb::Xcb;
-     using XcbWindow = xcb::Window;
-
     Surface::Surface(shared_ptr< Xcb > xcb_)
         : XcbWindow( xcb_ )
     {
@@ -17,6 +14,13 @@ namespace sf {
     Surface::~Surface()
     { }
 
+
+    Surface *
+      Surface::render()
+    {
+      parent::render();
+      return this;
+    }
 
   } // ui ns.
 } // sf ns.

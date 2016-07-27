@@ -6,6 +6,9 @@
 namespace sf {
 
 
+  /**
+   * FIXME: was a bad idea to have it be templated.
+   */
   template< typename Scalar = uint8_t >
   struct rgba {
     Scalar r = 0;
@@ -16,6 +19,11 @@ namespace sf {
     inline rgba(Scalar r, Scalar g, Scalar b, Scalar a)
         : r(r), g(g), b(b), a(a)
     { }
+
+    inline rgba(uint32_t bulk)
+    {
+      static_assert(sizeof(Scalar) == sizeof(uint8_t));
+    }
 
     /**
      * Converting constructor : if _this_ Scalar is floating-point,

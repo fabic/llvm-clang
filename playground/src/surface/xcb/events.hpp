@@ -44,7 +44,7 @@ namespace sf {
       , CONFIGURE_NOTIFY  = XCB_CONFIGURE_NOTIFY  // 22
       , CONFIGURE_REQUEST = XCB_CONFIGURE_REQUEST // 23
       , GRAVITY_NOTIFY    = XCB_GRAVITY_NOTIFY    // 24
-      , RESIZE_REQUEST    = XCB_RESIZE_REQUEST    // 25
+      , RESIZE_REQUEST    = XCB_RESIZE_REQUEST    // 25 ( xcb_resize_request_event_t )
       , CIRCULATE_NOTIFY  = XCB_CIRCULATE_NOTIFY  // 26
       , CIRCULATE_REQUEST = XCB_CIRCULATE_REQUEST // 27
       , PROPERTY_NOTIFY   = XCB_PROPERTY_NOTIFY   // 28
@@ -75,11 +75,10 @@ namespace sf {
      */
     union EventsUnion {
       xcb_generic_event_t  _generic;
-
-      xcb_key_press_event_t     _key_press;   // XCB_KEY_PRESS   2
+      xcb_key_press_event_t   _key_press;     // XCB_KEY_PRESS   2
       xcb_key_release_event_t _key_release;   // XCB_KEY_RELEASE 3
-
-      xcb_expose_event_t  _expose;            // XCB_EXPOSE 12
+      xcb_expose_event_t      _expose;        // XCB_EXPOSE 12
+      xcb_resize_request_event_t _resize_request; // XCB_RESIZE_REQUEST 25
 
       // todo: add here some further struct. from XCB as needed.
 
@@ -195,7 +194,8 @@ namespace sf {
         xcb_window_t window_xid = 0;
 
         switch( this->type() ) {
-        case EventType::EXPOSE:      window_xid = this->expose()->window; break;
+        case EventType::EXPOSE:         window_xid = this->expose()->window; break;
+        case EventType::RESIZE_REQUEST: window_xid = this->resize_request()->window; break;
         case EventType::KEY_PRESS:   window_xid = this->key_press()->event; break;
         case EventType::KEY_RELEASE: window_xid = this->key_release()->event; break;
         default:
@@ -209,6 +209,12 @@ namespace sf {
       {
         this->_throw_if_not_typed( EventType::EXPOSE );
         return &this->union_->_expose;
+      }
+
+      inline const xcb_resize_request_event_t * resize_request() const
+      {
+        this->_throw_if_not_typed( EventType::RESIZE_REQUEST );
+        return &this->union_->_resize_request;
       }
 
       inline const xcb_key_press_event_t * key_press() const
