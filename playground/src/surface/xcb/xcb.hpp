@@ -32,10 +32,7 @@ namespace sf {
         : public std::enable_shared_from_this< Xcb >
     {
     public:
-      typedef Xcb& self;
-      typedef Xcb& reference;
-      typedef std::shared_ptr< Xcb > shared_ptr;
-
+      typedef Xcb* self;
       typedef std::map<xcb_window_t, window_shared_ptr> windows_map_t;
 
       /**
@@ -223,13 +220,15 @@ namespace sf {
 
       /**
        * Enter the event loop.
+       *
+       * \return this
        */
-      virtual self run();
+      virtual Xcb * run();
 
       /**
        * Add window `win_` to our map of windows we know about.
        *
-       * @return self
+       * @return this
        */
       self registerWindow(window_shared_ptr win_)
       throw(window_already_registered_ex);

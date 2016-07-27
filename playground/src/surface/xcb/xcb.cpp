@@ -30,7 +30,7 @@ namespace sf {
     }
 
 
-    Xcb_ref_t
+    Xcb *
       Xcb::connect(const char *displayName)
     {
       logtrace << "Xcb: Connecting to "
@@ -45,11 +45,11 @@ namespace sf {
 
       logtrace << "Xcb: connected (probably).";
 
-      return *this;
+      return this;
     }
 
 
-    Xcb_ref_t
+    Xcb *
       Xcb::disconnect()
     {
       logtrace << "Xcb: Disconnecting from server...";
@@ -63,7 +63,7 @@ namespace sf {
 
       this->connection_ = nullptr;
 
-      return *this;
+      return this;
     }
 
 
@@ -122,7 +122,7 @@ namespace sf {
     }
 
 
-    Xcb::self
+    Xcb *
       Xcb::registerWindow(window_shared_ptr win_)
         throw(window_already_registered_ex)
     {
@@ -146,7 +146,7 @@ namespace sf {
 
       logdebug << "Xcb::registerWindow(): Window XID " << window_xid << ", ok." ;
 
-      return *this;
+      return this;
     }
 
 
@@ -241,7 +241,7 @@ namespace sf {
     }
 
 
-    Xcb_ref_t
+    Xcb *
       Xcb::run()
     {
       logdebug << "Xcb::run() : begin.";
@@ -267,7 +267,7 @@ namespace sf {
 
       logdebug << "Xcb::run() : end.";
 
-      return *this;
+      return this;
     }
 
 

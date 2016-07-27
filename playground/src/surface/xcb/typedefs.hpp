@@ -10,6 +10,8 @@
 #include <xcb/xcb.h>
 #include <xcb/xcb_util.h>
 
+#include <boost/call_traits.hpp>
+
 namespace sf {
   namespace xcb {
 

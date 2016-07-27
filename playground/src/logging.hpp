@@ -11,7 +11,7 @@
 #include <boost/format.hpp>
 #include <boost/log/trivial.hpp>
 
-# include <fabic/util/pointers.hpp>
+# include "util/pointers.hpp"
 
 #ifdef BOOST_LOG_TRIVIAL
 #  define logtrace  BOOST_LOG_TRIVIAL(trace)

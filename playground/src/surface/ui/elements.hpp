@@ -17,7 +17,6 @@ namespace sf {
 
     using std::string;
     using dude::ptr::inheritable_shared_from_this;
-    using sf::cairo::Surface;
 
     typedef const string& string_cref;
 
@@ -58,7 +57,7 @@ namespace sf {
     protected:
       string         _id;
       Rectangle<>    _bounding_box;
-      Surface        _surface;
+      cairo::Surface _surface;
 
     public:
       explicit Element(ElementPtr parent_);
@@ -76,7 +75,7 @@ namespace sf {
 
       string_cref id() const noexcept { return this->_id; }
 
-      Surface::self_ref surface() noexcept { return this->_surface; }
+      cairo::Surface::self_ref surface() noexcept { return this->_surface; }
 
       Rectangle<> boundingBox() const noexcept { return this->_bounding_box; }
 

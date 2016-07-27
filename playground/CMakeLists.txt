@@ -213,15 +213,15 @@ add_compile_options(
 
   if (Boost_FOUND)
   	include_directories(${Boost_INCLUDE_DIR})
-    # TODO: do this where it is actually needed.
-  	find_package (
-      Boost
-      COMPONENTS REQUIRED
-        log
-        program_options
-        filesystem
-        system
-    )
+    # find_package (
+    #   Boost
+    #   COMPONENTS REQUIRED
+    #     log
+    #     program_options
+    #     filesystem
+    #     system
+    # )
+    # ^ now performed where/when needed.
   else()
     message(WARNING "Boost C++: Ain't not found lad :-/")
   endif (Boost_FOUND)

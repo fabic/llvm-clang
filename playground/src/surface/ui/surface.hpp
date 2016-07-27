@@ -6,6 +6,7 @@
 namespace sf {
   namespace ui {
 
+    using std::shared_ptr;
     using Xcb = xcb::Xcb;
     using XcbWindow = xcb::Window;
 
@@ -14,7 +15,7 @@ namespace sf {
         : public XcbWindow
     {
     public:
-      Surface(Xcb::shared_ptr xcb_);
+      Surface(shared_ptr< Xcb > xcb_);
       virtual ~Surface() override;
 
       //virtual void _initChildrenElementsHierarchy() override;

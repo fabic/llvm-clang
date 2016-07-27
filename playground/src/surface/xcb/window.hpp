@@ -14,7 +14,8 @@ namespace sf {
      * Beware: Window-s must be heap-allocated.
      */
     class Window
-        : public std::enable_shared_from_this< Window >
+        // : public std::enable_shared_from_this< Window >
+        : public dude::ptr::inheritable_shared_from_this< Window >
     {
     public:
       typedef Window&  self;

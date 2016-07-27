@@ -4,10 +4,10 @@
 namespace sf {
   namespace ui {
 
-    using Xcb = xcb::Xcb;
-    using XcbWindow = xcb::Window;
+     using Xcb = xcb::Xcb;
+     using XcbWindow = xcb::Window;
 
-    Surface::Surface(Xcb::shared_ptr xcb_)
+    Surface::Surface(shared_ptr< Xcb > xcb_)
         : XcbWindow( xcb_ )
     {
       this->create(800, 450);

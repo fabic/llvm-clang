@@ -79,7 +79,7 @@ namespace sf {
     }
 
 
-    inline Xcb::self
+    inline Xcb *
     Xcb::flush()
     {
       int status = xcb_flush( this->connection_ );
@@ -87,7 +87,7 @@ namespace sf {
       if (status <= 0)
         throw base_exception();
 
-      return *this;
+      return this;
     }
 
 
