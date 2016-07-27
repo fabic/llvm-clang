@@ -1,8 +1,8 @@
 
-#include "fabic/surface/xcb/window.hpp"
-#include "fabic/surface/xcb/inline-decls.hpp"
-//#include "fabic/surface/ui/elements-inlines.hpp"
-#include "fabic/logging.hpp"
+#include "surface/xcb/window.hpp"
+#include "surface/xcb/inline-decls.hpp"
+//#include "surface/ui/elements-inlines.hpp"
+#include "logging.hpp"
 
 namespace sf {
   namespace xcb {

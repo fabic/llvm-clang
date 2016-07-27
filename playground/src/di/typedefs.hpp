@@ -11,8 +11,8 @@
 #include <boost/call_traits.hpp>
 #include <boost/throw_exception.hpp>
 
-#include "fabic/logging.hpp"
-#include "fabic/object.hpp"
+#include "logging.hpp"
+#include "object.hpp"
 
   namespace di {
 

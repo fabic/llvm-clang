@@ -10,7 +10,7 @@
 #include <boost/dll/runtime_symbol_info.hpp>    // for program_location()
 #include <boost/dll/library_info.hpp>
 
-# include "fabic/di/service_provider.hpp"
+# include "di/service_provider.hpp"
 
   namespace di   {
     namespace dll {

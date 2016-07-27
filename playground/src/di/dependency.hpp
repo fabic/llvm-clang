@@ -5,8 +5,8 @@
 #ifndef FABICCPPPLAYGROUND_DEPENDENCY_HPP
 #define FABICCPPPLAYGROUND_DEPENDENCY_HPP
 
-# include "fabic/di/typedefs.hpp"
-# include "fabic/di/type_info.hpp"
+# include "di/typedefs.hpp"
+# include "di/type_info.hpp"
 
   namespace di {
 

@@ -8,8 +8,8 @@
 #include <clang/AST/ASTConsumer.h>
 #include <clang/AST/ASTContext.h>
 
-# include "fabic/config.hpp"
-# include "fabic/logging.hpp"
+# include "config.hpp"
+# include "logging.hpp"
 
 TL_NS_BEGIN
 namespace clong {

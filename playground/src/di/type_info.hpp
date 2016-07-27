@@ -11,7 +11,7 @@
 #include <cxxabi.h>
 
 // todo: ?
-# include "fabic/object.hpp"
+# include "object.hpp"
 
   namespace di {
 

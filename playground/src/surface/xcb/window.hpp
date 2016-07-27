@@ -1,9 +1,9 @@
 #ifndef SF_XCB_WINDOW_H
 #define SF_XCB_WINDOW_H
 
-#include "fabic/surface/xcb/xcb.hpp"
-#include "fabic/surface/cairo/surface.hpp"
-#include "fabic/surface/ui/elements.hpp"
+#include "surface/xcb/xcb.hpp"
+#include "surface/cairo/surface.hpp"
+#include "surface/ui/elements.hpp"
 
 namespace sf {
   namespace xcb {

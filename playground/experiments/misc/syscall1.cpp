@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "fabic/syscall/Process.h"
-#include "fabic/syscall/Time.h"
+#include "syscall/Process.h"
+#include "syscall/Time.h"
 
 using namespace std;
 using namespace TLNS::syscall;

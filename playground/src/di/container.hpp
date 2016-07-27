@@ -13,7 +13,7 @@
 #include <memory>
 #include <cassert>
 
-# include "fabic/di/service_definition.hpp"
+# include "di/service_definition.hpp"
 
   namespace di {
 

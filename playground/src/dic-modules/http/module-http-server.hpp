@@ -5,9 +5,9 @@
 #include <boost/dll/alias.hpp>
 #include <boost/network/protocol/http/server.hpp>
 
-# include "fabic/logging.hpp"
-# include "fabic/di/container.hpp"
-# include "fabic/http/handler_functor.hpp"
+# include "logging.hpp"
+# include "di/container.hpp"
+# include "http/handler_functor.hpp"
 
 TL_NS_BEGIN
   namespace module {

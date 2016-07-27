@@ -5,7 +5,7 @@
 #ifndef FABICCPPPLAYGROUND_SERVICE_PROVIDER_HPP
 #define FABICCPPPLAYGROUND_SERVICE_PROVIDER_HPP
 
-#include "fabic/di/service_definition.hpp"
+#include "di/service_definition.hpp"
 
   namespace di {
 

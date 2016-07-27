@@ -5,7 +5,7 @@
 #ifndef FABIC_SYSCALL_TIME_H
 #define FABIC_SYSCALL_TIME_H
 
-#include "fabic/syscall/Syscall.h"
+#include "syscall/Syscall.h"
 
 TL_NS_BEGIN
 namespace syscall {

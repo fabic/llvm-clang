@@ -1,7 +1,7 @@
 
-#include "fabic/surface/xcb/xcb.hpp"
-#include "fabic/surface/xcb/inline-decls.hpp"
-#include "fabic/logging.hpp"
+#include "surface/xcb/xcb.hpp"
+#include "surface/xcb/inline-decls.hpp"
+#include "logging.hpp"
 
 namespace sf {
   namespace xcb {

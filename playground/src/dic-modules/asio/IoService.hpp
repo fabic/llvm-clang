@@ -15,7 +15,7 @@
 //   http://en.cppreference.com/w/cpp/chrono
 // #include <chrono>
 
-# include "fabic/di/container.hpp"
+# include "di/container.hpp"
 
 TL_NS_BEGIN
   namespace module {

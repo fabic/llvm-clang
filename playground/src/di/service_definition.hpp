@@ -8,7 +8,7 @@
 # include <string>
 # include <map>
 
-# include "fabic/di/base_definition.hpp"
+# include "di/base_definition.hpp"
 
   namespace di {
 

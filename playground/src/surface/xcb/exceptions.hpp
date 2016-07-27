@@ -2,7 +2,7 @@
 #define SURFACE_XCB_EXCEPTIONS_H
 
 #include <memory>
-#include "fabic/surface/common.hpp"
+#include "surface/common.hpp"
 
 namespace sf {
   namespace xcb {

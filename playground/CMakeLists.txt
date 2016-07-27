@@ -263,6 +263,9 @@ endif()
 include_directories(include)
 # ^ NOTE/2016-07-27: emptied the include/ dir. in favor of having headers reside
 #                    along implementations.
+# ^ and have src/ as include dir. instead :
+include_directories(src)
+
 
 add_subdirectory(experiments)
 

@@ -2,8 +2,8 @@
 #define SURFACE_XCB_EVENTS_H
 
 #include <map>
-#include "fabic/surface/xcb/typedefs.hpp"
-#include "fabic/surface/xcb/exceptions.hpp"
+#include "surface/xcb/typedefs.hpp"
+#include "surface/xcb/exceptions.hpp"
 
 namespace sf {
   namespace xcb {

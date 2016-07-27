@@ -1,7 +1,7 @@
 #ifndef SF_UI_SURFACE_H
 #define SF_UI_SURFACE_H
 
-#include "fabic/surface/xcb/window.hpp"
+#include "surface/xcb/window.hpp"
 
 namespace sf {
   namespace ui {

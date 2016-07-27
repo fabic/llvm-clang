@@ -6,7 +6,7 @@
 #define FABICCPPPLAYGROUND_BASE_SERVICE_DEFINITION_HPP
 
 
-# include "fabic/di/dependency.hpp"
+# include "di/dependency.hpp"
 
   namespace di {
 

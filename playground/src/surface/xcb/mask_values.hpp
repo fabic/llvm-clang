@@ -3,8 +3,8 @@
 
 #include <array>
 
-# include "fabic/surface/xcb/typedefs.hpp"
-# include "fabic/util/bits.hpp"
+# include "surface/xcb/typedefs.hpp"
+# include "util/bits.hpp"
 
 namespace sf {
   namespace xcb {

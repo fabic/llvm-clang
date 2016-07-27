@@ -6,9 +6,9 @@
 #include <iostream>
 #include <boost/program_options.hpp>
 
-# include "fabic/di/container.hpp"
-# include "fabic/di/dll_service_provider.hpp"
-# include "fabic/asio/IoService.hpp"
+# include "di/container.hpp"
+# include "di/dll_service_provider.hpp"
+# include "asio/IoService.hpp"
 
 TL_NS_BEGIN
   namespace symfony {

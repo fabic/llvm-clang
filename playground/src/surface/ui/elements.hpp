@@ -7,10 +7,10 @@
 #include <type_traits>
 #include <algorithm>
 
-# include "fabic/surface/cairo/surface.hpp"
-# include "fabic/util/pointers.hpp"
-# include "fabic/logging.hpp"
-# include "fabic/surface/maths/rectangle.hpp"
+# include "surface/cairo/surface.hpp"
+# include "util/pointers.hpp"
+# include "logging.hpp"
+# include "surface/maths/rectangle.hpp"
 
 namespace sf {
   namespace ui {
@@ -92,6 +92,6 @@ namespace sf {
   } // ui ns
 } // sf ns
 
-#include "fabic/surface/ui/elements-inlines.hpp"
+#include "surface/ui/elements-inlines.hpp"
 
 #endif // SF_UI_ELEMENTS_H
