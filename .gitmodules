@@ -162,3 +162,9 @@
 [submodule "rofi-win-switch"]
 	path = misc/rofi-win-switch
 	url = https://github.com/DaveDavenport/rofi.git
+[submodule "kmscon"]
+	path = misc/kmscon
+	url = https://github.com/dvdhrm/kmscon.git
+[submodule "kmscon-libtsm"]
+	path = misc/kmscon-libtsm
+	url = git://people.freedesktop.org/~dvdhrm/libtsm

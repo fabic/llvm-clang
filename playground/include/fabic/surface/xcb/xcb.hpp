@@ -33,6 +33,8 @@ namespace sf {
     {
     public:
       typedef Xcb& self;
+      typedef Xcb& reference;
+      typedef std::shared_ptr< Xcb > shared_ptr;
 
       typedef std::map<xcb_window_t, window_shared_ptr> windows_map_t;
 

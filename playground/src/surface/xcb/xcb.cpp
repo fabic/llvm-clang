@@ -252,16 +252,14 @@ namespace sf {
 
       while( event.next() )
       {
-        #ifndef NDEBUG
-        if ( true ) {
-          auto descr = event.description();
+        #if 1
+        auto descr = event.description();
 
-          logtrace << "Xcb::run(): Event " << descr.name()
-                   << " (" << static_cast<int>(descr.type()) << ")"
-                   << " is-a: " << (descr.struct_name() != nullptr ? descr.struct_name() : "???")
-                ;
-        }
-        #endif // NDEBUG
+        logtrace << "Xcb::run(): Event " << descr.name()
+                 << " (" << static_cast<int>(descr.type()) << ")"
+                 << " is-a: " << (descr.struct_name() != nullptr ? descr.struct_name() : "???")
+              ;
+        #endif // 0
 
         this->_handleEvent(event);
 
