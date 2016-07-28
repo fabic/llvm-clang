@@ -37,7 +37,21 @@ namespace sf {
 
     /// Add new line at end of buffer.
     Line::reference_t newLineAtEnd();
+
+    /// \return a reference to the Line-s list.
+    lines_list_t& lines();
   };
+
+
+  // // // // // // // // // // // // // // // // // // // // // // //
+
+
+  inline
+  TextBuffer::lines_list_t &
+    TextBuffer::lines()
+  {
+    return _lines;
+  }
 
 } // sf ns.
 #endif // SF_TEXT_BUFFER_HPP
