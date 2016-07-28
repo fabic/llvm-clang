@@ -64,7 +64,8 @@ namespace sf {
         if (! line.isBlank()) {
           cairo_move_to(cr, x, y);
           cairo_show_text(cr, str);
-          y += text_extents.height + font_extents.descent ;
+          y += std::max(text_extents.height, font_extents.height)
+                + font_extents.descent ;
         }
         else {
           y += font_extents.height + font_extents.descent ;
