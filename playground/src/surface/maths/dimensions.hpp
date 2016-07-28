@@ -29,6 +29,10 @@ namespace sf {
     Dimensions(Scalar width, Scalar height)
         : base_t(width, height) { }
 
+    template< typename Other >
+    Dimensions( const Dimensions< Other >& other)
+        : base_t(other) { }
+
     Dimensions< Scalar >& operator=(const Dimensions< Scalar >& other)
     {
       this->x_ = other.x_;

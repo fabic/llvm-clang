@@ -24,9 +24,8 @@ namespace sf {
     protected:
       std::shared_ptr< TextBuffers > textBuffers_;
 
+      /// Currently displayed buffer.
       TextBuffer::pointer currentTextBuffer_ = nullptr ;
-
-      // currently displayed buffer.
 
     public:
       Surface(shared_ptr< Xcb > xcb_, std::shared_ptr< TextBuffers > buffers_);
@@ -36,6 +35,8 @@ namespace sf {
       virtual self_ptr render() override;
 
       TextBuffer::pointer textBuffer_();
+
+    protected:
     };
 
 
@@ -50,6 +51,7 @@ namespace sf {
         currentTextBuffer_ = textBuffers_->any();
       return currentTextBuffer_ ;
     }
+
 
   } // ui ns.
 } // sf ns.
