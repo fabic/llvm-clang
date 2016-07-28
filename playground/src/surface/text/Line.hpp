@@ -2,6 +2,7 @@
 #define SF_TEXT_LINE_HPP
 
 #include <string>
+#include <cctype>
 
 namespace sf {
 
@@ -16,6 +17,9 @@ namespace sf {
   protected:
     string_t _string;
 
+    bool _dirty = true;
+    mutable bool _is_blank_line = true;
+
     // _deleted / _removed
 
   public:
@@ -23,7 +27,16 @@ namespace sf {
     /// Return a reference to the `std::string` used for storage of
     /// line characters.
     string_t& string() { return _string; }
+
+    bool isDirty() const noexcept ;
+    bool isBlank() const noexcept ;
   };
+
+
+  // // // // // // // // // // // // // // // // // // // // // // //
+
+
+  inline bool Line::isDirty() const noexcept { return _dirty ; }
 
 } // sf ns.
 
