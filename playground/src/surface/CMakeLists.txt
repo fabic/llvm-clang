@@ -34,8 +34,9 @@ add_executable( sf
     ui/surface.cpp
     text/TextBuffer.cpp
     text/TextBuffers.cpp
+    text/Line.cpp ui/TextView.cpp
     ../hacks/hack_cxa_throw_exception.cpp
-    text/Line.cpp text/Line.hpp)
+    )
 
 target_compile_options( sf
   PUBLIC
