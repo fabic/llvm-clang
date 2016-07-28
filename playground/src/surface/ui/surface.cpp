@@ -85,11 +85,11 @@ namespace sf {
       // HELLO WORLD !
       #if 1
       {
-        const double bbox_height = font_extents.height + 3;
+        const double bbox_height = font_extents.height + 2;
         cairo_rectangle(cr,
                         0, surfaceDimensions.height() - bbox_height,
                         surfaceDimensions.width(), bbox_height );
-        _surface.source_rgba(rgba<uint8_t>(48, 48, 48, 128));
+        _surface.source_rgba(rgba<uint8_t>(0, 0, 0, 232));
         cairo_fill(cr);
 
         cairo_move_to(cr, 2, _surface.dimensions().height() - 3);

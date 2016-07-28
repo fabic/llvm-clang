@@ -1,6 +1,7 @@
 
 find_package( LLVM  REQUIRED CONFIG )
 find_package( Clang REQUIRED )
+find_package (Boost COMPONENTS REQUIRED log )
 
 message(STATUS "Clong: Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Clong: Using LLVMConfig.cmake in: ${LLVM_DIR}")

@@ -18,7 +18,8 @@ namespace clong {
   using namespace ::clang;
 
   /**
-   *
+   * * [Parsing C++ (Andrew Birkett, 2001)](http://www.nobugs.org/developer/parsingcpp/)
+   * * [Thoughts on the Insanity of C++ Parsing, David Beazley, 2012](http://www.swig.org/article_cpp.html)
    */
   class ClangASTConsumer
       : public ASTConsumer

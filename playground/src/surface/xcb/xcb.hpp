@@ -21,6 +21,7 @@ namespace sf {
      *       } xcb_void_cookie_t;
      *
      * * <https://www.x.org/releases/X11R7.7/doc/index.html>
+     * * <https://www.x.org/releases/X11R7.7/doc/man/man3/index.xhtml>
      * * <https://www.x.org/wiki/guide/client-ecosystem/>
      * * <https://www.x.org/wiki/guide/xlib-and-xcb/>
      * * <https://www.x.org/releases/X11R7.7/doc/libxcb/tutorial/index.html>
