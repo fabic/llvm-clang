@@ -2,24 +2,33 @@
 #define SF_UI_SURFACE_H
 
 #include "surface/xcb/window.hpp"
+#include "surface/text/TextBuffers.hpp"
 
 namespace sf {
   namespace ui {
 
     using std::shared_ptr;
     using Xcb = xcb::Xcb;
-    using XcbWindow = xcb::Window;
 
 
+    /**
+     *
+     */
     class Surface
-        : public XcbWindow
+        : public xcb::Window
     {
     public:
       typedef Surface * self_ptr;
-      typedef XcbWindow parent;
+      typedef xcb::Window parent;
+
+    protected:
+      std::shared_ptr< TextBuffers > textBuffers_;
+
+      // currently displayed buffer.
 
     public:
-      Surface(shared_ptr< Xcb > xcb_);
+      Surface(shared_ptr< Xcb > xcb_, std::shared_ptr< TextBuffers > buffers_);
+
       virtual ~Surface() override;
 
       virtual self_ptr render() override;

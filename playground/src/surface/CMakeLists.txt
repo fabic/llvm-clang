@@ -32,8 +32,10 @@ add_executable( sf
     cairo/surface.cpp
     ui/elements.cpp
     ui/surface.cpp
+    text/TextBuffer.cpp
+    text/TextBuffers.cpp
     ../hacks/hack_cxa_throw_exception.cpp
-)
+    text/Line.cpp text/Line.hpp)
 
 target_compile_options( sf
   PUBLIC

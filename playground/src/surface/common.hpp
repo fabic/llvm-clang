@@ -13,6 +13,19 @@ namespace sf {
           virtual boost::exception
     {  };
 
+
+    /// Basic exception that carry no semantics, but a reason text.
+    struct yet_undefined_exception : base_exception
+    {
+      const char * narratives_ = nullptr;
+
+      /// Ctor, with some reason text.
+      explicit yet_undefined_exception(const char * narratives = nullptr)
+        : narratives_( narratives != nullptr ? narratives : "???")
+      { }
+
+    };
+
   }
 } // sf ns.
 
