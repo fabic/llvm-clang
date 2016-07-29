@@ -5,19 +5,25 @@
 # vim swap files
 .*.sw?
 *~
-
 *.o
 
+# JetBrains' IntelliJ & al.
 /.idea/
+
 #*.sublime-project
 *.sublime-workspace
 
-# Our "/usr/local/"-like dir. where stuff get installed,
-# and bootstrap/ :
-/bootstrap/
+# Generated Doxygen documentation :
+/doc/doxygen*/
+
+# All upper-cased build sub-directories :
+BUILD/
+
+# Our "/usr/local/"-like dir. where stuff get installed :
 /local/
 
 # LLVM out-of-source build dirs. :
-/build*/
+llvm-clang/build*/
+llvm-clang/bootstrap*/
 
 /tmp/
