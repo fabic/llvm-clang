@@ -15,7 +15,7 @@ echo "|"
 
 
 locations=(
-    "$rewt/cpp_playground"
+    "$rewt/playground"
 	"$localdir/include"
     /usr/include/X11
     /usr/include/xcb
@@ -36,6 +36,7 @@ locations=(
     "$misc/libunwind/src"
     "$misc/linux-headers/include"
     "$misc/ninja/src"
+    "$misc/rofi-win-switch/include" "$misc/rofi-win-switch/source"
   )
 
 # BOOST C++ !

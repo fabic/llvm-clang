@@ -1,9 +1,17 @@
 {
 	"folders":
 	[
-		{
-			"path": "."
-		}
+		{ "path": "." }
+
+	, { "path": "/usr/include/X11" }
+	, { "path": "/usr/include/xcb" }
+	, { "path": "/usr/include/xkbcommon" }
+	, { "path": "/usr/include/xorg" }
+	, { "path": "/usr/include/EGL" }
+	, { "path": "/usr/include/GL" }
+	, { "path": "/usr/include/GLES2" }
+	, { "path": "/usr/include/GLES3" }
+
 		// {
 		// 	"path": "llvm-clang/clang"
 		// },

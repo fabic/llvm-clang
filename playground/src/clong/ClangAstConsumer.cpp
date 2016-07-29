@@ -1,10 +1,6 @@
-//
-// Created by cadet on 7/18/16.
-//
 
-# include "ClangAstConsumer.hpp"
+#include "ClangAstConsumer.hpp"
 
-TL_NS_BEGIN
 namespace clong {
 
   using namespace ::clang;
@@ -28,4 +24,3 @@ namespace clong {
   }
 
 }
-TL_NS_END
