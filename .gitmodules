@@ -177,3 +177,6 @@
 [submodule "nnen-doxygen-theme"]
 	path = doc/nnen-doxygen-theme
 	url = https://github.com/nnen/doxygen-theme.git
+[submodule "velron-doxygen-bs-theme"]
+	path = doc/velron-doxygen-bs-theme
+	url = https://github.com/Velron/doxygen-bootstrapped.git
