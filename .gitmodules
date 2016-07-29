@@ -168,3 +168,9 @@
 [submodule "kmscon-libtsm"]
 	path = misc/kmscon-libtsm
 	url = git://people.freedesktop.org/~dvdhrm/libtsm
+[submodule "atom-electron"]
+	path = misc/atom-electron
+	url = https://github.com/electron/electron.git
+[submodule "atom"]
+	path = misc/atom
+	url = https://github.com/atom/atom.git
