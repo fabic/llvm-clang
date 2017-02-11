@@ -11,7 +11,7 @@ _**Note for the casual wanderer landing here :** you may be interested in the
   man page you'd like reading while waiting for the build to complete)._
 
 * **2015-11-11 :** WIP ; sorting things out ; didn't got far, lack of time/interest...
-* **2017-01-01 :**
+* **2016-01-01 :**
     * WIP ;
     * back again to some C++ wanderings ;
     * ended up needing to re-build Clang (__release 3.8.1__) for my current Linux
