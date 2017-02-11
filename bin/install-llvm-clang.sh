@@ -290,9 +290,16 @@ if true; then
     echo "|"
     echo "+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~"
 
-    max_jobs=`how_many_cpus 2`
-    max_sys_load=`max_load_level`
-    keep_going=1
+
+    if [ `uname -s` != "Darwin" ]; then
+      max_jobs=`how_many_cpus 2`
+      max_sys_load=`max_load_level`
+      keep_going=128
+    else
+      max_jobs=2
+      max_sys_load=2
+      keep_going=1
+    fi
 
     echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
     echo "| FYI: Running Ninja with :"
