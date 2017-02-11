@@ -2,7 +2,7 @@
 #
 # Boost setup, loosely inspired by 'cpp-netlib/install-boost.sh'
 
-here=$( cd `dirname "$0"` && pwd )
+here=$( cd `dirname "$0"`/.. && pwd )
 
 echo "+-- $0"
 
