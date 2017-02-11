@@ -2,7 +2,7 @@
 #
 # fabic/2016-06-30
 
-here=$(cd `dirname "$0"` && pwd)
+here=$(cd `dirname "$0"`/.. && pwd)
 
 . "$here/functions.sh"
 
@@ -176,14 +176,15 @@ if true; then
       -DLLVM_ENABLE_DOXYGEN=OFF
       -DLLVM_ENABLE_SPHINX=OFF
       -DLLVM_BINUTILS_INCDIR="$localdir/include"
-      -DLLVM_ENABLE_FFI=ON
+      #-DLLVM_ENABLE_FFI=ON  (done below)
       -DLLVM_ENABLE_EH=ON
       -DLLVM_ENABLE_RTTI=ON
       -DLLVM_ENABLE_CXX1Y=ON
-      -DLLVM_ENABLE_LTO=ON
+      #-DLLVM_ENABLE_LTO=ON
       # -DLIBCXXABI_USE_LLVM_UNWINDER=ON
-      -G Ninja
-      ../llvm
+      # Appended last later on.
+      #-G Ninja
+      #../llvm
       )
 
 # todo: conditionnally enable building LLVMGold iff `local/include/plugin-api.h`
@@ -195,6 +196,39 @@ if true; then
 #-DLLVM_BINUTILS_INCDIR=/path/to/binutils/include
 # (The correct include path will contain the file plugin-api.h.)
 
+    # Find out if we have libffi.
+    if pkg-config --exists libffi ; then
+        libffi_include_dir="$(pkg-config --cflags-only-I libffi )"
+        libffi_include_dir="${libffi_include_dir#-I}"
+        libffi_include_dir="${libffi_include_dir%% *}"
+        libffi_lib_dir="$(pkg-config --libs-only-L libffi)"
+        libffi_lib_dir="${libffi_lib_dir#-L}"
+        libffi_lib_dir="${libffi_lib_dir%% *}"
+        echo "+-- libffi was found (pkg-config says)"
+        echo "|"
+        echo "| libffi_include_dir = '$libffi_include_dir'"
+        echo "| libffi_lib_dir     = '$libffi_lib_dir}'"
+        echo "|"
+        echo "| We'll pass -DLLVM_ENABLE_FFI=ON to CMake."
+        echo "|"
+        echo "| ( http://llvm.org/docs/CMake.html#frequently-used-cmake-variables )"
+        cmake_args=( "${cmake_args[@]}"
+            -DLLVM_ENABLE_FFI=ON
+            -DFFI_INCLUDE_DIR="$libffi_include_dir"
+            -DFFI_LIBRARY_DIR="${libffi_lib_dir}"
+            )
+        echo "+-"
+    fi
+
+    # Use Ninja if available...
+    if type -p ninja > /dev/null ; then
+      echo "+- Found Ninja at `type -p ninja` (we'll pass -G Ninja to CMake)"
+      cmake_args=( "${cmake_args[@]}" -G Ninja )
+    fi
+
+    # Finally append the source tree path of LLVM :
+    cmake_args=( "${cmake_args[@]}" ../llvm )
+
     echo "+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo "|"
     echo "| About to run CMake :"
@@ -202,11 +236,11 @@ if true; then
     echo "|   cmake ${cmake_args[@]}"
     echo "|"
     echo "| Note that we're passing the following -Dxxx CMake options :"
-    echo "|   - LLVM_ENABLE_FFI=ON                   (defaults to OFF)"
     echo "|   - BUILD_SHARED_LIBS=ON                 (defaults to OFF)"
     echo "|   - LLVM_BUILD_LLVM_DYLIB=OFF            (defaults to OFF)"
     echo "|   - LLVM_TARGETS_TO_BUILD=\"host;X86\"   (defaults to 'all')"
     #echo "|   -CMAKE_CXX_FLAGS=\"-stdlib=libc++\"   (!!! BEWARE !!!)"
+    #echo "|   -DLLVM_ENABLE_LTO=ON"
     echo "|"
     echo "| See http://llvm.org/docs/CMake.html"
     echo "| See http://www.linuxfromscratch.org/blfs/view/svn/general/llvm.html"
