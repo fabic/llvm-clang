@@ -198,12 +198,8 @@ if true; then
 
     # Find out if we have libffi.
     if pkg-config --exists libffi ; then
-        libffi_include_dir="$(pkg-config --cflags-only-I libffi )"
-        libffi_include_dir="${libffi_include_dir#-I}"
-        libffi_include_dir="${libffi_include_dir%% *}"
-        libffi_lib_dir="$(pkg-config --libs-only-L libffi)"
-        libffi_lib_dir="${libffi_lib_dir#-L}"
-        libffi_lib_dir="${libffi_lib_dir%% *}"
+        libffi_include_dir="$(pkg-config --variable=includedir libffi )"
+        libffi_lib_dir="$(pkg-config --variable=libdir libffi)"
         echo "+-- libffi was found (pkg-config says)"
         echo "|"
         echo "| libffi_include_dir = '$libffi_include_dir'"
