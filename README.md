@@ -3,7 +3,7 @@
 _LLVM/Clang is "bundled up" here as Git submodules
 (under sub-directory `llvm-clang/`) for /me to play with._
 
-_And a few other projects likewise included as Git submodules, for rainy days wanderings..._
+_And a few other projects likewise included as Git submodules, for rainy days code wanderings..._
 
 _**Note for the casual wanderer landing here :** you may be interested in the
   **“Getting started”** section which details how to build LLVM/Clang in a few steps
@@ -11,13 +11,10 @@ _**Note for the casual wanderer landing here :** you may be interested in the
   man page you'd like reading while waiting for the build to complete)._
 
 * **2015-11-11 :** WIP ; sorting things out ; didn't got far, lack of time/interest...
-* **2016-01-01 :**
-    * WIP ;
-    * back again to some C++ wanderings ;
-    * ended up needing to re-build Clang (__release 3.8.1__) for my current Linux
-      (Gentoo-based Sabayon 16.07) do _not_ support the `-flto` compiler arg. due
-      to a missing library (linker plugin) at link time: `LLVMgold.so`
-      _(hopefully this one thing will get built along the way)_.
+* **2016-01-01 :** WIP ; back again to some C++ wanderings ; ended up needing to re-build Clang (__release 3.8.1__)
+  for my current Linux (Gentoo-based Sabayon 16.07) do _not_ support the `-flto` compiler arg. due to a missing
+  library (linker plugin) at link time: `LLVMgold.so` _(hopefully this one thing will get built along the way)_.
+* **2017-02-11 :** I'm back, bumped LLVM/Clang to `release_40` ; fixed the `bin/install-llvm-clang.sh` for building on Mac OS X.
 * ~~<http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-3/>~~
 
 
