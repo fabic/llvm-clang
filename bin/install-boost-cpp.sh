@@ -230,6 +230,9 @@ time \
 retv=$?
 if [ $retv -gt 0 ]; then
     echo "|"
+    echo "| Ouch! build failed : |  note that if only a few targets failed, you may"
+    echo "| go into $boost_install_target_dir/ and retry to run ./b2 && ./b2 install"
+    echo "|"
     echo "+- ./b2 ... exited with status $retv, failed."
     exit $retv
 fi
