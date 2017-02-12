@@ -4,14 +4,66 @@
 
 here=$( cd `dirname "$0"`/.. && pwd )
 
+. "$here/functions.sh"
+
 echo "+-- $0"
 
+boost_most_recent_version="1.63.0"
+
+arg1="${1:-$boost_most_recent_version}"
+
+# 2nd arg. may be the target install dir.
+# if not specified => it will be inferred later on as local/boost_.../
+boost_install_target_dir="${2:-}"
+
+# 1st argument may be a boost version.
+if [ "X${arg1/?.??.*/YYYY}X" == "XYYYYX" ]; then
+    boost_cpp_version="$arg1"
+    boost_version_blankee="${boost_cpp_version//./_}"
+    boost_tarball_filename="boost_$boost_version_blankee.tar.bz2"
+    boost_tarball_url="https://downloads.sourceforge.net/project/boost/boost/$boost_cpp_version/$boost_tarball_filename"
+    boost_sources_dir="$here/misc/boost_$boost_version_blankee/"
+
+    echo "+- Asked for Boost C++ version $boost_cpp_version ($boost_version_blankee)"
+
+    # If tarball not yet extracted into misc/
+    if [ ! -d "$boost_sources_dir" ]; then
+        # Find out if we have a tarball into tmp/
+        if [ ! -f "$here/tmp/$boost_tarball_filename" ]; then
+            # Fetch tarball
+            if ! wget "$boost_tarball_url" -C "$here/tmp" ; then
+                echo "| ERROR: wget exited with status code $?"
+                echo "|        failed to download the Boost C++ tarball '$boost_tarball_url'."
+                echo "|        (you may retrieve it yourself and extract it under misc/ )"
+                echo "|"
+                echo "+- $0: failed to download the Boost C++ tarball '$boost_tarball_url'."
+                echo
+                exit 1
+            fi
+        else
+            echo "| Found existing tarball $here/tmp/$boost_tarball_filename, ok"
+        fi
+
+        echo "| Extractind sources tarball..."
+
+        # Extract tarball
+        if ! tar -xf "$here/tmp/$boost_tarball_filename" -C "$here/misc/" ; then
+            echo "| ERROR: tarball extraction failed (exit status: $?)"
+            echo "|"
+            echo "+- $0: failed -_-"
+            exit 2
+        fi
+    else
+        echo "| Found Boost C++ sources dir. '$boost_sources_dir'"
+    fi
 #
-## No arg. => build boost modular ???
+## Build boost modular ???
 #
-if [ $# -eq 0 ];
+elif [ "$arg1" == "modular" ];
 then
     boost_modular_dir="$here/misc/boost"
+    boost_sources_dir="$boost_modular_dir"
+
     if ! cd "$boost_modular_dir" && test -e .git && git describe ; then
         echo "+- $0: Couldn't get into \$boost_modular_dir=\"$boost_modular_dir\", failed."
         exit 127
@@ -41,12 +93,13 @@ then
 #
 ## Arg. “ any ” searches for untar-ed sources under misc/boost_X_YY_ZZ/
 #
-elif [ "x$1" == "xany" ]; then
+elif [ "x$arg1" == "xany" ]; then
     boost_versions=( $(ls -1d misc/boost_?_??_* | sort -r ) )
-    boost_chosen_version=${boost_versions[0]}
+    boost_cpp_version="${boost_versions[0]}"
 
-    if [ -z "$boost_chosen_version" ]; then
+    if [ -z "$boost_cpp_version" ]; then
         echo "| FAIL: Couldn't find boost sources..."
+        exit 5
     fi
 
     # TODO: UNFINISHED...
@@ -54,12 +107,13 @@ elif [ "x$1" == "xany" ]; then
     echo "|"
     echo "| FYI: Found the following Boost C++ sources : ${boost_versions[*]}"
 
+    echo " FIXME: UNFINISHED..."
     exit 127
 #
 ## 3rd possibility: first command line argument as the path to the untar-ed Boost sources
 #
 else
-    boost_sources_dir="$1"
+    boost_sources_dir="$arg1"
 
     if [ ! -d "$boost_sources_dir" ]; then
         echo "| FAIL: \$boost_sources_dir = '$boost_sources_dir' is not a directory."
@@ -82,15 +136,23 @@ else
     echo "| Ok, guessed Boost C++ version: $boost_cpp_version"
     echo "|"
 
-    boost_cpp_version="boost-${boost_cpp_version}"
-
-    echo "| Ch. dir. into '$boost_sources_dir'"
-    cd "$boost_sources_dir" \
-      || exit 125
 fi
 
+echo "|"
+echo "| Ch. dir. into '$boost_sources_dir/'"
+cd "$boost_sources_dir" \
+  || exit 125
+echo "| Ok, we're in..."
+
 #boost_install_target_dir="${HOME}/${boost_cpp_version}-${CC}"
-boost_install_target_dir="${here}/local/${boost_cpp_version}-${CC}"
+boost_install_target_dir="${boost_install_target_dir:-$here/local/boost-$boost_cpp_version}"
+
+# Suffix with compiler 
+if [ ! -z "$CC" ]; then
+    boost_install_target_dir="${boost_install_target_dir}-`basename "$CC"`"
+else
+    read -p "| WARNING: \$CC is not defined or empty, hence we're _not_ suffixing the target installation dir. with it (CONTINUE ?)"
+fi
 
 echo "|"
 echo "| \$CC = $CC"
