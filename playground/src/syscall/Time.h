@@ -31,8 +31,8 @@ namespace syscall {
 
         /**
          * @see sc_clock_gettime() "system call clock get time"
-         * See /home/fabi/dev/llvm-clang/musl/src/time/clock_gettime.c
-         * See /home/fabi/dev/llvm-clang/musl/src/time/gettimeofday.c
+         * See musl/src/time/clock_gettime.c
+         * See musl/src/time/gettimeofday.c
          */
         static inline int sc_gettimeofday(struct timeval *tv, void *tz) {
             int ec = Syscall::syscall2(

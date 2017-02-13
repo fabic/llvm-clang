@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.3)
 project(FabicCppWanderings)
 
 set (FabicCppWanderings_VERSION_MAJOR 0)
-set (FabicCppWanderings_VERSION_MINOR 1)
+set (FabicCppWanderings_VERSION_MINOR 2)
 
 
 ## FHS-style local/ directory.
@@ -31,29 +31,15 @@ set (FabicCppWanderings_VERSION_MINOR 1)
 ##
 
 
-### LLVM/Clang CMake modules # # # # # # # # # # # # # # # # # # # # # # # # #
-##
-# TODO: auto-setup CMAKE_MODULE_PATH w/ `for ${FABIC_LOCAL_DIR}/share/*/cmake/`
+### CMake extra local/lib/cmake/ modules path ?
+# For LLVM/Clang CMake modules
 
-  if (IS_DIRECTORY ${FABIC_LOCAL_DIR}/share/llvm)
-    list(APPEND CMAKE_MODULE_PATH "${FABIC_LOCAL_DIR}/share/llvm/cmake")
-    message(STATUS "LLVM: Prepended CMAKE_MODULE_PATH with '${FABIC_LOCAL_DIR}/share/llvm/cmake', ok.")
+if (IS_DIRECTORY "${FABIC_LOCAL_DIR}/lib/cmake")
+    list(APPEND CMAKE_MODULE_PATH "${FABIC_LOCAL_DIR}/lib/cmake")
+    message(STATUS "LLVM/Clang: Prepended CMAKE_MODULE_PATH with '${FABIC_LOCAL_DIR}/lib/cmake'.")
+endif()
 
-    # LLVM found CMake modules found, ensure we do have those for Clang too.
-    if (IS_DIRECTORY ${FABIC_LOCAL_DIR}/share/clang)
-      list(APPEND CMAKE_MODULE_PATH "${FABIC_LOCAL_DIR}/share/clang/cmake")
-      message(STATUS "LLVM/Clang: Prepended CMAKE_MODULE_PATH with '${FABIC_LOCAL_DIR}/share/clang/cmake', ok.")
-    else()
-      message(WARNING "LLVM/Clang: couldn't find '${FABIC_LOCAL_DIR}/share/clang/cmake' (CMake modules for Clang).")
-    endif()
-  else()
-    message(WARNING "LLVM: couldn't find '${FABIC_LOCAL_DIR}/share/llvm/cmake' (CMake modules for LLVM).")
-    message(WARNING "LLVM/Clang: not setting up CMAKE_MODULE_PATH.")
-  endif()
-
-  message(STATUS "FYI: CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
-# ^ LLVM/Clang CMake modules search-path setup.
-##
+message(STATUS "FYI: CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
 
 
 ## PKG-CONFIG auto-configuration “CMake bridge” # # # # # # # # # # # #
@@ -88,7 +74,8 @@ add_definitions(
 
 
 # Replacing these `set ...` by add_compile_options(...) :
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++")
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 

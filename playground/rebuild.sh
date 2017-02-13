@@ -4,7 +4,7 @@ here=$(cd `dirname "$0"` && pwd)
 
 cd "$here" || exit 1
 
-builddir="build"
+builddir="BUILD"
 
 [ ! -z "$builddir" ] || exit 2
 
