@@ -7,8 +7,7 @@
 
 #include "syscall/Syscall.h"
 
-TL_NS_BEGIN
-namespace syscall {
+namespace kernel {
 
     class Process {
     public:
@@ -31,9 +30,17 @@ namespace syscall {
         inline static gid_t getgid(void) {
             return static_cast<gid_t>( Syscall::syscall0(Syscall::SYS_getgid) );
         }
+
+        /**
+         * musl-libc/src/malloc/__brk.c
+         */
+        inline static uintptr_t brk(uintptr_t newbrk = 0)
+        {
+            return static_cast<uintptr_t>( Syscall::syscall1(Syscall::SYS_brk, newbrk) );
+        }
+
     };
 
-} // syscall ns.
-TL_NS_END
+} // kernel rs.
 
 #endif //FABIC_SYSCALL_PROCESS_H

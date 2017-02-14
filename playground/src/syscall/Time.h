@@ -7,8 +7,7 @@
 
 #include "syscall/Syscall.h"
 
-TL_NS_BEGIN
-namespace syscall {
+namespace kernel {
 
     class Time {
     public:
@@ -49,7 +48,6 @@ namespace syscall {
         }
     };
 
-} // syscall ns.
-TL_NS_END
+} // kernel ns.
 
 #endif //FABIC_SYSCALL_TIME_H

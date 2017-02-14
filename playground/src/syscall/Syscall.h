@@ -5,17 +5,18 @@
 #ifndef FABIC_SYSCALL_SYSCALL_H
 #define FABIC_SYSCALL_SYSCALL_H
 
-TL_NS_BEGIN
-namespace syscall {
+namespace kernel {
 
     /**
      * see musl/arch/x86_64/syscall_arch.h
      *
-     * @author fabic
+     * TODO: rename to Kernel ? and namespace to linux ?
+     *
      */
     class Syscall {
     public:
-        // see musl/include/bits/syscall.h
+        // see misc/musl-libc/arch/x86_64/bits/syscall.h
+        static const long SYS_brk            =  12;
         static const long SYS_getpid         =  39;
         static const long SYS_exit           =  60;
         static const long SYS_gettimeofday   =  96;
@@ -44,7 +45,6 @@ namespace syscall {
         }
     };
 
-} // syscall ns.
-TL_NS_END
+} // kernel ns.
 
 #endif //FABIC_SYSCALL_SYSCALL_H

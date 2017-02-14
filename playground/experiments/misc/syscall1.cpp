@@ -4,7 +4,7 @@
 #include "syscall/Time.h"
 
 using namespace std;
-using namespace TLNS::syscall;
+using namespace kernel;
 
 void test_time_etc();
 
@@ -18,10 +18,17 @@ int main() {
     cout << "UID " << Process::getuid() << endl;
     cout << "GID " << Process::getgid() << endl;
 
+    cout << "brk() " << Process::brk() << endl;
+
+    auto newbrk = Process::brk() + 16384;
+    cout << "brk() " << Process::brk(newbrk) << endl;
+
     test_time_etc();
 
     Process::exit(121);
+
     cout << "Bye, World! (and you should not see this BTW)" << endl;
+
     return 0;
 }
 
