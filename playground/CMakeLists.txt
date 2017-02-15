@@ -110,13 +110,13 @@ add_compile_options(
 
 add_compile_options(
   # -O0 -ggdb
+  #      ^ implies -g
   # ^ this is automatically handled by CMake build type thing.
-    # So as to get better/meaninful stack traces in error messages :
-    -fno-omit-frame-pointer
-    # and disable tail call elimination
-    -fno-optimize-sibling-calls
+  # So as to get better/meaninful stack traces in error messages :
+  -fno-omit-frame-pointer
+  # and disable tail call elimination
+  -fno-optimize-sibling-calls
   )
-# ^ implies -g
 
 
 add_compile_options(

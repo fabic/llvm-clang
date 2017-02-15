@@ -2,14 +2,19 @@
 #
 # fabic/2016-06-20
 
+# Root of the llvm-clang project tree :
 rewt="$( cd `dirname "$0"`/.. && pwd )"
+
+# Current source directory :
 here="$( pwd )"
 
 pushd "$here"
 
+# FHS-like local/ dir.
 localdir="$(mkdir -pv "$rewt/local" && cd "$rewt/local" && pwd)"
-builddir="BUILD"
 
+# Target directory for out-of-tree build :
+builddir="build"
 
 echo
 echo "+-- $0 $@"
@@ -26,7 +31,11 @@ cmake_extra_args=( )
 make_extra_args=( )
 
 
-# One first special arg. may be the CMake -G <generator> :
+# Parse command line arguments for both CMake, and eventually make/ninja
+# (which are separated by '--')
+#
+# Consume a few special arguments which may be the CMake -G <generator>
+# (for ex. 'ninja'), and 'rebuild'.
 if [ $# -gt 0 ];
 then
   while [ $# -gt 0 ];
@@ -47,12 +56,12 @@ then
         echo "| Rebuild asked (will remove the build dir. '$builddir')"
         shift
         ;;
-    *)
+    *) # Stop once we fing something we don't recognize.
         break
     esac
   done
 
-    # Extra. arguments for CMake (before a '--' arg.)
+    # Consume extra. arguments for CMake, until we hit the '--' separator.
     while [ $# -gt 0 ];
     do
       arg="$1"
@@ -63,7 +72,8 @@ then
       [ "$arg" == "--" ] && break
     done
 
-    # Extra. arguments for make/ninja (after a '--' arg.)
+    # Consume extra. arguments for make/ninja
+    # (until we hit the '--' separator).
     while [ $# -gt 0 ];
     do
       arg="$1"
@@ -75,6 +85,13 @@ then
     done
 
     echo "| Ok, CMake generator -G $cmake_generator"
+
+    if [ $# -gt 0 ]; then
+        echo "+-"
+        echo "| WARNING: extraneous arguments were provided, these will be ignored :"
+        echo "|          $0 [...] $@"
+        echo "+-"
+    fi
 fi
 
 

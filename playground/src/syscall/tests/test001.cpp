@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "syscall/Process.h"
-#include "syscall/Time.h"
+#include "Process.h"
+#include "Time.h"
 
 using namespace std;
 using namespace kernel;

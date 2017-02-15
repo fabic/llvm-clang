@@ -5,7 +5,7 @@
 #ifndef FABIC_SYSCALL_PROCESS_H
 #define FABIC_SYSCALL_PROCESS_H
 
-#include "syscall/Syscall.h"
+#include "Syscall.h"
 
 typedef unsigned long uintptr_t;
 
