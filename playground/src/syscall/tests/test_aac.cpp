@@ -7,8 +7,39 @@ using namespace kernel;
 //void _fini() __attribute__((weak));
 int main(int argc, char *argv[]);
 
-/* From musl-libc: crt/x86_64/crt1.s
- * Written 2011 Nicholas J. Kain, released as Public Domain */
+/** Borrowed from musl-libc: crt/x86_64/crt1.s
+ *
+ * Written 2011 Nicholas J. Kain, released as Public Domain
+ *
+ * From \href http://refspecs.linuxbase.org/elf/x86-64-abi-0.99.pdf (page 29, 30):
+ *
+ * %rsp : The stack pointer holds the address of the byte with lowest address
+ *        which is part of the stack. It is guaranteed to be 16-byte aligned
+ *        at process entry.
+ * %rbp : The content of this register is unspecified at process initialization
+ *        time, but the user code should mark the deepest stack frame by setting
+ *        the frame pointer to zero.
+ * %rdx : A function pointer that the application should register with atexit().
+ *
+ * Initial process stack :
+ *
+ *   | Start address : | Description :
+ *   |-----------------+-----------------------------------------------------
+ *   |                 | (^ high addresses)
+ *   |                 | Information block, including argument strings,
+ *   |                 | environment strings, auxiliary information, etc...
+ *   | <UNSPECIFIED>   |
+ *   |                 | NULL (end of auxiliary vector entries).
+ *   |                 | Auxiliary vector entries ...
+ *   |                 | NULL (end of environment pointers).
+ *   |                 | Environment pointers ...
+ *   | %rsp+8 + 8*argc | NULL marker (end of argv[])
+ *   | ...             |
+ *   | %rsp+8          | char *argv[] | Argument pointers ...
+ *   | %rsp            | argc         | Argument count
+ *   |                 | <PROCESS STACK TOP>
+ *   |                 | (low addresses)
+ */
 __asm__
 (
   ".weak _init    \n"
@@ -29,9 +60,6 @@ __asm__
 	"  call _start_c        \n"/* musl init will run the program */
 
   "nop\nnop\nnop\nnop\n"
-  //"nop\nnop\nnop\nnop\n"
-  //"nop\nnop\nnop\nnop\n"
-  //"nop\nnop\nnop\nnop\n"
 );
 
 
@@ -57,6 +85,7 @@ void _start_c(
 
 
 /**
+ *
  */
 int main(int argc, char *argv[])
 {
