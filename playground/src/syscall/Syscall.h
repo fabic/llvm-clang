@@ -5,6 +5,8 @@
 #ifndef FABIC_SYSCALL_SYSCALL_H
 #define FABIC_SYSCALL_SYSCALL_H
 
+#include <types.h>
+
 namespace kernel {
 
     /**

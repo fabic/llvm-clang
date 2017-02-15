@@ -74,7 +74,9 @@ add_executable( test_aac tests/test_aac.cpp assert.cpp )
 target_compile_options( test_aac PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( test_aac PROPERTIES LINK_FLAGS -nostdlib)
 
-add_executable( test_aad tests/test_aad.cpp assert.cpp _start.cpp )
+add_executable( test_aad tests/test_aad.cpp
+  assert.cpp _start.cpp string/memset.cpp malloc/malloc.cpp
+  )
 target_compile_options( test_aad PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( test_aad PROPERTIES LINK_FLAGS -nostdlib)
 

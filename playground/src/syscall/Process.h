@@ -7,8 +7,6 @@
 
 #include "Syscall.h"
 
-typedef unsigned long uintptr_t;
-
 namespace kernel {
 
 
@@ -38,9 +36,9 @@ namespace kernel {
          * musl-libc/src/malloc/__brk.c
          * \link http://man7.org/linux/man-pages/man2/brk.2.html
          */
-        inline static uintptr_t brk(uintptr_t newbrk = 0)
+        inline static nstd::uintptr_t brk(nstd::uintptr_t newbrk = 0)
         {
-            return static_cast<uintptr_t>( Syscall::syscall1(Syscall::SYS_brk, newbrk) );
+            return static_cast<nstd::uintptr_t>( Syscall::syscall1(Syscall::SYS_brk, newbrk) );
         }
 
     };
