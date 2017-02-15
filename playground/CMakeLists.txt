@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.3)
 project(FabicCppWanderings)
 
 set (FabicCppWanderings_VERSION_MAJOR 0)
-set (FabicCppWanderings_VERSION_MINOR 2)
+set (FabicCppWanderings_VERSION_MINOR 3)
 
 
 ## FHS-style local/ directory.
@@ -56,7 +56,7 @@ find_package(PkgConfig)
 #
 # EDIT/2016-07-27 : Enabling thing project-wide, having definitions (headers)
 #                   separated from the sources provide no added value at the
-#                   moment.
+#                   moment, and gets in my way.
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
@@ -129,7 +129,7 @@ add_compile_options(
   #     http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation
   # -fsanitize=undefined   # http://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
   # -fsanitize=dataflow    # http://clang.llvm.org/docs/DataFlowSanitizer.html
-  #-fsanitize=cfi -flto  # http://clang.llvm.org/docs/ControlFlowIntegrity.html (requries -flto)
+  # -fsanitize=cfi -flto   # http://clang.llvm.org/docs/ControlFlowIntegrity.html (requries -flto)
   # -fsanitize=safe-stack  # http://clang.llvm.org/docs/SafeStack.html
   )
 
