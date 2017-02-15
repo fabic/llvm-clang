@@ -70,8 +70,8 @@ add_executable( test_aab tests/test_aab.cpp )
 target_compile_options( test_aab PUBLIC -nostdinc -nostdinc++ )
 # NOTE: Clang also has -nobuiltininc but complains that is wasn't used during compilation.
 
-add_executable( test_aac tests/test_aac.cpp )
-target_compile_options( test_aac PUBLIC -nostdinc -nostdinc++ -nobuiltininc )
+add_executable( test_aac tests/test_aac.cpp assert.cpp )
+target_compile_options( test_aac PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( test_aac PROPERTIES LINK_FLAGS -nostdlib)
 
 
