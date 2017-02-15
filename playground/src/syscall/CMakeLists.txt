@@ -10,8 +10,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 add_definitions()
 
-#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++")
-
 add_compile_options(
   -std=c++1z
   #-stdlib=libc++
@@ -69,16 +67,20 @@ add_compile_options(
 # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 add_executable( test_aab tests/test_aab.cpp )
+target_compile_options( test_aab PUBLIC -nostdinc -nostdinc++ )
+# NOTE: Clang also has -nobuiltininc but complains that is wasn't used during compilation.
+
+add_executable( test_aac tests/test_aac.cpp )
+target_compile_options( test_aac PUBLIC -nostdinc -nostdinc++ -nobuiltininc )
+set_target_properties( test_aac PROPERTIES LINK_FLAGS -nostdlib)
+
+
 
 add_executable( aaa
   tests/test001.cpp
   #../hacks/hack_cxa_throw_exception.cpp
   )
 
-target_compile_options( aaa
-  PUBLIC
-  # ...
-)
 
 target_include_directories( aaa
   PUBLIC
