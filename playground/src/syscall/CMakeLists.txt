@@ -40,7 +40,7 @@ add_compile_options(
   # ^ this is automatically handled by CMake build type thing.
 
   # So as to get better/meaninful stack traces in error messages :
-  -fno-omit-frame-pointer
+  #-fno-omit-frame-pointer
   # and disable tail call elimination
   -fno-optimize-sibling-calls
   )
@@ -73,6 +73,10 @@ target_compile_options( test_aab PUBLIC -nostdinc -nostdinc++ )
 add_executable( test_aac tests/test_aac.cpp assert.cpp )
 target_compile_options( test_aac PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( test_aac PROPERTIES LINK_FLAGS -nostdlib)
+
+add_executable( test_aad tests/test_aad.cpp assert.cpp _start.cpp )
+target_compile_options( test_aad PUBLIC -nostdinc -nostdinc++ )
+set_target_properties( test_aad PROPERTIES LINK_FLAGS -nostdlib)
 
 
 

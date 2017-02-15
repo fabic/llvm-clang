@@ -7,7 +7,7 @@ using namespace kernel;
 
 //void _init() __attribute__((weak));
 //void _fini() __attribute__((weak));
-//extern "C" void _start() __attribute__((noreturn));
+extern "C" void _start() __attribute__((noreturn));
 
 int main(int argc, char *argv[], char *env[]);
 
