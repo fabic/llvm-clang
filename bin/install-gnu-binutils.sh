@@ -54,6 +54,7 @@ configure_args=(
         --enable-plugins     \
   )
 
+        #--with-system-zlib   \
 echo "|"
 echo "| We'll be building Binutils with the following ./configure arguments :"
 echo "|"

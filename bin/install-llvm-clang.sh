@@ -12,7 +12,7 @@ here=$(cd `dirname "$0"`/.. && pwd)
 enable_build_docs=0
 enable_sphinx_doc=0
 enable_doxygen_doc=0
-perform_make_install=1
+perform_make_install=0
 
 
 echo "+--- $0"
@@ -310,8 +310,8 @@ if true; then
     if type -p ld.gold > /dev/null ; then
       echo "+- Found GNU Binutils' \`ld.gold\` => enabling LTO feature."
       cmake_args=( "${cmake_args[@]}" \
-        #-DLLVM_ENABLE_LTO=ON
-        -DLLVM_ENABLE_LTO=Full
+        -DLLVM_ENABLE_LTO=ON
+        #-DLLVM_ENABLE_LTO=Full
         -DLLVM_BINUTILS_INCDIR="$localdir/include" \
         # NOTE: this is unrelated to LTO, this instructs that LLVM/Clang/etc
         #       be linked with ld.gold.
