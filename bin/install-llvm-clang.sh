@@ -124,6 +124,14 @@ echo
   ln -sfnv ../../clang-tools-extra/ clang/tools/extra  &&
   ln -sfnv ../../compiler-rt        llvm/projects/     &&
   ln -sfnv ../../libcxx{,abi}       llvm/projects/
+  retv=$?
+
+  echo
+  if [ $retv -ne 0 ];
+  then
+    echo "| Ooops! something went wrong with the symlinking, exiting."
+    exit $retv
+  fi
 
   # LLDB ( http://lldb.llvm.org/build.html#BuildingLldbOnLinux )
   if [ -e lldb/CMakeLists.txt ]; then
@@ -145,14 +153,40 @@ echo
     echo "+--"
   fi
 
-  retv=$?
-  echo
-  if [ $retv -ne 0 ];
+  # Output summary of sub-projects symlinks for information.
+  if true;
   then
-    echo "| Ooops! something went wrong with the symlinking, exiting."
-    exit $retv
-  fi
+    echo "| FYI: Done with symlinking stuff into the LLVM tree :"
+    echo "|"
+    for symlnk in llvm/tools/{clang,lldb,lld} \
+                  clang/tools/extra           \
+                  llvm/projects/{compiler-rt,libcxx{,abi}} ;
+    do
+      if [ ! -e "$symlnk" ]; then
+        echo "| - Symbolic link (or sub-dir.) \"$symlnk\" does not exist."
+      elif [ -h "$symlnk" ]; then
+          echo " - Found symbolic link \"$symlnk\", ok"
+      else
+        echo " - Found \"$symlnk\" but it _isn't_ a symbolic link :"
+        ls -ld $symlnk
+      fi
+    done
 
+    echo "|"
+    echo "+"
+    echo "| NOTE: that you may want to remove a few of those which are optional :"
+    echo "|"
+    echo "|       llvm/tools/lld     (LLD linker)"
+    echo "|       llvm/tools/lldb    (LLDB debugger)"
+    echo "|"
+    echo "|       llvm/projects/compiler-rt"
+    echo "|       llvm/projects/libcxx"
+    echo "|       llvm/projects/libcxx-abi"
+    echo "|"
+    echo "|       clang/tools/extra  (Clang tools extra)"
+    echo "|"
+    echo "+-"
+  fi
 
 ###
 ## Step #1 : Build a bootstrap version under bootstrap/

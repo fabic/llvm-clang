@@ -8,6 +8,8 @@
 
 here=$(cd `dirname "$0"` && pwd)
 
+cmake_build_type=RelWithDebInfo
+
 . "$here/functions.sh"
 
 echo "+--- $0"
@@ -105,7 +107,7 @@ if true; then
       time \
         cmake \
           -DLIBCXX_CXX_ABI=libstdc++ \
-          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_BUILD_TYPE=$cmake_build_type \
           -DCMAKE_INSTALL_PREFIX="$localdir" \
           -DLLVM_PATH=../../llvm \
           -G Ninja \
@@ -175,7 +177,7 @@ if true; then
 
       time \
         cmake \
-          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_BUILD_TYPE=$cmake_build_type \
           -DCMAKE_INSTALL_PREFIX="$localdir" \
           -DLIBCXXABI_LIBCXX_PATH=../../libcxx \
           -DLLVM_PATH=../../llvm \
@@ -278,7 +280,7 @@ if true; then
 
     time \
       cmake \
-        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_BUILD_TYPE=$cmake_build_type \
         -DCMAKE_INSTALL_PREFIX="$localdir" \
         -DLLVM_PATH=../../llvm \
         -DLIBCXX_CXX_ABI=libcxxabi \
