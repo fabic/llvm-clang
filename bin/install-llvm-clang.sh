@@ -203,6 +203,9 @@ if true; then
       -DLLVM_ENABLE_EH=ON
       -DLLVM_ENABLE_RTTI=ON
       -DLLVM_ENABLE_CXX1Y=ON
+
+      # Explicitely enable assertion for any type of build
+      # (defaults to ON only if Debug).
       -DLLVM_ENABLE_ASSERTIONS=ON
 
       #-DLLVM_ENABLE_LTO=ON
@@ -220,9 +223,6 @@ if true; then
 # todo: check if we do need to pass arg. DLLVM_BINUTILS_INCDIR=...
 
 #-DCMAKE_CXX_FLAGS="-stdlib=libc++"
-
-#-DLLVM_BINUTILS_INCDIR=/path/to/binutils/include
-# (The correct include path will contain the file plugin-api.h.)
 
     # Find out if we have libffi.
     if pkg-config --exists libffi ; then
@@ -249,6 +249,7 @@ if true; then
       echo "+- Found Sphinx documentation generator, ok."
       cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_SPHINX=ON )
     else
+      cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_SPHINX=OFF )
       enable_sphinx_doc=0
     fi
 
@@ -257,16 +258,14 @@ if true; then
       echo "+- Found Doxygen documentation generator, ok."
       cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_DOXYGEN=ON )
     else
+      # Explicitely state we do not want Doxygen as CMake tries
+      # to look for it even if we didn't set it to ON.
+      cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_DOXYGEN=OFF )
       enable_doxygen_doc=0
     fi
 
-    # If "empty" (neither 0 nor 1) enable building the documentation
-    # if Sphinx or Doxygen were found.
-    if [ -z "$enable_build_docs" ]; then
-      [ $enable_sphinx_doc  -gt 0 ] && enable_build_docs=1
-      [ $enable_doxygen_doc -gt 0 ] && enable_build_docs=1
-    fi
-
+    # This would enable building both the Sphinx _and_ Doxygen
+    # documentation.
     if [ $enable_build_docs -gt 0 ]; then
       cmake_args=( "${cmake_args[@]}" -DLLVM_BUILD_DOCS=ON )
     else
@@ -284,6 +283,15 @@ if true; then
         #       be linked with ld.gold.
         -DLLVM_USE_LINKER=gold
         )
+      # (The correct include path will contain the file plugin-api.h.)
+      if [ ! -f "$localdir/include/plugin-api.h" ]; then
+        echo "| WARNING: Found Binutils' \`ld.gold\` but the 'plugin-api.h' header file"
+        echo "|          wasn't found under $localdir/include/"
+        echo "|          (this is fine if your distribution provides it, ex. under /usr/include)."
+        if [ ! -f "/usr/include/plugin-api.h" ]; then
+          echo "| WARNING: plugin-api.h _wasn't_ found under /usr/include/ either :-|"
+        fi
+      fi
     fi
 
     # Use Ninja if available...
