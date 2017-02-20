@@ -1,10 +1,19 @@
 #!/bin/bash
 #
 # fabic/2016-06-30
+#
+# 1st argument is the target installation directory, defaults to local/
+# 2nd arg. is the targed temporary out-of-tree build dir.
 
 here=$(cd `dirname "$0"`/.. && pwd)
 
 . "$here/functions.sh"
+
+enable_build_docs=0
+enable_sphinx_doc=0
+enable_doxygen_doc=0
+perform_make_install=1
+
 
 echo "+--- $0"
 echo "|"
@@ -126,6 +135,16 @@ echo
     echo "+--"
   fi
 
+  # LLD ( http://lld.llvm.org/getting_started.html )
+  if [ -e lld/CMakeLists.txt ]; then
+    echo "+--"
+    echo "| Found checked-out sources of LLD linker, symlinking into llvm/tools/"
+    echo "|"
+    ln -sfnv ../../lld llvm/tools/
+    echo "|"
+    echo "+--"
+  fi
+
   retv=$?
   echo
   if [ $retv -ne 0 ];
@@ -172,19 +191,28 @@ if true; then
       -DCMAKE_INSTALL_PREFIX="$localdir"
       -DBUILD_SHARED_LIBS=ON
       -DLLVM_TARGETS_TO_BUILD="host;X86"
-      -DLLVM_BUILD_DOCS=OFF
-      -DLLVM_ENABLE_DOXYGEN=OFF
-      -DLLVM_ENABLE_SPHINX=OFF
-      -DLLVM_BINUTILS_INCDIR="$localdir/include"
+      -DLLVM_OPTIMIZED_TABLEGEN=ON
+      #-DLLVM_BUILD_LLVM_DYLIB=OFF
+
+      # See further below $enable_XXX_doc
+        #-DLLVM_BUILD_DOCS=OFF
+        #-DLLVM_ENABLE_SPHINX=OFF
+        #-DLLVM_ENABLE_DOXYGEN=OFF
+
       #-DLLVM_ENABLE_FFI=ON  (done below)
       -DLLVM_ENABLE_EH=ON
       -DLLVM_ENABLE_RTTI=ON
       -DLLVM_ENABLE_CXX1Y=ON
+      -DLLVM_ENABLE_ASSERTIONS=ON
+
       #-DLLVM_ENABLE_LTO=ON
+      #-DLLVM_BINUTILS_INCDIR="$localdir/include"
+
       # -DLIBCXXABI_USE_LLVM_UNWINDER=ON
+
       # Appended last later on.
-      #-G Ninja
-      #../llvm
+        #-G Ninja
+        #../llvm
       )
 
 # todo: conditionnally enable building LLVMGold iff `local/include/plugin-api.h`
@@ -216,6 +244,48 @@ if true; then
         echo "+-"
     fi
 
+    # Python Sphinx documentation generator.
+    if [ $enable_sphinx_doc -gt 0 ] && type -p sphinx-build > /dev/null ; then
+      echo "+- Found Sphinx documentation generator, ok."
+      cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_SPHINX=ON )
+    else
+      enable_sphinx_doc=0
+    fi
+
+    # Doxygen documentation generator.
+    if [ $enable_doxygen_doc -gt 0 ] && type -p doxygen > /dev/null ; then
+      echo "+- Found Doxygen documentation generator, ok."
+      cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_DOXYGEN=ON )
+    else
+      enable_doxygen_doc=0
+    fi
+
+    # If "empty" (neither 0 nor 1) enable building the documentation
+    # if Sphinx or Doxygen were found.
+    if [ -z "$enable_build_docs" ]; then
+      [ $enable_sphinx_doc  -gt 0 ] && enable_build_docs=1
+      [ $enable_doxygen_doc -gt 0 ] && enable_build_docs=1
+    fi
+
+    if [ $enable_build_docs -gt 0 ]; then
+      cmake_args=( "${cmake_args[@]}" -DLLVM_BUILD_DOCS=ON )
+    else
+      cmake_args=( "${cmake_args[@]}" -DLLVM_BUILD_DOCS=OFF )
+    fi
+
+    # Binutils ld.gold => LTO ?
+    if type -p ld.gold > /dev/null ; then
+      echo "+- Found GNU Binutils' \`ld.gold\` => enabling LTO feature."
+      cmake_args=( "${cmake_args[@]}" \
+        #-DLLVM_ENABLE_LTO=ON
+        -DLLVM_ENABLE_LTO=Full
+        -DLLVM_BINUTILS_INCDIR="$localdir/include" \
+        # NOTE: this is unrelated to LTO, this instructs that LLVM/Clang/etc
+        #       be linked with ld.gold.
+        -DLLVM_USE_LINKER=gold
+        )
+    fi
+
     # Use Ninja if available...
     if type -p ninja > /dev/null ; then
       echo "+- Found Ninja at `type -p ninja` (we'll pass -G Ninja to CMake)"
@@ -234,9 +304,11 @@ if true; then
     echo "| Note that we're passing the following -Dxxx CMake options :"
     echo "|   - BUILD_SHARED_LIBS=ON                 (defaults to OFF)"
     echo "|   - LLVM_BUILD_LLVM_DYLIB=OFF            (defaults to OFF)"
-    echo "|   - LLVM_TARGETS_TO_BUILD=\"host;X86\"   (defaults to 'all')"
+    echo "|   - LLVM_TARGETS_TO_BUILD=\"host;X86\"     (defaults to 'all')"
     #echo "|   -CMAKE_CXX_FLAGS=\"-stdlib=libc++\"   (!!! BEWARE !!!)"
-    #echo "|   -DLLVM_ENABLE_LTO=ON"
+    echo "|   - LLVM_ENABLE_EH=ON"
+    echo "|   - LLVM_ENABLE_RTTI=ON"
+    echo "|   - LLVM_ENABLE_CXX1Y=ON"
     echo "|"
     echo "| See http://llvm.org/docs/CMake.html"
     echo "| See http://www.linuxfromscratch.org/blfs/view/svn/general/llvm.html"
@@ -290,7 +362,7 @@ if true; then
     if [ `uname -s` != "Darwin" ]; then
       max_jobs=`how_many_cpus 2`
       max_sys_load=`max_load_level`
-      keep_going=128
+      keep_going=1
     else
       max_jobs=2
       max_sys_load=2
@@ -332,7 +404,8 @@ if true; then
     echo "+-"
     echo
 
-
+  if [ $perform_make_install -gt 0 ];
+  then
     echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
     echo "|"
     echo "| Running Ninja install..."
@@ -362,6 +435,7 @@ if true; then
     echo "| Ninja install done ok ! (probably)  \\o/"
     echo "|"
     echo "+-"
+  fi
 
   popd
 fi

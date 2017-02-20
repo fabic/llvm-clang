@@ -177,7 +177,7 @@ if [ $retv -gt 0 ]; then
 fi
 
 
-read -p "CMake completed, proceed with actual build (make/ninja) ?"
+#read -p "CMake completed, proceed with actual build (make/ninja) ?"
 
 
 if [ "$cmake_generator" == "Ninja" ];
@@ -241,9 +241,12 @@ echo "| List of executable files under '$prevdir' :"
 echo "|"
 
 echo &&
-  find "$prevdir" \( -type d -name CMakeFiles -prune \) -o -type f -perm -a+x -print0 | \
-    xargs -0r ls -ltrh | \
-      sed -e 's@^@|    &@'
+    find "$prevdir" \
+         \( -type d -name CMakeFiles -prune \) \
+      -o -type f \( -perm -a+x  -o  -name \*.a \) \
+      -print0 | \
+        xargs -0r ls -ltrh | \
+          sed -e 's@^@|    &@'
 
 echo "|"
 echo "+-- $0 : FINISHED, exit status: $retv"

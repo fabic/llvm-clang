@@ -2,21 +2,19 @@
 #
 # fabic/2016-06-30
 
-here=$(cd `dirname "$0"` && pwd)
+here=$(cd `dirname "$0"`/.. && pwd)
 
 . "$here/functions.sh"
 
 
-# We do want to build this one thing with GCC.
+# We _do want_ to build this one thing with GCC.
 CC=gcc
 CXX=g++
 
 
 echo "+--- $0"
 echo "|"
-echo "| This script builds and install GNU Binutils."
-echo "|"
-echo "| Basically it will build "
+echo "| This script builds and installs GNU Binutils."
 echo "|"
 echo "| Official Git repository :"
 echo "|   https://sourceware.org/git/gitweb.cgi?p=binutils-gdb.git"
@@ -52,7 +50,7 @@ configure_args=(
         --enable-shared      \
         --disable-werror     \
         --enable-gold        \
-        --enable-ld          \
+        --enable-ld=default  \
         --enable-plugins     \
   )
 
@@ -67,7 +65,8 @@ echo "| NOTE that we'll _only_ be building the “ gold linker ”"
 echo "|      ( make targets: all-gold install-gold )"
 
 
-if [ "x$binutils_dir" == "xmisc/binutils" ];
+# Git check-out submodule if needed.
+if [ -d "$binutils_dir" ] && [ -e "$binutils_dir/.git" ] && [ ! -f "$binutils_dir/configure" ];
 then
   echo "|"
   echo "| Git submodule checkout misc/binutils/ :"
@@ -262,10 +261,14 @@ echo
 ## MAKE TEST
 #
 
-if false;
+if true;
 then
+  read -p "+-- RUN THE TEST SUITE ?"
+
   time \
     make -k check
+
+  echo "| \`make -k chech\` completed with exit status $?"
 else
   echo "|"
   echo "| NOTE: we're not running the test suite..."
@@ -274,6 +277,12 @@ else
   echo "|"
 fi
 
+# List a few files we're interested in.
+if true; then
+  echo "+--"
+  echo "|"
+  ls -l "$localdir/include/plugin-api.h" "$localdir/bin/ld*"
+fi
 
 echo "|"
 echo "+--- $0 $@ : FINISHED, exit status: $retv"
