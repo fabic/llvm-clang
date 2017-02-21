@@ -115,6 +115,7 @@ cmake_args=(
   -DFABIC_LOCAL_DIR="$localdir"
   -DCMAKE_INSTALL_PREFIX="$localdir"
   #-DCMAKE_BUILD_TYPE=Debug
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
   -Wdev
   # --warn-uninitialized

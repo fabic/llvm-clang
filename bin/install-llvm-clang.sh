@@ -314,7 +314,7 @@ if true; then
     fi
 
     # Binutils ld.gold => LTO ?
-    if type -p ld.gold > /dev/null ; then
+    if false && type -p ld.gold > /dev/null ; then
       echo "+- Found GNU Binutils' \`ld.gold\` => enabling LTO feature."
       cmake_args=( "${cmake_args[@]}" \
         -DLLVM_ENABLE_LTO=ON
