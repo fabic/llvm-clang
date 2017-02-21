@@ -6,7 +6,7 @@
 #
 # http://stackoverflow.com/questions/25840088/how-to-build-libcxx-and-libcxxabi-by-clang-on-centos-7
 
-here=$(cd `dirname "$0"` && pwd)
+here=$(cd `dirname "$0"`/.. && pwd)
 
 cmake_build_type=RelWithDebInfo
 
