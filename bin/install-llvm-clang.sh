@@ -335,6 +335,12 @@ if true; then
       fi
     fi
 
+    # https://crascit.com/2016/04/09/using-ccache-with-cmake/
+    # if type -p ccache > /dev/null ; then
+    #   echo "+- Found \`ccache\` !"
+    #   cmake_args=( "${cmake_args[@]}" -DRULE_LAUNCH_COMPILE="ccache" )
+    # fi
+
     # Use Ninja if available...
     if type -p ninja > /dev/null ; then
       echo "+- Found Ninja at `type -p ninja` (we'll pass -G Ninja to CMake)"
@@ -483,14 +489,18 @@ if true; then
     echo "|"
     echo "| Ninja install done ok ! (probably)  \\o/"
     echo "|"
-    echo "+-"
   fi
+
+  echo "+-"
+  echo "| FYI: The CMake command used previously was :"
+  echo "|"
+  echo "|      cd `pwd` &&"
+  echo "|        cmake ${cmake_args[@]}"
 
   popd
 fi
 
 
-echo "|"
 echo "+--- $0 : FINISHED, exit status: $retv"
 
 exit $retv
