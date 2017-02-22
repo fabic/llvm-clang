@@ -314,25 +314,34 @@ if true; then
     fi
 
     # Binutils ld.gold => LTO ?
-    if false && type -p ld.gold > /dev/null ; then
-      echo "+- Found GNU Binutils' \`ld.gold\` => enabling LTO feature."
-      cmake_args=( "${cmake_args[@]}" \
-        -DLLVM_ENABLE_LTO=ON
-        #-DLLVM_ENABLE_LTO=Full
-        -DLLVM_BINUTILS_INCDIR="$localdir/include" \
-        # NOTE: this is unrelated to LTO, this instructs that LLVM/Clang/etc
-        #       be linked with ld.gold.
-        -DLLVM_USE_LINKER=gold
-        )
-      # (The correct include path will contain the file plugin-api.h.)
-      if [ ! -f "$localdir/include/plugin-api.h" ]; then
-        echo "| WARNING: Found Binutils' \`ld.gold\` but the 'plugin-api.h' header file"
-        echo "|          wasn't found under $localdir/include/"
-        echo "|          (this is fine if your distribution provides it, ex. under /usr/include)."
-        if [ ! -f "/usr/include/plugin-api.h" ]; then
-          echo "| WARNING: plugin-api.h _wasn't_ found under /usr/include/ either :-|"
+    if [ `uname -s` != "Darwin" ]; then
+
+      if false && type -p ld.gold > /dev/null ; then
+
+        echo "+- Found GNU Binutils' \`ld.gold\` => enabling LTO feature."
+        cmake_args=( "${cmake_args[@]}" \
+          -DLLVM_ENABLE_LTO=ON
+          #-DLLVM_ENABLE_LTO=Full
+          -DLLVM_BINUTILS_INCDIR="$localdir/include" \
+          # NOTE: this is unrelated to LTO, this instructs that LLVM/Clang/etc
+          #       be linked with ld.gold.
+          -DLLVM_USE_LINKER=gold
+          )
+
+        # (The correct include path will contain the file plugin-api.h.)
+        if [ ! -f "$localdir/include/plugin-api.h" ]; then
+          echo "| WARNING: Found Binutils' \`ld.gold\` but the 'plugin-api.h' header file"
+          echo "|          wasn't found under $localdir/include/"
+          echo "|          (this is fine if your distribution provides it, ex. under /usr/include)."
+          if [ ! -f "/usr/include/plugin-api.h" ]; then
+            echo "| WARNING: plugin-api.h _wasn't_ found under /usr/include/ either :-|"
+          fi
         fi
       fi
+
+    else
+      echo "+-- FIXME: Mac OS X: we're _NOT_ passing DLLVM_ENABLE_LTO=ON/Full/Thin"
+      echo "|          (it breaks the build / 2017-02-20)."
     fi
 
     # https://crascit.com/2016/04/09/using-ccache-with-cmake/
