@@ -181,3 +181,6 @@
 [submodule "velron-doxygen-bs-theme"]
 	path = doc/velron-doxygen-bs-theme
 	url = https://github.com/Velron/doxygen-bootstrapped.git
+[submodule "libdrm"]
+	path = misc/libdrm
+	url = git://anongit.freedesktop.org/mesa/drm
