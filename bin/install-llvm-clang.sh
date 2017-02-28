@@ -335,7 +335,9 @@ if true; then
             -DLLVM_BINUTILS_INCDIR="$localdir/include" \
             # NOTE: this is unrelated to LTO, this instructs that LLVM/Clang/etc
             #       be linked with ld.gold.
-            -DLLVM_USE_LINKER=gold
+            #-DLLVM_USE_LINKER=gold
+            # ^ FIXME: Breaks the build with :
+            #          “hidden symbol `__morestack' in /usr/lib64/gcc/x86_64-pc-linux-gnu/6.3.1/libgcc.a(morestack.o) is referenced by DSO”.
           )
 
         # (The correct include path will contain the file plugin-api.h.)
