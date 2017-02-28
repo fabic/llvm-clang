@@ -22,21 +22,34 @@ then
         if [ ! -z "${!e}" ]; then
             echo "$e = ${!e}"
         fi
-    done |
-            while read line; do
-                echo "| $line"
-            done
-    echo "|"
-    echo "+--- $here/check-clang-include-paths.sh :"
-    echo "|"
-    $here/check-clang-include-paths.sh |& sed -e 's/^/|    /'
-    echo "|"
-    echo "+---"
-    echo "| \$CC  = $CC   shall be $(type -p "$CC")   (found in \$PATH by \`type -p \"$CC\"\`)."
-    echo "| \$CXX = $CXX shall be $(type -p "$CXX") (found in \$PATH)."
-    echo "+---"
-    echo
+    done \
+        | while read line; do
+            echo "| $line"
+          done
 
+    if false; then
+        echo "|"
+        echo "+--- $here/check-clang-include-paths.sh :"
+        echo "|"
+        $here/check-clang-include-paths.sh |& sed -e 's/^/|    /'
+        echo "|"
+        echo "+---"
+        echo "| \$CC  = $CC   shall be $(type -p "$CC")   (found in \$PATH by \`type -p \"$CC\"\`)."
+        echo "| \$CXX = $CXX shall be $(type -p "$CXX") (found in \$PATH)."
+        echo "+---"
+        echo
+    else
+        echo "+-"
+        echo "| Note: there's also the \`$here/check-clang-include-paths.sh\`"
+        echo "|       script which invoques Clang with ex. :"
+        echo "|"
+        echo "|       clang++ -Wp,-v -x c++ - -fsyntax-only < /dev/null"
+        echo "|"
+        echo "|       Or:  clang++ -E -x c++ - -v < /dev/null"
+        echo "|"
+    fi
+
+    echo "+---"
 fi
 
 # vim: et sw=4 ts=4 ft=sh

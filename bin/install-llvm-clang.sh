@@ -88,13 +88,17 @@ show_some_sensitive_settings
 
   # Ask/warn early about an eventually existing build/ directory.
   if [ -d "$builddir" ]; then
-    read -p "| REMOVE existing temporary `pwd`/$builddir/ directory, Ok ?"
-    rm -rf "$builddir" || exit 127
+    read -p "| REMOVE existing temporary `pwd`/$builddir/ directory, Ok ?  [no] " -i "yes" answer
+    if [ "$answer" == "yes" ]; then
+      rm -rf "$builddir" || exit 127
+    else
+      echo "| OK: _not_ removing the build directory."
+    fi
   fi
 
 
 echo
-read -p "Ok to proceed ? (Ctrl-C to abort)"
+read -p "+~~> Ok to proceed ? (Ctrl-C to abort) "
 echo
 
 
@@ -217,6 +221,7 @@ if true; then
     echo "|"
     echo "| Entering temporary the build directory '$builddir'."
 
+    if [ ! -d "$builddir" ]; then
       if ! mkdir "$builddir" || ! cd "$builddir" ;
       then
         echo "+---> FAILED to create and/or enter the temporary build dir.: '$builddir'"
@@ -226,6 +231,10 @@ if true; then
         echo "| Ok, current dir. is now '`pwd`'"
         echo "|"
       fi
+    else
+      echo "| Entering existing build dir. '$builddir'"
+      cd "$builddir" || exit 122
+    fi
 
     cmake_args=(
       -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -249,6 +258,7 @@ if true; then
       # (defaults to ON only if Debug).
       -DLLVM_ENABLE_ASSERTIONS=ON
 
+      # Done further below.
       #-DLLVM_ENABLE_LTO=ON
       #-DLLVM_BINUTILS_INCDIR="$localdir/include"
 
@@ -316,16 +326,16 @@ if true; then
     # Binutils ld.gold => LTO ?
     if [ `uname -s` != "Darwin" ]; then
 
-      if false && type -p ld.gold > /dev/null ; then
+      if true && type -p ld.gold > /dev/null ; then
 
         echo "+- Found GNU Binutils' \`ld.gold\` => enabling LTO feature."
         cmake_args=( "${cmake_args[@]}" \
-          -DLLVM_ENABLE_LTO=ON
-          #-DLLVM_ENABLE_LTO=Full
-          -DLLVM_BINUTILS_INCDIR="$localdir/include" \
-          # NOTE: this is unrelated to LTO, this instructs that LLVM/Clang/etc
-          #       be linked with ld.gold.
-          -DLLVM_USE_LINKER=gold
+            -DLLVM_ENABLE_LTO=ON
+            #-DLLVM_ENABLE_LTO=Full
+            -DLLVM_BINUTILS_INCDIR="$localdir/include" \
+            # NOTE: this is unrelated to LTO, this instructs that LLVM/Clang/etc
+            #       be linked with ld.gold.
+            -DLLVM_USE_LINKER=gold
           )
 
         # (The correct include path will contain the file plugin-api.h.)

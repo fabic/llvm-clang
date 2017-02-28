@@ -115,8 +115,10 @@ function autotools_based_sources_configure()
     #echo \
     time \
       $sources_dir/configure \
-        "${configure_args[@]}" \
-              |& tee "$configure_log_filename"
+        "${configure_args[@]}"
+              #|& tee "$configure_log_filename"
+              # ^ FIXME: bad exit status gets shadowed by this pipe -_-
+              #          (maybe remove the '&' ?)
 
     retv=$?
     if [ $retv -ne 0 ]; then
