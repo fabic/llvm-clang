@@ -234,22 +234,28 @@ fi
 
 
 # move out of BUILD/ (return to previous dir.)
-echo "popd" &&
+echo "+~~> popd !" &&
 popd
 
-# equiv. to $here actually...
-prevdir="${OLDPWD}"
 
 echo "|"
-echo "| List of executable files under '$prevdir' :"
+echo "| List of executable files under '$here/$builddir' :"
 echo "|"
 
 echo &&
-    find "$prevdir" \
-         \( -type d -name CMakeFiles -prune \) \
-      -o -type f \( -perm -a+x  -o  -name \*.a \) \
+    find "$builddir/" \
+      \( -type d -name CMakeFiles -prune \) \
+      -o -type f \
+           \(    \
+               -perm -a+x  \
+            -o -name \*.a  \
+            -o -name \*.ko \
+            -o -name \*.la \
+            -o -name \*.so \
+           \) \
       -print0 | \
         xargs -0r ls -ltrh | \
+          sort -k9         | \
           sed -e 's@^@|    &@'
 
 echo "|"

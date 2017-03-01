@@ -9,7 +9,9 @@ here=$(cd `dirname "$0"`/.. && pwd)
 
 . "$here/functions.sh"
 
+# Will build both the Sphinx documentation _and_ the Doxygen one.
 enable_build_docs=0
+
 enable_sphinx_doc=0
 enable_doxygen_doc=0
 perform_make_install=0
@@ -371,12 +373,19 @@ if true; then
     # Finally append the source tree path of LLVM :
     cmake_args=( "${cmake_args[@]}" ../llvm )
 
+    function display_cmake_command_fyi()
+    {
+      echo "|"
+      echo "|   cmake ${cmake_args[@]}"
+      echo "|"
+    }
+
     echo "+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo "|"
     echo "| About to run CMake :"
-    echo "|"
-    echo "|   cmake ${cmake_args[@]}"
-    echo "|"
+
+    display_cmake_command_fyi
+
     echo "| Note that we're passing the following -Dxxx CMake options :"
     echo "|   - BUILD_SHARED_LIBS=ON                 (defaults to OFF)"
     echo "|   - LLVM_BUILD_LLVM_DYLIB=OFF            (defaults to OFF)"
@@ -406,9 +415,7 @@ if true; then
         echo "| CMake failed, exit status $retv"
         echo "|"
         echo "| Command was :"
-        echo "|"
-        echo "|   \`cmake ${cmake_args[@]}\`"
-        echo "|"
+        display_cmake_command_fyi
         echo "+-"
         exit $retv
       fi
@@ -469,6 +476,8 @@ if true; then
         echo "|"
         echo "| Build failed, Ninja exited with status $retv"
         echo "|"
+        echo "| CMake command was :"
+        display_cmake_command_fyi
         echo "+-- $0 ~~~> FAILED."
         echo
         exit $retv
@@ -499,7 +508,7 @@ if true; then
         echo "+ ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !"
         echo "|"
         echo "| FAIL: Ninja install failed with exit status $retv"
-        echo "|"
+        display_cmake_command_fyi
         echo "+-"
         echo
         exit $retv
@@ -515,8 +524,8 @@ if true; then
   echo "+-"
   echo "| FYI: The CMake command used previously was :"
   echo "|"
-  echo "|      cd `pwd` &&"
-  echo "|        cmake ${cmake_args[@]}"
+  echo "| cd `pwd`"
+  display_cmake_command_fyi
 
   popd
 fi
