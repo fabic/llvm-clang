@@ -184,3 +184,6 @@
 [submodule "libdrm"]
 	path = misc/libdrm
 	url = git://anongit.freedesktop.org/mesa/drm
+[submodule "newlib-libc"]
+	path = misc/newlib-cygwin
+	url = git://sourceware.org/git/newlib-cygwin.git
