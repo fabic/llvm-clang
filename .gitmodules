@@ -187,3 +187,6 @@
 [submodule "newlib-libc"]
 	path = misc/newlib-cygwin
 	url = git://sourceware.org/git/newlib-cygwin.git
+[submodule "gentoo-portage-tree"]
+	path = misc/gentoo-portage-tree
+	url = git://anongit.gentoo.org/repo/gentoo.git
