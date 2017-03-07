@@ -121,7 +121,7 @@ cmake_args=(
   #   by CMakeLists.txt
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
   -Wdev
-  # --warn-uninitialized
+  --warn-uninitialized
   --clean-first
   "${cmake_extra_args[@]}"
   ..

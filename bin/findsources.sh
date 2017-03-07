@@ -28,7 +28,7 @@ done
 
 # Search sources files and grep :
 find "${leftargs[@]}" \
-	\( -type f -iregex '.+.\(c\|h\|hh\|cpp\|hpp\|cxx\|hxx\|h\.inc\)$' \) \
+	\( -type f -iregex '.+\.\(c\|h\|hh\|cpp\|hpp\|cxx\|hxx\|h\.inc\|s\)$' \) \
 	"${args[@]}"
 
 exit $?
