@@ -11,6 +11,8 @@ here=$(cd `dirname "$0"`/.. && pwd)
 CC=gcc
 CXX=g++
 
+use_bear=
+bear_binary="$(type -p bear 2> /dev/null)"
 
 echo "+--- $0"
 echo "|"
@@ -22,6 +24,7 @@ echo "|"
 echo "| References :"
 echo "|"
 echo "|  - http://www.linuxfromscratch.org/lfs/view/development/chapter06/binutils.html"
+echo "|"
 
 
   cd "$here" || exit 1
@@ -38,6 +41,18 @@ echo "|  - http://www.linuxfromscratch.org/lfs/view/development/chapter06/binuti
     echo "|"
     echo "|   \$localdir = $localdir"
     echo "|"
+  fi
+
+
+  # BEAR (Build EAR) - Auto enable if empty var.
+  if [ -z "$use_bear"  ]; then
+    if [ ! -z "$bear_binary" ]; then
+      echo "+- Found Rizsotto's Build EAR “BEAR” (enabling it)"
+      echo "| Bear is $bear_binary"
+      use_bear=1
+    fi
+  else
+    echo "| Rizsotto's Bear not enabled."
   fi
 
 
@@ -207,10 +222,14 @@ echo
   read -p "Ok to proceed ? (Ctrl-C to abort)"
   echo
 
-
-  #echo \
-  time \
-    make "${make_args[@]}"
+  if [ $use_bear -gt 0 ]; then
+    time \
+      "$bear_binary" \
+        make "${make_args[@]}"
+  else
+    time \
+      make "${make_args[@]}"
+  fi
 
   retv=$?
   if [ $retv -ne 0 ]; then

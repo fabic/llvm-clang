@@ -262,7 +262,7 @@ fi
 
 
 # Display environment for information
-sh $here/show-environment.sh
+#sh $here/show-environment.sh
 
 
 # vim: et sw=2 ts=2 ft=sh

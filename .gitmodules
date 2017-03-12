@@ -185,3 +185,6 @@
 [submodule "gentoo-portage-tree"]
 	path = misc/gentoo-portage-tree
 	url = git://anongit.gentoo.org/repo/gentoo.git
+[submodule "rizsotto-bear"]
+	path = misc/rizsotto-bear
+	url = git@github.com:rizsotto/Bear.git
