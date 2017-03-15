@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Output details about some of the environment variables.
 #

@@ -29,7 +29,7 @@
 [submodule "lldb"]
 	path = llvm-clang/lldb
   #url = git@github.com:fabic/lldb.git
-	url = git@github.com:llvm-mirror/lld.git
+	url = git@github.com:llvm-mirror/lldb.git
 [submodule "lld"]
 	path = llvm-clang/lld
 	url = git@github.com:llvm-mirror/lld.git

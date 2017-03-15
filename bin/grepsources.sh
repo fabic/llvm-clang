@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # FC.2014-09-24 fabic.net
 
@@ -21,7 +21,7 @@ fi
 grepargs=(
   "--binary-files=without-match"
   "--color=always"
-  "-Hni"
+  "-Hn"
 )
 
 # Right side arguments will be for find :
@@ -45,10 +45,10 @@ findargs=( "$@" )
 findcmd=(
   find
     "${findargs[@]}"
-       \( -type d -iregex '.+/\..+$' -prune \)
+    \( -type d \( -iregex '.+/\..+$' -o -name 'CMakeFiles' \) -prune \)
     -o -type f
        \(
-         -iregex '.+.\(c\|h\|cpp\|hpp\|cxx\|hxx\|s\|S\|x\|cmake\)$'
+         -iregex '.+\.\(c\|h\|cpp\|hpp\|cxx\|hxx\|s\|x\|h\.inc?\|hxx\.inc?\|cmake\)$'
          -o
          -name "CMakeLists.txt"
        \)

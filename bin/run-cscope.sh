@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # FABIC/2014
 
@@ -52,12 +52,53 @@ else
   echo "|"
 
   [ -d "$localdir/include"        ] && locations=( ${locations[@]} "$localdir/include" )
+
   #[ -d "$llvmClang/llvm/include"  ] && locations=( ${locations[@]} "$llvmClang/llvm/include" )
   #[ -d "$llvmClang/clang/include" ] && locations=( ${locations[@]} "$llvmClang/clang/include" )
+
   # ^ Includes shall have ended up installed into local/include/,
   #   so we'll just have to provide locations of the impl. :
-  [ -d "$llvmClang/llvm/lib"  ] && locations=( ${locations[@]} "$llvmClang/llvm/lib"  )
-  [ -d "$llvmClang/clang/lib" ] && locations=( ${locations[@]} "$llvmClang/clang/lib" )
+
+  #[ -d "$llvmClang/llvm/lib"  ] && locations=( ${locations[@]} "$llvmClang/llvm/lib"  )
+  #[ -d "$llvmClang/clang/lib" ] && locations=( ${locations[@]} "$llvmClang/clang/lib" )
+
+  # ^ Replaced with the following – essentially checking for the existence of
+  #   header files under local/include/{llvm,clang}/ , and if not found ⇒ fallback
+  #   to the source tree include dirs.
+
+  # LLVM
+  if [ -d "$llvmClang/llvm/lib" ]; then
+    echo "| Found LLVM."
+    locations=( ${locations[@]} "$llvmClang/llvm/lib" )
+    if [ ! -d "$localdir/include/llvm" ]; then
+      locations=( ${locations[@]} "$llvmClang/llvm/include" )
+    fi
+  fi
+
+  # Clang
+  if [ -d "$llvmClang/clang/lib" ]; then
+    echo "| Found Clang."
+    locations=( ${locations[@]} "$llvmClang/clang/lib" )
+    if [ ! -d "$localdir/include/clang" ]; then
+      locations=( ${locations[@]} "$llvmClang/clang/include" )
+    fi
+  fi
+
+  # libunwind
+  if [ -f "$misc/libunwind/include/unwind.h" ]; then
+    echo "| Found libunwind."
+    locations=( ${locations[@]}
+      "$misc/libunwind/include"
+      "$misc/libunwind/src" )
+  fi
+
+  # Musl-libc
+  if [ -d "$misc/musl-libc/include" ]; then
+    echo "| Found Musl-libc."
+    locations=( ${locations[@]}
+      "$misc/musl-libc/include"
+      "$misc/musl-libc/src" )
+  fi
 fi
 
 # BOOST C++ !
