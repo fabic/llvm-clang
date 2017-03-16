@@ -4,7 +4,7 @@
 #
 
 # LIST DIRS OF INTEREST :
-# find -type d \( -path ./Documentation -o -path ./drivers -o -path ./firmware -o -path ./scripts -o -path ./sound \) -prune -o \( -path './arch/*' \! -path ./arch/x86 -prune \) -o -type d -print 
+# find -type d \( -path ./Documentation -o -path ./drivers -o -path ./firmware -o -path ./scripts -o -path ./sound \) -prune -o \( -path './arch/*' \! -path ./arch/x86 -prune \) -o -type d -print
 
 # FILES for cscope.files :
 # find -type d \( -path ./Documentation -o -path ./drivers -o -path ./firmware -o -path ./scripts -o -path ./sound \) -prune -o \( -path './arch/*' \! -path ./arch/x86 -prune \) -o -type f -name "*.[chxsS]" > cscope.files
@@ -16,10 +16,11 @@ LNX=$( cd `dirname "$0"`/../misc/linux-kernel/ && pwd )
 
 cd "$LNX" || exit 127
 
+echo "+-- $0 $@"
+echo "|"
+echo "| Creating cscope.files"
 
-echo "Creating cscope.files"
-
-find "$LNX"/{arch/x86/,block/,crypto/,fs/,include/,init/,ipc/,kernel/,lib/,mm/,net/ethernet/,net/ipv4/,net/core/,net/dns_resolver/,net/netfilter/,net/packet/,net/unix/,tools/arch/x86/} \
+find "$LNX"/{include,arch/x86,block,crypto,fs,init,ipc,kernel,lib,mm,net/{ethernet,ipv4,core,dns_resolver,netfilter,packet,unix},tools/arch/x86} \
 	-type f -name "*.[chxsS]" \
 	-print | sort > cscope.files
 
