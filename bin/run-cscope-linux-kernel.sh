@@ -1,6 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 #
 # @link http://cscope.sourceforge.net/large_projects.html
+#
+# FABIC/2015
 #
 
 # LIST DIRS OF INTEREST :
@@ -14,25 +16,82 @@
 
 LNX=$( cd `dirname "$0"`/../misc/linux-kernel/ && pwd )
 
-cd "$LNX" || exit 127
-
 echo "+-- $0 $@"
 echo "|"
-echo "| Creating cscope.files"
 
-find "$LNX"/{include,arch/x86,block,crypto,fs,init,ipc,kernel,lib,mm,net/{ethernet,ipv4,core,dns_resolver,netfilter,packet,unix},tools/arch/x86} \
-	-type f -name "*.[chxsS]" \
-	-print | sort > cscope.files
+cd "$LNX" \
+  && echo "| Now in `pwd`" \
+    || exit 127
 
-echo "File cscope.files contains  `wc -l cscope.files` entries."
+[ ! -f include/linux/cpu.h ] &&
+  echo "| WARNING: source tree may have no files." \
+    && exit 126
 
-echo "Running cscope -b -q -k"
+echo "| Creating cscope.files (find ...)"
 
-time \
-    cscope -b -q -k
+dirlist=(
+  arch/x86
+  include
+  init kernel lib mm
+  block
+  #crypto fs ipc
+  #net/{ethernet,ipv4,core,dns_resolver,netfilter,packet,unix}
+  tools/arch/x86
+)
 
+excldirs=(
+     -path arch/x86/crypto
+  -o -path arch/x86/xen
+  -o -path arch/x86/include/asm/xen
+  -o -path include/crypto
+  -o -path include/dt-bindings
+  -o -path include/net
+  -o -path include/pcmcia
+  -o -path include/sound
+  -o -path include/xen
+)
+
+echo "|"
+echo "| Directories list :"
+echo "|   ${dirlist[@]}"
+echo "|"
+echo "| Exclusions \`find ...\` expression :"
+echo "|   ${excldirs[@]}"
+
+
+# Have absolute path (fixme: wron't work w/ excluded dirs)
+# (for better compatibility with editors)
+if false; then
+  dirlist=( "${dirlist[@]/#/$LNX/}"  )
+  echo "| Using absolute paths :"
+  echo "|   ${dirlist[@]}"
+fi
+
+
+#echo \
+find "${dirlist[@]}" \
+  -type d \( ${excldirs[@]} \) -prune \
+	-o -type f -name "*.[chxsS]" \
+    -print | sort > cscope.files
+
+#find "$LNX"/{include,arch/x86,block,crypto,fs,init,ipc,kernel,lib,mm,net/{ethernet,ipv4,core,dns_resolver,netfilter,packet,unix},tools/arch/x86}  -type f -name "*.[chxsS]"  -print | sort > cscope.files
+
+echo "| File cscope.files contains  `wc -l cscope.files` entries."
+echo
+read -p "+~~~> continue ? "
+echo
+
+echo "| Running cscope -b -q -k"
+
+cscope -b -q -k
 retv=$?
-echo "Cscope exit status: $retv"
+
+echo "| Cscope exit status: $retv"
+echo "| Cscope files :"
+
+ls -lh cscope*
+
+echo "+-- $0 $@ : FINISHED."
 
 exit $retv
 
