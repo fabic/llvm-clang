@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Boost setup, loosely inspired by 'cpp-netlib/install-boost.sh'
 
@@ -31,7 +31,7 @@ if [ "X${arg1/?.??.*/YYYY}X" == "XYYYYX" ]; then
         # Find out if we have a tarball into tmp/
         if [ ! -f "$here/tmp/$boost_tarball_filename" ]; then
             # Fetch tarball
-            if ! wget "$boost_tarball_url" -C "$here/tmp" ; then
+            if ! wget "$boost_tarball_url" -P "$here/tmp" ; then
                 echo "| ERROR: wget exited with status code $?"
                 echo "|        failed to download the Boost C++ tarball '$boost_tarball_url'."
                 echo "|        (you may retrieve it yourself and extract it under misc/ )"
@@ -135,7 +135,6 @@ else
     echo "|"
     echo "| Ok, guessed Boost C++ version: $boost_cpp_version"
     echo "|"
-
 fi
 
 echo "|"
@@ -147,7 +146,7 @@ echo "| Ok, we're in..."
 #boost_install_target_dir="${HOME}/${boost_cpp_version}-${CC}"
 boost_install_target_dir="${boost_install_target_dir:-$here/local/boost-$boost_cpp_version}"
 
-# Suffix with compiler 
+# Suffix with compiler
 if [ ! -z "$CC" ]; then
     boost_install_target_dir="${boost_install_target_dir}-`basename "$CC"`"
 else
@@ -199,7 +198,7 @@ then
 fi
 
 let processor_count=$( cat /proc/cpuinfo | grep -P '^processor\s*:\s*\d+' | wc -l )
-let jobs_count="$processor_count - 1"
+let jobs_count="$processor_count"
 if [ "0$jobs_count" -lt 1 ]; then
     jobs_count=1
 fi

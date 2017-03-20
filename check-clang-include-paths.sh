@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
 # FabiC/2016-06-20 -- https://github.com/fabic/llvm-clang
 
