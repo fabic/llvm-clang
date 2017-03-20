@@ -29,7 +29,7 @@
 [submodule "lldb"]
 	path = llvm-clang/lldb
   #url = git@github.com:fabic/lldb.git
-	url = git@github.com:llvm-mirror/lld.git
+	url = git@github.com:llvm-mirror/lldb.git
 [submodule "lld"]
 	path = llvm-clang/lld
 	url = git@github.com:llvm-mirror/lld.git
@@ -148,11 +148,6 @@
 [submodule "fifth-web-browser"]
 	path = misc/fifth
 	url = https://github.com/clbr/fifth.git
-[submodule "fltk"]
-	path = playground/lib/fltk
-	#url = https://github.com/fltk/test-only.git
-	# ^ upstream ; /me forked it :
-	url = git@github.com:fabic/test-only.git
 [submodule "fltk3"]
 	path = misc/fltk3
 	url = git@github.com:fabic/test-only.git
@@ -181,3 +176,15 @@
 [submodule "velron-doxygen-bs-theme"]
 	path = doc/velron-doxygen-bs-theme
 	url = https://github.com/Velron/doxygen-bootstrapped.git
+[submodule "libdrm"]
+	path = misc/libdrm
+	url = git://anongit.freedesktop.org/mesa/drm
+[submodule "newlib-libc"]
+	path = misc/newlib-cygwin
+	url = git://sourceware.org/git/newlib-cygwin.git
+[submodule "gentoo-portage-tree"]
+	path = misc/gentoo-portage-tree
+	url = git://anongit.gentoo.org/repo/gentoo.git
+[submodule "rizsotto-bear"]
+	path = misc/rizsotto-bear
+	url = git@github.com:rizsotto/Bear.git

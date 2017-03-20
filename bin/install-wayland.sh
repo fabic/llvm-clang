@@ -8,7 +8,38 @@ rewt=$(cd `dirname "$0"`/.. && pwd)
 
 cd "$rewt" || exit 1
 
-echo "+--- $0"
+# Invoqued w/o arguments => build everything.
+if [ $# -eq 0 ]; then
+  want_wayland=1
+  want_wayland_protocols=1
+  want_mesa=1
+  want_weston=1
+else
+  want_wayland=0
+  want_wayland_protocols=0
+  want_mesa=0
+  want_weston=0
+
+  while [ $# -gt 0 ]; do
+    arg="$1"
+
+    case "$arg" in
+      wayland) want_wayland=1 ;;
+      wayland-protocols) want_wayland_protocols=1 ;;
+      mesa) want_mesa=1 ;;
+      weston) want_weston=1 ;;
+      # else turn unknown arguments into boolean variables.
+      *)
+        let $1=1
+        echo "| Setting $1 = 1 (from command line arg.)"
+        ;;
+    esac
+
+    shift
+  done
+fi
+
+echo "+--- $0 $@"
 echo "|"
 echo "| This script builds and install Wayland."
 echo "|"
@@ -20,6 +51,14 @@ echo "|"
 echo "|  - https://wayland.freedesktop.org/building.html            (howto)"
 echo "|  - https://github.com/bryceharrington/wayland-build-tools/  (build scripts)"
 echo "+-"
+
+
+# Turn arguments into boolean variables.
+while [ $# -gt 0 ]; do
+  arg="$1"
+  let $1=1
+  shift
+done
 
 
 ##
@@ -115,8 +154,10 @@ function autotools_based_sources_configure()
     #echo \
     time \
       $sources_dir/configure \
-        "${configure_args[@]}" \
-              |& tee "$configure_log_filename"
+        "${configure_args[@]}"
+              #|& tee "$configure_log_filename"
+              # ^ FIXME: bad exit status gets shadowed by this pipe -_-
+              #          (maybe remove the '&' ?)
 
     retv=$?
     if [ $retv -ne 0 ]; then
@@ -138,7 +179,8 @@ function autotools_based_sources_configure()
 ##
 function autotools_based_sources_run_make()
 {
-  local max_jobs=`how_many_cpus 2`
+  #local max_jobs=`how_many_cpus`
+  local max_jobs=`max_number_of_jobs -1`
   local max_sys_load=`max_load_level`
   local make_args=(
       -j$max_jobs
@@ -320,16 +362,38 @@ function auto_build_thing()
 }
 
 
-auto_build_thing misc/wayland/wayland           local BUILD --disable-documentation
+if [ $want_wayland -gt 0 ];
+then
+  auto_build_thing misc/wayland/wayland local BUILD --disable-documentation
+  retv=$?
+  [ $retv -eq 0 ] || exit $retv
+fi
 
-auto_build_thing misc/wayland/wayland-protocols local BUILD --disable-documentation
 
-auto_build_thing misc/wayland/mesa local BUILD \
-  --enable-gles2                               \
-  --with-egl-platforms=x11,wayland,drm         \
-  --enable-gbm                                 \
-  --enable-shared-glapi                        \
-  --with-gallium-drivers=r300,r600,swrast,nouveau
+if [ $want_wayland_protocols -gt 0 ];
+then
+  auto_build_thing misc/wayland/wayland-protocols local BUILD --disable-documentation
+  retv=$?
+  [ $retv -eq 0 ] || exit $retv
+fi
+
+
+if [ $want_mesa -gt 0 ];
+then
+  auto_build_thing misc/wayland/mesa local BUILD \
+    --enable-gles2                               \
+    --with-egl-platforms=wayland,drm             \
+    --enable-gbm                                 \
+    --enable-shared-glapi                        \
+    --with-dri-drivers=swrast,nouveau,i915       \
+    --with-gallium-drivers=swrast,nouveau
+
+    #--with-egl-platforms=x11,wayland,drm         \
+    #--with-gallium-drivers=r300,r600,swrast,nouveau
+
+  retv=$?
+  [ $retv -eq 0 ] || exit $retv
+fi
 
 echo "|"
 echo "+--- $0 $@ : FINISHED, exit status: $retv"

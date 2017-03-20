@@ -115,10 +115,13 @@ cmake_args=(
   -DFABIC_LOCAL_DIR="$localdir"
   -DCMAKE_INSTALL_PREFIX="$localdir"
   #-DCMAKE_BUILD_TYPE=Debug
-  -DCMAKE_BUILD_TYPE=RelWithDebInfo
+  #-DCMAKE_BUILD_TYPE=RelWithDebInfo
+  #-DCMAKE_BUILD_TYPE=MinSizeRel
+  # ^ Use the default build type that is eventually configured
+  #   by CMakeLists.txt
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
   -Wdev
-  # --warn-uninitialized
+  --warn-uninitialized
   --clean-first
   "${cmake_extra_args[@]}"
   ..
@@ -231,22 +234,28 @@ fi
 
 
 # move out of BUILD/ (return to previous dir.)
-echo "popd" &&
+echo "+~~> popd !" &&
 popd
 
-# equiv. to $here actually...
-prevdir="${OLDPWD}"
 
 echo "|"
-echo "| List of executable files under '$prevdir' :"
+echo "| List of executable files under '$here/$builddir' :"
 echo "|"
 
 echo &&
-    find "$prevdir" \
-         \( -type d -name CMakeFiles -prune \) \
-      -o -type f \( -perm -a+x  -o  -name \*.a \) \
+    find "$builddir/" \
+      \( -type d -name CMakeFiles -prune \) \
+      -o -type f \
+           \(    \
+               -perm -a+x  \
+            -o -name \*.a  \
+            -o -name \*.ko \
+            -o -name \*.la \
+            -o -name \*.so \
+           \) \
       -print0 | \
         xargs -0r ls -ltrh | \
+          sort -k9         | \
           sed -e 's@^@|    &@'
 
 echo "|"

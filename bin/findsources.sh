@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # FC.2014-09-24 fabic.net
 
 if [ $# -lt 1 ]; then
@@ -28,7 +28,7 @@ done
 
 # Search sources files and grep :
 find "${leftargs[@]}" \
-	\( -type f -iregex '.+.\(c\|h\|cpp\|hpp\|cxx\|hxx\)$' \) \
+	\( -type f -iregex '.+\.\(c\|h\|hh\|cpp\|hpp\|cxx\|hxx\|h\.inc\|s\)$' \) \
 	"${args[@]}"
 
 exit $?

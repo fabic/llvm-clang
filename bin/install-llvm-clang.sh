@@ -9,7 +9,9 @@ here=$(cd `dirname "$0"`/.. && pwd)
 
 . "$here/functions.sh"
 
+# Will build both the Sphinx documentation _and_ the Doxygen one.
 enable_build_docs=0
+
 enable_sphinx_doc=0
 enable_doxygen_doc=0
 perform_make_install=0
@@ -88,13 +90,17 @@ show_some_sensitive_settings
 
   # Ask/warn early about an eventually existing build/ directory.
   if [ -d "$builddir" ]; then
-    read -p "| REMOVE existing temporary `pwd`/$builddir/ directory, Ok ?"
-    rm -rf "$builddir" || exit 127
+    read -p "| REMOVE existing temporary `pwd`/$builddir/ directory, Ok ?  [no] " -i "yes" answer
+    if [ "$answer" == "yes" ]; then
+      rm -rf "$builddir" || exit 127
+    else
+      echo "| OK: _not_ removing the build directory."
+    fi
   fi
 
 
 echo
-read -p "Ok to proceed ? (Ctrl-C to abort)"
+read -p "+~~> Ok to proceed ? (Ctrl-C to abort) "
 echo
 
 
@@ -217,6 +223,7 @@ if true; then
     echo "|"
     echo "| Entering temporary the build directory '$builddir'."
 
+    if [ ! -d "$builddir" ]; then
       if ! mkdir "$builddir" || ! cd "$builddir" ;
       then
         echo "+---> FAILED to create and/or enter the temporary build dir.: '$builddir'"
@@ -226,6 +233,10 @@ if true; then
         echo "| Ok, current dir. is now '`pwd`'"
         echo "|"
       fi
+    else
+      echo "| Entering existing build dir. '$builddir'"
+      cd "$builddir" || exit 122
+    fi
 
     cmake_args=(
       -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -250,6 +261,7 @@ if true; then
       # (defaults to ON only if Debug).
       -DLLVM_ENABLE_ASSERTIONS=ON
 
+      # Done further below.
       #-DLLVM_ENABLE_LTO=ON
       #-DLLVM_BINUTILS_INCDIR="$localdir/include"
 
@@ -317,16 +329,18 @@ if true; then
     # Binutils ld.gold => LTO ?
     if [ `uname -s` != "Darwin" ]; then
 
-      if false && type -p ld.gold > /dev/null ; then
+      if true && type -p ld.gold > /dev/null ; then
 
         echo "+- Found GNU Binutils' \`ld.gold\` => enabling LTO feature."
         cmake_args=( "${cmake_args[@]}" \
-          -DLLVM_ENABLE_LTO=ON
-          #-DLLVM_ENABLE_LTO=Full
-          -DLLVM_BINUTILS_INCDIR="$localdir/include" \
-          # NOTE: this is unrelated to LTO, this instructs that LLVM/Clang/etc
-          #       be linked with ld.gold.
-          -DLLVM_USE_LINKER=gold
+            -DLLVM_ENABLE_LTO=ON
+            #-DLLVM_ENABLE_LTO=Full
+            -DLLVM_BINUTILS_INCDIR="$localdir/include" \
+            # NOTE: this is unrelated to LTO, this instructs that LLVM/Clang/etc
+            #       be linked with ld.gold.
+            #-DLLVM_USE_LINKER=gold
+            # ^ FIXME: Breaks the build with :
+            #          “hidden symbol `__morestack' in /usr/lib64/gcc/x86_64-pc-linux-gnu/6.3.1/libgcc.a(morestack.o) is referenced by DSO”.
           )
 
         # (The correct include path will contain the file plugin-api.h.)
@@ -360,12 +374,19 @@ if true; then
     # Finally append the source tree path of LLVM :
     cmake_args=( "${cmake_args[@]}" ../llvm )
 
+    function display_cmake_command_fyi()
+    {
+      echo "|"
+      echo "|   cmake ${cmake_args[@]}"
+      echo "|"
+    }
+
     echo "+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo "|"
     echo "| About to run CMake :"
-    echo "|"
-    echo "|   cmake ${cmake_args[@]}"
-    echo "|"
+
+    display_cmake_command_fyi
+
     echo "| Note that we're passing the following -Dxxx CMake options :"
     echo "|   - BUILD_SHARED_LIBS=ON                 (defaults to OFF)"
     echo "|   - LLVM_BUILD_LLVM_DYLIB=OFF            (defaults to OFF)"
@@ -395,9 +416,7 @@ if true; then
         echo "| CMake failed, exit status $retv"
         echo "|"
         echo "| Command was :"
-        echo "|"
-        echo "|   \`cmake ${cmake_args[@]}\`"
-        echo "|"
+        display_cmake_command_fyi
         echo "+-"
         exit $retv
       fi
@@ -458,6 +477,8 @@ if true; then
         echo "|"
         echo "| Build failed, Ninja exited with status $retv"
         echo "|"
+        echo "| CMake command was :"
+        display_cmake_command_fyi
         echo "+-- $0 ~~~> FAILED."
         echo
         exit $retv
@@ -488,7 +509,7 @@ if true; then
         echo "+ ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !"
         echo "|"
         echo "| FAIL: Ninja install failed with exit status $retv"
-        echo "|"
+        display_cmake_command_fyi
         echo "+-"
         echo
         exit $retv
@@ -504,8 +525,8 @@ if true; then
   echo "+-"
   echo "| FYI: The CMake command used previously was :"
   echo "|"
-  echo "|      cd `pwd` &&"
-  echo "|        cmake ${cmake_args[@]}"
+  echo "| cd `pwd`"
+  display_cmake_command_fyi
 
   popd
 fi
