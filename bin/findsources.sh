@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # FC.2014-09-24 fabic.net
 
 if [ $# -lt 1 ]; then
