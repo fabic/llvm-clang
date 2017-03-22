@@ -9,9 +9,14 @@ echo "|"
 echo "| Note that this script may take the path of a Boost installation as 1st arg."
 echo "|"
 
+suffix="nil"
 
+if is_darwin_macosx ;
+then
+  echo "| Mac OS X Darwin that is... -_-"
+  suffix="darwin"
 # Check for CC & CXX :
-if [ -z "$CC" ];
+elif [ -z "$CC" ];
 then
     echo "| ERROR: \$CC is not defined (we need this to select the appropriate Boost variant you built)."
     echo "|        ^ for we're looking for Boost installed into ex. local/boost-1.xx.yy-clang/ if built with Clang++"
@@ -24,6 +29,7 @@ then
     echo "+-- ${BASH_SOURCE[0]} $@ [END]"
     return 126
 else
+    suffix="$CC"
     echo "| \$CC  = $CC"
     echo "| \$CXX = $CXX"
     echo "+-"
@@ -39,7 +45,7 @@ boost_modular_dir="$here/misc/boost"
 
 
 # 1) try local/boost-1.xx.yy-$CC/ install location
-#    (if not provide as 1st command line arg.)
+#    (if not provided as 1st command line arg.)
 #
 #    NOTE: first script arg. may be an absolute path.
 #
@@ -53,7 +59,9 @@ BOOSTROOT=${1:-""}
 #    'boost-1.61.0-clang'
 if [ -z "$BOOSTROOT" ];
 then
-  candidates=( $( find "$here/local"*/ -maxdepth 1 -type d -name "boost-*-${CC}" | sort -V ) )
+  #candidates=( $( find "$here/local"*/ -maxdepth 1 -type d -name "boost-*-${suffix}" | sort -V ) )
+  # ^ damn Darwin `sort` does not support sorting version-like strings.
+  candidates=( $( find "$here/local"*/ -maxdepth 1 -type d -name "boost-*-${suffix}" | sort ) )
 
   if [ ${#candidates[@]} -gt 0 ];
   then
@@ -95,7 +103,7 @@ else # 2) try fallback to ~/boost-1.61.0-clang/ (i.e. right under $HOME)
     echo "found."
   else # 3) will entail fallback to the checked-out sources under misc/boost/
     echo "not found (will try eventually fallback to the Boost “modular” sources if checked-out (under '$boost_modular_dir')."
-    BOOSTROOT="" 
+    BOOSTROOT=""
   fi
 fi
 
@@ -132,7 +140,7 @@ then
     # We're _NOT_ adding Boost's include dir. to any env. var.
     # (we leave this to CMake).
     #pathappend "$BOOST_INCLUDE_DIRS" CPLUS_INCLUDE_PATH
-    #export CPLUS_INCLUDE_PATH 
+    #export CPLUS_INCLUDE_PATH
 
     # However we need to set this which usually (in principe) entails that
     # -Wl,-rpath=... is passed to the linker.
@@ -203,6 +211,6 @@ echo "|"
 echo "+-- ${BASH_SOURCE[0]} $@ [END]"
 
 
-sh $here/show-environment.sh
+# sh $here/show-environment.sh
 
 # vim: et sw=2 ts=2 ft=sh

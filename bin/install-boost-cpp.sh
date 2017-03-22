@@ -197,14 +197,10 @@ then
     exit $retv
 fi
 
-let processor_count=$( cat /proc/cpuinfo | grep -P '^processor\s*:\s*\d+' | wc -l )
-let jobs_count="$processor_count"
-if [ "0$jobs_count" -lt 1 ]; then
-    jobs_count=1
-fi
+let jobs_count=`max_number_of_jobs`
 
 echo "|"
-echo "| Found out we have $processor_count CPUs ;"
+echo "| Found out we have `how_many_cpus` CPUs ;"
 echo "| we'll set -j$jobs_count (max. simultaneous jobs run by ./b2)."
 echo "|"
 
