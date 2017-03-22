@@ -53,14 +53,6 @@ echo "|  - https://github.com/bryceharrington/wayland-build-tools/  (build scrip
 echo "+-"
 
 
-# Turn arguments into boolean variables.
-while [ $# -gt 0 ]; do
-  arg="$1"
-  let $1=1
-  shift
-done
-
-
 ##
 ## CONFIGURE SOURCES ( AUTOTOOLS )
 ##

@@ -63,12 +63,13 @@ fi
 
 # AutoTools' aclocal
 # ( see https://wayland.freedesktop.org/building.html )
-if [ -d "$localdir/aclocal" ];
+if [ -d "$localdir/share/aclocal" ];
 then
-  export ACLOCAL_PATH="$localdir/aclocal"
+  export ACLOCAL_PATH="$localdir/share/aclocal"
   export ACLOCAL="aclocal -I $ACLOCAL_PATH"
-  echo "| Set up autotools' aclocal path."
+  echo "| Set up autotools' ACLOCAL path."
 fi
+
 
 # CMAKE's CMAKE_MODULE_PATH
 if false;
