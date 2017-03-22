@@ -46,10 +46,18 @@ pathpop() {
 
 # Guess the number of processors we have from /proc/cpuinfo.
 function how_many_cpus() {
-  local let cpus=$( \
-    cat /proc/cpuinfo | \
-      grep -P '^processor\s*:\s*\d+' | \
-        wc -l )
+  if ! is_darwin_macosx ;
+  then
+    local let cpus=$( \
+      cat /proc/cpuinfo | \
+        grep -P '^processor\s*:\s*\d+' | \
+          wc -l )
+  else
+    # Dad's iMac 27" mid-2011 – Intel Core i5 2.7 GHz – 16GB DDR3
+    let cpus=4
+  fi
+
+  [ $cpus -lt 1 ] && cpus=1
 
   echo $cpus
 
@@ -167,3 +175,7 @@ checkenv() {
 	done
 }
 
+## Return TRUE ( 0 ) if we're running under Mac OS X.
+is_darwin_macosx() {
+  [ "`uname -s`" == "Darwin" ] && return 0 || return 127 ;
+}

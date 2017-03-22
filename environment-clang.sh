@@ -7,6 +7,9 @@ here=$( cd `dirname "${BASH_SOURCE[0]}"` && pwd )
 echo "+--- ${BASH_SOURCE[0]} $@"
 echo "|"
 
+# Ah -_- Mac OS X
+[ "`uname -s`" == "Darwin" ] && is_macosx=1 || is_macosx=0
+
 
 # FHS-like/compliant local/ dir.
 localdir=${1:-"$(cd "$here/local" && pwd)"}
@@ -241,6 +244,20 @@ then
   echo "+-- done (with the extraneous Clang include/ & lib/linux/ sub-dir."
 fi
 
+
+if [ $is_macosx -gt 0 ]; then
+  echo "+- Mac OS X “Darwin” that is -_-"
+  macosx_sdk="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+  if [ -d "$macosx_sdk" ]; then
+    #pathprepend "$macosx_sdk/usr/lib/"     LD_RUN_PATH
+    #pathprepend "$macosx_sdk/usr/lib/"     LD_LIBRARY_PATH
+    pathprepend "$macosx_sdk/usr/include/" CPATH
+    export CPATH LD_RUN_PATH LD_LIBRARY_PATH
+  else
+    echo "| WARNING: The MacOSX.sdk/ directory \`\` $macosx_sdk \`\` does _not_ exists."
+    echo "| FYI: Head to https://developer.apple.com/download/more/ and download that XCode thing."
+  fi
+fi
 
 # Traditionnal /usr/local/include
 if [ -d "$localdir/include" ]; then
