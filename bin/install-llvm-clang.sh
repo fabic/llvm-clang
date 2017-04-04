@@ -4,6 +4,8 @@
 #
 # 1st argument is the target installation directory, defaults to local/
 # 2nd arg. is the targed temporary out-of-tree build dir.
+#
+# See also Gist https://gist.github.com/zchee/740e99acd893afeeae6d `build-llvm.bash`
 
 here=$(cd `dirname "$0"`/.. && pwd)
 
@@ -16,10 +18,15 @@ enable_sphinx_doc=0
 enable_doxygen_doc=0
 perform_make_install=0
 
+enable_lto=0
 
 echo "+--- $0"
 echo "|"
 echo "| This script builds the whole LLVM Clang compiler"
+echo "|"
+echo "| See also zchee's Gist \`build-llvm.bash\` :"
+echo "|"
+echo "|   https://gist.github.com/zchee/740e99acd893afeeae6d"
 echo "|"
 
   cd "$here/llvm-clang" || exit 1
@@ -327,9 +334,8 @@ if true; then
     fi
 
     # Binutils ld.gold => LTO ?
-    if [ `uname -s` != "Darwin" ]; then
-
-      if true && type -p ld.gold > /dev/null ; then
+    if ! is_darwin_macosx ; then
+      if [ $enable_lto -gt 0 ] && type -p ld.gold > /dev/null ; then
 
         echo "+- Found GNU Binutils' \`ld.gold\` => enabling LTO feature."
         cmake_args=( "${cmake_args[@]}" \
