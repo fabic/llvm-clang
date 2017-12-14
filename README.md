@@ -15,6 +15,7 @@ _**Note for the casual wanderer landing here :** you may be interested in the
   for my current Linux (Gentoo-based Sabayon 16.07) do _not_ support the `-flto` compiler arg. due to a missing
   library (linker plugin) at link time: `LLVMgold.so` _(hopefully this one thing will get built along the way)_.
 * **2017-02-11 :** I'm back, bumped LLVM/Clang to `release_40` ; fixed the `bin/install-llvm-clang.sh` for building on Mac OS X.
+* **2017-12-14 :** Bumped LLVM/Clang to `release_50`, didn't work on this "project" in the end this year, was busy with life, lack of energy -\_-
 * ~~<http://blog.fabic.net/diary/2014/09/14/llvm-clang-from-scratch-take-3/>~~
 
 
