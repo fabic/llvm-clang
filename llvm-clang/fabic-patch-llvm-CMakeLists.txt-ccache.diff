@@ -1,0 +1,29 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7f48ace6883..e9f6b99fa30 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -44,6 +44,15 @@ if (NOT PACKAGE_VERSION)
+     "${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}${LLVM_VERSION_SUFFIX}")
+ endif()
+ 
++
++# FABIC/2017-02-21
++# https://crascit.com/2016/04/09/using-ccache-with-cmake/
++find_program(CCACHE_PROGRAM ccache)
++if(CCACHE_PROGRAM)
++      set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
++endif()
++
++
+ project(LLVM
+   ${cmake_3_0_PROJ_VERSION}
+   ${cmake_3_0_LANGUAGES}
+@@ -84,7 +93,7 @@ if(CMAKE_HOST_APPLE AND APPLE)
+         set(LIBTOOL_NO_WARNING_FLAG "-no_warning_for_no_symbols")
+       endif()
+     endif()
+-    
++
+     foreach(lang ${languages})
+       set(CMAKE_${lang}_CREATE_STATIC_LIBRARY
+         "${CMAKE_LIBTOOL} -static ${LIBTOOL_NO_WARNING_FLAG} -o <TARGET> \
