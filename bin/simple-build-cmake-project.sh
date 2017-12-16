@@ -167,6 +167,13 @@ echo "|     ^ so that we get a 'compilation_commands.json' file"
 echo "|       See http://clang.llvm.org/docs/HowToSetupToolingForLLVM.html"
 echo "|     ^ for us to play with Clang Tooling abilities (which needs to build"
 echo "|        a “compilation database”)."
+echo "|"
+echo "|   » You may want to specify the build type :"
+echo "|"
+echo "|         -DCMAKE_BUILD_TYPE=Debug         "
+echo "|         -DCMAKE_BUILD_TYPE=RelWithDebInfo"
+echo "|         -DCMAKE_BUILD_TYPE=MinSizeRel    "
+echo "+-"
 echo
 
 "$cmake_binary" \
