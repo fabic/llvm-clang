@@ -8,7 +8,7 @@ here=$( cd `dirname "$0"`/.. && pwd )
 
 echo "+-- $0"
 
-boost_most_recent_version="1.63.0"
+boost_most_recent_version="1.65.1"
 
 arg1="${1:-$boost_most_recent_version}"
 

@@ -341,12 +341,12 @@ if true; then
         cmake_args=( "${cmake_args[@]}" \
             -DLLVM_ENABLE_LTO=ON
             #-DLLVM_ENABLE_LTO=Full
-            -DLLVM_BINUTILS_INCDIR="$localdir/include" \
+            -DLLVM_BINUTILS_INCDIR="$localdir/include"
             # NOTE: this is unrelated to LTO, this instructs that LLVM/Clang/etc
             #       be linked with ld.gold.
             #-DLLVM_USE_LINKER=gold
             # ^ FIXME: Breaks the build with :
-            #          “hidden symbol `__morestack' in /usr/lib64/gcc/x86_64-pc-linux-gnu/6.3.1/libgcc.a(morestack.o) is referenced by DSO”.
+            #          “hidden symbol `__morestack` in /usr/lib64/gcc/x86_64-pc-linux-gnu/6.3.1/libgcc.a(morestack.o) is referenced by DSO”.
           )
 
         # (The correct include path will contain the file plugin-api.h.)
@@ -365,7 +365,13 @@ if true; then
       echo "|          (it breaks the build / 2017-02-20)."
     fi
 
-    # https://crascit.com/2016/04/09/using-ccache-with-cmake/
+    ## CCACHE
+    #
+    # ( https://crascit.com/2016/04/09/using-ccache-with-cmake/ )
+    # This does not (?) work well, better option is probably to patch
+    # llvm/CMakeLists.txt with `llvm-clang/fabic-patch-llvm-CMakeLists.txt-ccache.diff`
+    # so that CCACHE setup from within CMAKE.
+    #
     # if type -p ccache > /dev/null ; then
     #   echo "+- Found \`ccache\` !"
     #   cmake_args=( "${cmake_args[@]}" -DRULE_LAUNCH_COMPILE="ccache" )
