@@ -16,18 +16,47 @@ echo "|"
 echo "| We're in $here"
 echo "|"
 
+echo "+-"
+echo "| Note that you may obtain your compiler default #include search path with ex. :"
+echo "|"
+echo "|   LLVM / Clang: clang++ -Wp,-v -x c++ - -fsyntax-only < /dev/null"
+echo "|   GNU / GCC:        g++ -Wp,-v -x c++ - -fsyntax-only < /dev/null"
+echo "+-"
+
 # Curr. dir. source tree follows conventions ?
 [ -d "$here/include" ] && locations=( ${locations[@]} "$here/include" )
 [ -d "$here/src"     ] && locations=( ${locations[@]} "$here/src"     )
 
-# Arguments
+# Arguments: locations to search for source files.
 for dir in "$@"; do
   if [ -d "$dir" ]; then
+    # "realpath ..."
+    # Resolve dotted components from $dir path.
+    # This will also have a '.' argument be resolve to the absolute pathname
+    # of the current working dir.
+    # And also resolve these compiler header search paths: '/usr/bin/../lib64/gcc/x86_64-pc-linux-gnu/7.2.1/../../../../include/c++/7.2.1'
+    # to ex. '/usr/include/c++/7.2.1'
+    dir="$( cd "$dir" && pwd )"
     locations=( ${locations[@]} "$dir" )
   else
     echo "| BEWARE: '$dir' is not a directory (or does not exist)."
   fi
 done
+
+# No search locations at this point => we're adding the current dir.
+# in hope that it is a top-level dir. in some source tree.
+if [ ${#locations[@]} -lt 1 ]; then
+  echo "+- (!!)"
+  echo "| \$locations[] is empty at this point ;"
+  echo "|   => Adding current directory '$here' to it."
+  echo "+-"
+  locations=( "$here" )
+else
+  echo "+ (!!)"
+  echo "| Note that the current dir. '.' == '$here' was _NOT_ added to the search path."
+  echo "| ( you may want to specify it as an additional argument (?)"
+  echo "+-"
+fi
 
 # If equal => curr. dir. is not a sub-dir. of the
 #             root of our LLVM/Clang playground.
@@ -102,15 +131,14 @@ else
 fi
 
 # BOOST C++ !
+# For ex. $BOOSTROOT may be '/usr' a system-wide installation,
+# or '/usr/local', or '/home/dude/.local/boost-1.65.1-clang', etc.
 if [ ! -z "$BOOSTROOT" ] && [ -d "$BOOSTROOT/include" ];
 then
   echo "+-"
   echo "| Got Boost C++ at \$BOOSTROOT = '$BOOSTROOT'"
 
-  locations=(
-      ${locations[@]}
-      "$BOOSTROOT/include"
-    )
+  locations=( ${locations[@]} "$BOOSTROOT/include" )
 
   # Warn if not found.
   if [ ! -f "$BOOSTROOT/include/boost/config.hpp" ]; then
@@ -118,12 +146,21 @@ then
   fi
 
   echo "|"
+else
+  echo "+- (!!) Boost C++ not found ??"
+  echo "|"
+  echo "| \$BOOSTROOT = '$BOOSTROOT'"
+  echo "|"
+  echo "| Either it is unspecified or it doesn't contain an include/ sub-directory"
+  echo "+"
 fi
 
-echo "+- \$locations :"
+echo "+- \$locations[] :"
 echo "|"
-echo "| ${locations[@]}"
-echo "|"
+for loc in "${locations[@]}"; do
+  echo "|      - $loc"
+done
+echo "+"
 
 find_args=(
     "${locations[@]}"
@@ -154,6 +191,7 @@ fi
 
 echo "+-"
 echo "| Found $(wc -l cscope.files | awk '{print $1}' ) source files (cscope.files)."
+echo "|   \` on-disk size: $(( $(cat cscope.files | xargs -r du -b | awk '{s+=$1} END {print s}') / 1024 )) kilo-bytes."
 echo "|"
 read -p "+~~~> Run CScope on these ? (Ctrl-C to abort) "
 
@@ -189,3 +227,4 @@ echo "|"
 echo "+-- $0 : END, exit status: $retv"
 
 exit $retv
+
