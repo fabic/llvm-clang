@@ -198,10 +198,10 @@ echo
     echo "|"
     echo "|       clang/tools/extra  (Clang tools extra)"
     echo "|"
-    echo "| For example :"
-    echo "|   $  cd llvm-clang/"
-    echo "|   $  rm -i llvm/tools/lld llvm/tools/lldb clang/tools/extra"
-    echo "|   $  rm -i llvm/projects/compiler-rt llvm/projects/libcxx llvm/projects/libcxxabi"
+    echo "| For example, hit Ctrl-Z and :"
+    echo "|   $  ( cd llvm-clang/ && rm -i llvm/tools/lld llvm/tools/lldb )"
+    echo "|   $  ( cd llvm-clang/ && rm -i clang/tools/extra )"
+    echo "|   $  ( cd llvm-clang/ && rm -i llvm/projects/compiler-rt llvm/projects/libcxx llvm/projects/libcxxabi )"
     echo "|"
     read -p "Hit Ctrl-Z now if you feel like so; or continue ?"
     echo "|"
@@ -246,6 +246,10 @@ if true; then
     fi
 
     cmake_args=(
+      # This will have the 'compile_commands.json' "compilation database"
+      # be produced.
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
       -DCMAKE_BUILD_TYPE=RelWithDebInfo
       -DCMAKE_INSTALL_PREFIX="$localdir"
       -DBUILD_SHARED_LIBS=ON
