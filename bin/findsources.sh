@@ -1,34 +1,71 @@
 #!/bin/bash
+#
 # FC.2014-09-24 fabic.net
 
 if [ $# -lt 1 ]; then
 	echo
-	echo "Find source code files"
-	echo "Usage: $0 [<prefix_find_arguments>... --] <suffix_find_arguments>..."
-	echo "Example: $0 clang/include/ clang/lib llvm/include -- -name '*.c'"
+  echo "+- $0 $@"
+	echo "| Find source code files"
+  echo "|"
+	echo "| Usage: $0 [<prefix_find_arguments>... --] <suffix_find_arguments>..."
+  echo "|"
+	echo "| Example: $0 clang/include/ clang/lib llvm/include -- -name '*.c'"
+  echo "+-"
 	echo
 	exit 127
 fi
 
-args=()
+# egrep compatible regular expression, which `find` understand
+# thanks to `-regextype egrep`.
+regex=".*\.(c|h|cc|hh|cpp|hpp|cxx|hxx|h\.inc|hxx\.inc|hpp.inc|hh.inc|s|x|cmake)$"
+
 leftargs=()
+rightargs=()
 
 # Splice left and right hand arguments around '--' :
 while [ $# -gt 0 ];
 do
 	arg="$1"
 	shift
+
+  # Met delimiter => left-hand side arguments were all consumed ;
+  # the remaining ones are for the "right-hand side" of the `find ...`
+  # command.
 	if [ "$arg" == "--" ]; then
-		leftargs=( "${args[@]}" )
-		args=()
-		continue
+    rightargs=( "$@" )
+    break
 	fi
-	args=( "${args[@]}" $arg )
+
+	leftargs=( "${leftargs[@]}" $arg )
 done
 
-# Search sources files and grep :
-find "${leftargs[@]}" \
-	\( -type f -iregex '.+\.\(c\|h\|hh\|cpp\|hpp\|cxx\|hxx\|h\.inc\|s\)$' \) \
-	"${args[@]}"
+findcmd=(
+  find
+    "${leftargs[@]}"
+        -regextype egrep
+        \(
+             -name '.?*'
+          -o \( -type d \( -name 'CMakeFiles' \) \)
+          -o \( -type f \( -name '*~' -o -iregex '.*\.(old|bak)$' \) \)
+        \) -prune
+        -o -type f
+           \(
+             -iregex "$regex"
+             -o -name "CMakeLists.txt"
+           \)
+    "${rightargs[@]}"
+)
 
-exit $?
+"${findcmd[@]}" \
+  | sed -e 's@^\./@@'
+
+retv=$?
+if [ $retv -gt 0 ]; then
+  echo
+  echo "| FAIL: exit status of \`find ...\` is non-zero ;"
+  echo "|        \` command was :"
+  echo "|"
+  echo "|   ${findcmd[@]}"
+fi
+
+exit $retv

@@ -203,7 +203,22 @@ echo
     echo "|   $  ( cd llvm-clang/ && rm -i clang/tools/extra )"
     echo "|   $  ( cd llvm-clang/ && rm -i llvm/projects/compiler-rt llvm/projects/libcxx llvm/projects/libcxxabi )"
     echo "|"
-    read -p "Hit Ctrl-Z now if you feel like so; or continue ?"
+    echo
+    read -p "~~> Would you like to (interactively) remove of few of these symbolic links ?  (Or hit Ctrl-Z for DIY)" answer
+    if [[ $answer =~ ^y(es)?$ ]]; then
+      for symlk in llvm/tools/lld llvm/tools/lldb \
+                   clang/tools/extra              \
+                   llvm/projects/compiler-rt      \
+                   llvm/projects/libcxx llvm/projects/libcxxabi ;
+      do
+        if [ ! -L "$symlk" ]; then
+          echo "| (!) Not removing '$symlk' which is not a symbolic link (!)"
+          continue
+        fi
+        rm -iv "$symlk" ||
+          echo "| WARNING: Removal of symbolic link '$symlk' failed (?!)"
+      done
+    fi
     echo "|"
     echo "+-"
   fi
