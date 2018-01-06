@@ -278,7 +278,17 @@ if [ -d "$localdir/lib" ]; then
     export LD_RUN_PATH LD_LIBRARY_PATH LIBRARY_PATH
 fi
 
-
+# Boost C++
+if [ -f "$localdir/include/boost/config.hpp" ]; then
+  BOOSTROOT="$localdir"
+  echo "+- Found Boost C++, setting \$BOOSTROOT='$localdir'."
+  echo "| Boost libraries :"
+  ( cd "$localdir/lib" &&
+    find -maxdepth 1 -name 'libboost*' -type f |
+      sed -e 's@^\./libboost_\(\w\+\).*$@\1@' |
+      sort -u | column | sed -e 's/^/|   /' )
+  echo "+-"
+fi
 
 # Display environment for information
 #sh $here/show-environment.sh

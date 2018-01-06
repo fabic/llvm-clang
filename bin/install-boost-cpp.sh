@@ -8,16 +8,19 @@ here=$( cd `dirname "$0"`/.. && pwd )
 
 echo "+-- $0"
 
-boost_most_recent_version="1.65.1"
+boost_versions=( "1.66.0" "1.65.1" )
+boost_most_recent_version="${boost_versions[0]}"
 
+# 1st argument may be a Boost version.
 arg1="${1:-$boost_most_recent_version}"
 
 # 2nd arg. may be the target install dir.
 # if not specified => it will be inferred later on as local/boost_.../
 boost_install_target_dir="${2:-}"
 
-# 1st argument may be a boost version.
-if [ "X${arg1/?.??.*/YYYY}X" == "XYYYYX" ]; then
+# 1st argument may be a Boost version.
+if [ "X${arg1/?.??.*/YYYY}X" == "XYYYYX" ];
+then
     boost_cpp_version="$arg1"
     boost_version_blankee="${boost_cpp_version//./_}"
     boost_tarball_filename="boost_$boost_version_blankee.tar.bz2"

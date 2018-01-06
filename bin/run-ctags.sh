@@ -38,8 +38,8 @@ fi
 
 ## HARD-LINK
 echo "+- Hard-linking .tags as tags (for Vim)"
-ln .tags tags
-ls -lh tags
+ln -fv .tags tags
+ls -lh tags .tags
 
 echo "+-"
 echo "| Creating .tags_sorted_by_file (for Sublime Text's CTags package)."

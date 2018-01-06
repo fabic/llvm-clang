@@ -67,7 +67,8 @@ echo "|      ( make targets: all-gold install-gold )"
 
 
 # Git check-out submodule if needed.
-if [ -d "$binutils_dir" ] && [ -e "$binutils_dir/.git" ] && [ ! -f "$binutils_dir/configure" ];
+if [ -d "$binutils_dir" ] && [ ! -f "$binutils_dir/configure" ];
+  #  && [ -e "$binutils_dir/.git" ]
 then
   echo "|"
   echo "| Git submodule checkout misc/binutils/ :"

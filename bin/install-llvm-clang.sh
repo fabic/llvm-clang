@@ -265,7 +265,8 @@ if true; then
       # be produced.
       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
-      -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      #-DCMAKE_BUILD_TYPE=RelWithDebInfo
+      -DCMAKE_BUILD_TYPE=Release
       -DCMAKE_INSTALL_PREFIX="$localdir"
       -DBUILD_SHARED_LIBS=ON
       #-DLLVM_TARGETS_TO_BUILD="host;X86"
@@ -324,32 +325,62 @@ if true; then
         echo "+-"
     fi
 
-    # Python Sphinx documentation generator.
-    if [ $enable_sphinx_doc -gt 0 ] && type -p sphinx-build > /dev/null ; then
-      echo "+- Found Sphinx documentation generator, ok."
-      cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_SPHINX=ON )
-    else
-      cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_SPHINX=OFF )
-      enable_sphinx_doc=0
+    # Use Binutils' Gold linker if available
+    #
+    # NOTE: this is unrelated to LTO, this basically instructs that
+    #       LLVM/Clang/etc be linked with ld.gold, instead of `ld`.
+    if false && type -p ld.gold > /dev/null ; then
+      echo "+- Found \`ld.gold\` (!), we'll pass -DLLVM_USE_LINKER=gold  (which _may_ break the build btw.)."
+      cmake_args=( "${cmake_args[@]}"
+          -DLLVM_USE_LINKER=gold
+          # ^ FIXME: Breaks the build with :
+          #          “hidden symbol `__morestack` in /usr/lib64/gcc/x86_64-pc-linux-gnu/6.3.1/libgcc.a(morestack.o) is referenced by DSO”.
+        )
     fi
 
-    # Doxygen documentation generator.
-    if [ $enable_doxygen_doc -gt 0 ] && type -p doxygen > /dev/null ; then
-      echo "+- Found Doxygen documentation generator, ok."
-      cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_DOXYGEN=ON )
+    # (The correct include path will contain the file plugin-api.h.)
+    if [ -f "$localdir/include/plugin-api.h" ];
+    then
+      cmake_args=( "${cmake_args[@]}"
+        -DLLVM_BINUTILS_INCDIR="$localdir/include" )
+      echo "| Found GNU/Binutils' plugin-api.h under '$local/include'."
+      echo "| \` The LLVMgold.so \`ld\` plugin shall get built."
+    # Try /usr/include
+    elif [ -f "/usr/include/plugin-api.h" ]; then
+      cmake_args=( "${cmake_args[@]}"
+        -DLLVM_BINUTILS_INCDIR="/usr/include" )
+      echo "| Found GNU/Binutils's plugin-api.h under /usr/include."
+      echo "| \` The LLVMgold.so \`ld\` plugin shall get built (possibly)."
     else
-      # Explicitely state we do not want Doxygen as CMake tries
-      # to look for it even if we didn't set it to ON.
-      cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_DOXYGEN=OFF )
-      enable_doxygen_doc=0
+      echo "| (!) Couldn't find Binutils' \`plugin-api.h\`, we're not passing -DLLVM_BINUTILS_INCDIR=..."
+      echo "|     \`-> LLVM's LLVMgold.so \`ld\` plugin won't be built."
     fi
 
-    # This would enable building both the Sphinx _and_ Doxygen
-    # documentation.
+    # This would enable building both the Sphinx _and_ Doxygen documentation.
     if [ $enable_build_docs -gt 0 ]; then
       cmake_args=( "${cmake_args[@]}" -DLLVM_BUILD_DOCS=ON )
     else
       cmake_args=( "${cmake_args[@]}" -DLLVM_BUILD_DOCS=OFF )
+
+      # Python Sphinx documentation generator.
+      if [ $enable_sphinx_doc -gt 0 ] && type -p sphinx-build > /dev/null ; then
+        echo "+- Found Sphinx documentation generator, ok."
+        cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_SPHINX=ON )
+      else
+        cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_SPHINX=OFF )
+        enable_sphinx_doc=0
+      fi
+
+      # Doxygen documentation generator.
+      if [ $enable_doxygen_doc -gt 0 ] && type -p doxygen > /dev/null ; then
+        echo "+- Found Doxygen documentation generator, ok."
+        cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_DOXYGEN=ON )
+      else
+        # Explicitely state we do not want Doxygen as CMake tries
+        # to look for it even if we didn't set it to ON.
+        cmake_args=( "${cmake_args[@]}" -DLLVM_ENABLE_DOXYGEN=OFF )
+        enable_doxygen_doc=0
+      fi
     fi
 
     # Binutils ld.gold => LTO ?
@@ -373,9 +404,15 @@ if true; then
           echo "| WARNING: Found Binutils' \`ld.gold\` but the 'plugin-api.h' header file"
           echo "|          wasn't found under $localdir/include/"
           echo "|          (this is fine if your distribution provides it, ex. under /usr/include)."
+          # Inform user if we do not have that header under /usr/include/ :
           if [ ! -f "/usr/include/plugin-api.h" ]; then
             echo "| WARNING: plugin-api.h _wasn't_ found under /usr/include/ either :-|"
+          else
+            echo "| Ok, found \`plugin-api.h\` at /usr/include/plugin-api.h"
           fi
+        else
+          cmake_args=( "${cmake_args[@]}"
+            -DLLVM_BINUTILS_INCDIR="$localdir/include" )
         fi
       fi
 
