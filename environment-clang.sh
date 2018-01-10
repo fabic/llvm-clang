@@ -280,7 +280,7 @@ fi
 
 # Boost C++
 if [ -f "$localdir/include/boost/config.hpp" ]; then
-  BOOSTROOT="$localdir"
+  export BOOSTROOT="$localdir"
   echo "+- Found Boost C++, setting \$BOOSTROOT='$localdir'."
   echo "| Boost libraries :"
   ( cd "$localdir/lib" &&
