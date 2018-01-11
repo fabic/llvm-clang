@@ -1,0 +1,15 @@
+diff --git a/include/clang/Driver/ToolChain.h b/include/clang/Driver/ToolChain.h
+index 13f54d3718..ae9de4ac78 100644
+--- a/include/clang/Driver/ToolChain.h
++++ b/include/clang/Driver/ToolChain.h
+@@ -338,7 +338,9 @@ public:
+   }
+ 
+   virtual CXXStdlibType GetDefaultCXXStdlibType() const {
+-    return ToolChain::CST_Libstdcxx;
++    // return ToolChain::CST_Libstdcxx;
++    // FABIC / 2018-01-05
++    return ToolChain::CST_Libcxx ;
+   }
+ 
+   virtual std::string getCompilerRTPath() const;

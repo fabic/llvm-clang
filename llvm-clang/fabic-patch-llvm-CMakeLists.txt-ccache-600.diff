@@ -1,0 +1,18 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2bf2c21a306..5e4c4efae55 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -42,6 +42,13 @@ if ((CMAKE_GENERATOR MATCHES "Visual Studio") AND (CMAKE_GENERATOR_TOOLSET STREQ
+                   "host compiler, pass -Thost=x64 on the CMake command line.")
+ endif()
+ 
++# FABIC/2017-02-21
++# https://crascit.com/2016/04/09/using-ccache-with-cmake/
++find_program(CCACHE_PROGRAM ccache)
++if(CCACHE_PROGRAM)
++      set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
++endif()
++
+ project(LLVM
+   VERSION ${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}
+   LANGUAGES C CXX ASM)
