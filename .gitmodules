@@ -1,0 +1,40 @@
+[submodule "musl-libc"]
+	path = lib/musl
+	url = git://git.musl-libc.org/musl
+[submodule "clang-libcxx"]
+	path = lib/libcxx
+	url = git@github.com:llvm-mirror/libcxx.git
+[submodule "clang-libcxxabi"]
+	path = lib/libcxxabi
+	url = git@github.com:llvm-mirror/libcxxabi.git
+[submodule "gnu-glibc"]
+	path = lib/glibc
+	url = git://sourceware.org/git/glibc
+[submodule "boost-cpp-netlib"]
+	path = lib/cpp-netlib
+	url = https://github.com/cpp-netlib/cpp-netlib
+[submodule "bionic-libc"]
+	path = lib/bionic-libc
+	url = git@github.com:android/platform_bionic.git
+[submodule "doc-linux-insides-0xax"]
+	path = docs/linux-insides-0xax
+	url = git@github.com:0xAX/linux-insides.git
+[submodule "nnen-doxygen-theme"]
+	path = docs/nnen-doxygen-theme
+	url = https://github.com/nnen/doxygen-theme.git
+[submodule "dvdhrm-drm-howto"]
+	path = docs/dvdhrm-drm-howto
+	url = git@github.com:dvdhrm/docs.git
+[submodule "fabic-clang"]
+	path = lib/clang
+	url = git@github.com:fabic/clang.git
+[submodule "lib/clang-tools-extra"]
+	path = lib/clang-tools-extra
+	url = git@github.com:llvm-mirror/clang-tools-extra.git
+[submodule "lmdb"]
+	path = lib/lmdb
+	url = git@github.com:LMDB/lmdb.git
+	branch = mdb.master
+[submodule "libpqxx"]
+	path = lib/libpqxx
+	url = git@github.com:jtv/libpqxx.git

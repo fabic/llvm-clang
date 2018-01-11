@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.0" last-position="0,0" last-zoom="1"
+	 default-schema="public" default-owner="postgres">
+<database name="pimpl">
+</database>
+
+<schema name="public" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="decls">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="440" y="260"/>
+	<column name="id" not-null="true">
+		<type name="int8" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="255"/>
+	</column>
+	<column name="_fq_name">
+		<type name="varchar" length="255"/>
+		<comment><![CDATA[Fully Qualified Name]]></comment>
+	</column>
+	<column name="decl_context_id">
+		<type name="int8" length="0"/>
+		<comment><![CDATA[References the DeclContext of that Decl.]]></comment>
+	</column>
+	<constraint name="decls_pk" type="pk-constr" table="public.decls">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_decl_self_decl_context" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="public.decls" table="public.decls">
+	<columns names="decl_context_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_decls_decls" type="relfk"
+	 src-table="public.decls"
+	 dst-table="public.decls"
+	 src-required="false" dst-required="false">
+	<line>
+		<position x="767.434" y="312"/>
+	<position x="767.434" y="249"/>
+	<position x="650.956" y="249"/>
+	</line>
+	<label ref-type="dst-label">
+		<position x="-4.55629" y="2.8"/>
+	</label>
+	<label ref-type="name-label">
+		<position x="16.0413" y="5.8"/>
+	</label>
+</relationship>
+
+</dbmodel>

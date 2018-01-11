@@ -1,0 +1,41 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		},
+		{
+			"path": "/media/g/home/fabi/dev/llvm/local/boost-1.61.0-clang/include/boost"
+		},
+		{
+			"path": "/media/g/home/fabi/dev/llvm/local/include"
+		},
+		{
+			"path": "/media/g/home/fabi/dev/llvm/misc/cpp-netlib/boost"
+		},
+		{
+			"path": "/usr/include/xcb"
+		},
+		{
+			"path": "/usr/include/X11"
+		},
+		{
+			"path": "/media/g/home/fabi/dev/llvm/misc/cairo"
+		},
+		{
+			"path": "/media/g/home/fabi/dev/llvm/misc/cairomm"
+		},
+		{
+			"path": "/usr/include/glibmm-2.4"
+		},
+		{
+			"path": "/usr/include/gdkmm-3.0"
+		},
+		{
+			"path": "/usr/include/gtkmm-3.0"
+		},
+		{
+			"path": "/usr/include/pangomm-1.4"
+		}
+	]
+}

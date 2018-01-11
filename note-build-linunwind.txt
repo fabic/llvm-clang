@@ -1,0 +1,15 @@
+#!/bin/bash
+
+CC=clang CXX=clang++ \
+CFLAGS="-march=amdfam10 -O3 -fno-omit-frame-pointer -fcolor-diagnostics" \
+CXXFLAGS="$CFLAGS" \
+  ./configure --prefix=$PWD/local \
+    --enable-static         --disable-shared \
+    --disable-documentation --disable-coredump \
+    --disable-setjmp        --disable-ptrace \
+    --disable-cxx-exceptions --disable-debug \
+    --enable-conservative-checks \
+    --enable-minidebuginfo \
+    --enable-block-signals \
+
+    && make && make install ; echo RETV=$?

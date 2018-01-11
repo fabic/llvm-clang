@@ -1,0 +1,28 @@
+# .gitignore (cxx_playground)
+
+*.sw?
+*~
+
+# pre-compiled headers.
+*.gch
+*.gch-*
+
+/build/
+/local/
+
+.idea/
+tags
+.tags
+.tags_sorted_by_file
+
+cscope.files
+cscope.in.out
+cscope.out
+cscope.po.out
+
+/docs/doxygen/html/
+
+#*.o
+#*.so
+#*.la
+#*.a
