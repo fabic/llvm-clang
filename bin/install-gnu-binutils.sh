@@ -23,6 +23,13 @@ echo "| References :"
 echo "|"
 echo "|  - http://www.linuxfromscratch.org/lfs/view/development/chapter06/binutils.html"
 echo "|  - http://llvm.org/docs/GoldPlugin.html"
+echo "|"
+echo "+-"
+echo "| \$CC  = '$CC'"
+echo "| \$CXX = '$CXX'"
+echo "|"
+echo "|   (!) Note that you should read 'gcc' and 'g++' here (!)"
+echo "+--"
 
 
   cd "$here" || exit 1
@@ -46,13 +53,29 @@ configure_log_filename="_configure-command-output.log.txt"
 
 # Arguments for ./configure...
 configure_args=(
-        --prefix="$localdir" \
-        --enable-shared      \
-        --disable-werror     \
-        --enable-gold        \
-        --enable-ld=default  \
-        --enable-plugins     \
+  --prefix="$localdir"
+  --disable-bootstrap
+  --enable-shared
+  --disable-werror
+  --enable-gold
+  --enable-plugins
+  --enable-lto
+  --enable-ld=no
+  #--enable-ld=default
+  --with-system-zlib
+
+  # Yes/no ?
+  #--enable-vtable-verify
+  --disable-vtable-verify
+  --disable-objc-gc
+
+  # Other :
+  --disable-libstdcxx
+  --disable-libquadmath --disable-libquadmath-support
+  --disable-libada --disable-libssp
+  --enable-liboffloadmic=no
   )
+
 
         #--with-system-zlib   \
 echo "|"
@@ -83,8 +106,8 @@ then
 
   echo "| Done with Git submodule checkout, ok."
   echo "+-"
-else
-  echo "| \$binutils_dir = '$binutils_dir' != 'misc/binutils' ==> assuming it is not a git checked-out source tree."
+#else
+#  echo "| \$binutils_dir = '$binutils_dir' != 'misc/binutils' ==> assuming it is not a git checked-out source tree."
 fi
 
 cd "$binutils_dir" || exit 1
@@ -93,10 +116,29 @@ echo "| Entered `pwd`/"
 echo "|"
 echo "|   \$localdir = '$localdir'"
 echo "|   \$builddir = '$builddir'"
+echo "|"
 
-  echo
-  read -p "Ok to proceed ? (Ctrl-C to abort)"
-  echo
+# Guess version.
+binutils_versions=()
+binutils_version=""
+
+if [ -e .git ]; then
+  echo "+-"
+  echo "| Finding out which version is checked-out here :"
+  binutils_versions=( $( git tag | grep -P 'binutils-(\d|\.|_)+$' | tr '_' '.' | sort -Vr | head -n10 ) )
+  if [ ${#binutils_versions[@]} -gt 0 ]; then
+    binutils_version="$( git describe --tags )"
+    echo "| \` Most recent ~10 versions: ${binutils_versions[@]}"
+    echo "| \` git describe says checked-out version is: $binutils_version"
+  else
+    echo "| \` failed: got no versions."
+  fi
+fi
+
+
+echo "+-"
+read -p " \`~> Ok to proceed ? (Ctrl-C to abort)"
+echo
 
 
   # Ask/warn about an eventually existing build/ directory.
@@ -126,10 +168,9 @@ echo "|"
 echo "|   ./configure ${configure_args[@]}"
 echo "|"
 echo "| ( output will be collected into file '$configure_log_filename' )"
-echo
 
-  echo
-  read -p "Ok to proceed ? (Ctrl-C to abort)"
+  echo "+"
+  read -p " \` Ok to proceed ? (Ctrl-C to abort) "
   echo
 
   #echo \
@@ -162,7 +203,7 @@ make_args=(
   -j$max_jobs \
   -l$max_sys_load
   #all
-  #all-gold
+  all-gold
   )
 
 echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
@@ -190,9 +231,8 @@ EOS
 
 
 echo "+-"
-echo
 
-  read -p "Ok to proceed ? (Ctrl-C to abort)"
+  read -p " \` Ok to proceed ? (Ctrl-C to abort) "
   echo
 
 
@@ -222,7 +262,7 @@ echo
 
 echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
 echo "|"
-echo "| Running \`make tooldir=\"$localdir\" install\`"
+echo "| Running \`make tooldir=\"$localdir\" install-gold\`"
 echo "|"
 echo "+ ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~"
 echo
@@ -231,13 +271,20 @@ echo
   read -p "Ok to proceed ? (Ctrl-C to abort)"
   echo
 
+  timestamp_file_begin="$localdir/timestamp-install-binutils-${binutils_version}-begin.txt"
+  timestamp_file_end="$localdir/timestamp-install-binutils-${binutils_version}-end.txt"
+
+  echo "Binutils $binutils_version -- `date`" >> "$timestamp_file_begin"
 
   make \
     tooldir="$localdir" \
-      install
+      install-gold      \
+      install-ld
+      # ^ FIXME: 2018-01-11: it appears headers aren't installed.
 
       #todo: install target ?
 
+  echo "Binutils $binutils_version -- `date`" >> "$timestamp_file_end"
 
   retv=$?
   if [ $retv -ne 0 ]; then
@@ -258,6 +305,16 @@ echo
     echo "+-"
   fi
 
+if true; then
+  echo "| List of files that were installed :"
+  echo "| \` ( see timestamp files '$timestamp_file_begin' and '$timestamp_file_end' )"
+  echo "|"
+  find "$localdir" -type f                \
+    -newer "$timestamp_file_begin"        \
+    -a -not -newer "$timestamp_file_end"  \
+      | sed -e 's@^@|  @'
+  echo "+"
+fi
 
 #
 ## MAKE TEST
@@ -268,7 +325,7 @@ then
   read -p "+-- RUN THE TEST SUITE ?"
 
   time \
-    make -k check
+    make -k check-gold
 
   echo "| \`make -k chech\` completed with exit status $?"
 else
